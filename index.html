@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>La Farga FC</title>
+  <meta name="theme-color" content="#0b0a09">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="La Farga">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&display=swap">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="icons/escudo.webp" alt="Escudo de La Farga FC">
+      <div>
+        <h1>La Farga F.C.</h1>
+        <p id="sub">Viernes · Grupo B</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="btn-ajustes" aria-label="Ajustes">⚙︎</button>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <nav class="tabs" aria-label="Secciones">
+    <button data-tab="inicio" class="on"><span>🏠</span>Inicio</button>
+    <button data-tab="partidos"><span>📅</span>Partidos</button>
+    <button data-tab="tabla"><span>🏆</span>Tabla</button>
+    <button data-tab="plantilla"><span>👥</span>Plantilla</button>
+    <button data-tab="stats"><span>📊</span>Stats</button>
+  </nav>
+
+  <dialog id="modal"><form method="dialog" id="modal-form"></form></dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

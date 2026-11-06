@@ -1,0 +1,1877 @@
+{
+  "equipo": "La Farga FC",
+  "competicion": "F7 Baix Llobregat (Cornellà–Hospitalet) 2026-27",
+  "grupo": "Viernes - B",
+  "fase": "Primer Split",
+  "fuente": "https://virtual.fundaciovalldor7.com/cornella-hospitalet-f7-es-26-27/equipo/4497",
+  "actualizado": "2026-11-06",
+  "clasificacion": [
+    {
+      "pos": 1,
+      "equipo": "Menuda Banda FC",
+      "pts": 9,
+      "pj": 4,
+      "g": 3,
+      "e": 0,
+      "p": 1,
+      "gf": 15,
+      "gc": 14,
+      "dg": 1
+    },
+    {
+      "pos": 2,
+      "equipo": "Los Calaveras",
+      "pts": 7,
+      "pj": 4,
+      "g": 2,
+      "e": 1,
+      "p": 1,
+      "gf": 14,
+      "gc": 9,
+      "dg": 5
+    },
+    {
+      "pos": 3,
+      "equipo": "Gossos FC",
+      "pts": 7,
+      "pj": 4,
+      "g": 2,
+      "e": 1,
+      "p": 1,
+      "gf": 15,
+      "gc": 14,
+      "dg": 1
+    },
+    {
+      "pos": 4,
+      "equipo": "Almeda Veteranos",
+      "pts": 6,
+      "pj": 5,
+      "g": 2,
+      "e": 0,
+      "p": 3,
+      "gf": 19,
+      "gc": 20,
+      "dg": -1
+    },
+    {
+      "pos": 5,
+      "equipo": "La Farga FC",
+      "pts": 5,
+      "pj": 4,
+      "g": 1,
+      "e": 2,
+      "p": 1,
+      "gf": 8,
+      "gc": 5,
+      "dg": 3
+    },
+    {
+      "pos": 6,
+      "equipo": "Sin Fronteras FC",
+      "pts": 5,
+      "pj": 5,
+      "g": 1,
+      "e": 2,
+      "p": 2,
+      "gf": 18,
+      "gc": 16,
+      "dg": 2
+    },
+    {
+      "pos": 7,
+      "equipo": "Bolivia Dortmund",
+      "pts": 3,
+      "pj": 4,
+      "g": 1,
+      "e": 0,
+      "p": 3,
+      "gf": 7,
+      "gc": 18,
+      "dg": -11
+    }
+  ],
+  "plantilla": [
+    {
+      "id": "v2",
+      "dorsal": "2",
+      "posicion": "Carrilero",
+      "nombre": "Igor Chantler Chornet",
+      "edad": 21,
+      "pj": 3,
+      "goles": 1,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "IGOR",
+      "camiseta": "2"
+    },
+    {
+      "id": "v6",
+      "dorsal": "6",
+      "posicion": "Medio",
+      "nombre": "Victor Benito Díaz",
+      "edad": 21,
+      "pj": 4,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "BENITO",
+      "camiseta": "6"
+    },
+    {
+      "id": "v8",
+      "dorsal": "8",
+      "posicion": "Medio",
+      "nombre": "Joan López Monreal",
+      "edad": 21,
+      "pj": 4,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "JOTA",
+      "camiseta": "8"
+    },
+    {
+      "id": "v10",
+      "dorsal": "10",
+      "posicion": "Delantero",
+      "nombre": "Marcel Rebollar Osuna",
+      "edad": 21,
+      "pj": 4,
+      "goles": 2,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "MARCELO",
+      "camiseta": "10"
+    },
+    {
+      "id": "v11",
+      "dorsal": "11",
+      "posicion": "Medio",
+      "nombre": "Jan Bosch Caceres",
+      "edad": 21,
+      "pj": 4,
+      "goles": 1,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "BLXDY",
+      "camiseta": "11"
+    },
+    {
+      "id": "v13",
+      "dorsal": "13",
+      "posicion": "Portero",
+      "nombre": "Biel Gilavert Garcia",
+      "edad": 21,
+      "pj": 3,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "BILI",
+      "camiseta": "13"
+    },
+    {
+      "id": "v22",
+      "dorsal": "22",
+      "posicion": "Carrilero",
+      "nombre": "Unai Aixeres Brugat Brugat",
+      "edad": 21,
+      "pj": 4,
+      "goles": 1,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "NA1XE",
+      "camiseta": "22"
+    },
+    {
+      "id": "v37",
+      "dorsal": "37",
+      "posicion": "Carrilero",
+      "nombre": "Adria Pastor Urgeles",
+      "edad": 21,
+      "pj": 3,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "AP7",
+      "camiseta": "77"
+    },
+    {
+      "id": "v66",
+      "dorsal": "66",
+      "posicion": "Carrilero",
+      "nombre": "Ferran Baltà Poll",
+      "edad": 21,
+      "pj": 3,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "BALTA",
+      "camiseta": "66"
+    },
+    {
+      "id": "v69",
+      "dorsal": "69",
+      "posicion": "Medio",
+      "nombre": "Jefersson David Mendoza lia",
+      "edad": 21,
+      "pj": 3,
+      "goles": 0,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "MENDO",
+      "camiseta": "69"
+    },
+    {
+      "id": "v99",
+      "dorsal": "99",
+      "posicion": "Delantero",
+      "nombre": "Joel López Gómez",
+      "edad": 21,
+      "pj": 4,
+      "goles": 1,
+      "amarillas": 0,
+      "rojas": 0,
+      "apodo": "JOWI",
+      "camiseta": "99"
+    },
+    {
+      "id": "x-solde",
+      "apodo": "SOLDE",
+      "camiseta": "9",
+      "dorsal": "9",
+      "nombre": "SOLDE",
+      "posicion": "",
+      "extra": true,
+      "invitado": true
+    }
+  ],
+  "partidos": [
+    {
+      "id": "j1",
+      "jornada": 1,
+      "rival": "Gossos FC",
+      "local": true,
+      "fecha": "2026-10-02",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1",
+      "estado": "jugado",
+      "gf": "2",
+      "gc": "3",
+      "acta": "113595",
+      "eventos_web": [],
+      "convocados": [
+        "Victor Benito",
+        "Joan López",
+        "Marcel Rebollar",
+        "Jan Bosch",
+        "Biel Gilavert",
+        "Unai Aixeres Brugat",
+        "Adria Pastor",
+        "Ferran Baltà",
+        "Jefersson David Mendoza",
+        "Joel López"
+      ],
+      "no_juegan": [
+        "Igor Chantler"
+      ],
+      "rival_alineacion": [
+        "Alejandro Godoy",
+        "Isaac Huguet",
+        "Alejandro Comas",
+        "Miguel Angel Hernández",
+        "Marc Torres",
+        "Aleix Arnalte",
+        "Asier Llobet",
+        "Gonzalo Dopeso",
+        "Biel Huguet"
+      ]
+    },
+    {
+      "id": "j2",
+      "jornada": 2,
+      "rival": "Sin Fronteras FC",
+      "local": false,
+      "fecha": "2026-10-09",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2",
+      "estado": "jugado",
+      "gf": "0",
+      "gc": "0",
+      "acta": "113598",
+      "eventos_web": [],
+      "convocados": [
+        "Igor Chantler",
+        "Victor Benito",
+        "Joan López",
+        "Marcel Rebollar",
+        "Jan Bosch",
+        "Unai Aixeres Brugat",
+        "Adria Pastor",
+        "Ferran Baltà",
+        "Jefersson David Mendoza",
+        "Joel López"
+      ],
+      "no_juegan": [
+        "Biel Gilavert"
+      ],
+      "rival_alineacion": [
+        "Alex Palma",
+        "Yeray García",
+        "Luis Ortiz",
+        "Alex Fortuny",
+        "Enrique Parrilla",
+        "Alex López",
+        "Alan Smith",
+        "Pere Galofré",
+        "Iker Bocanegra"
+      ]
+    },
+    {
+      "id": "j3",
+      "jornada": 3,
+      "rival": "Los Calaveras",
+      "local": true,
+      "fecha": "2026-10-16",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2",
+      "estado": "jugado",
+      "gf": "1",
+      "gc": "1",
+      "acta": "113603",
+      "eventos_web": [
+        {
+          "min": "18",
+          "lado": "local",
+          "jugador": "Jan Bosch",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v11"
+        }
+      ],
+      "convocados": [
+        "Igor Chantler",
+        "Victor Benito",
+        "Joan López",
+        "Marcel Rebollar",
+        "Jan Bosch",
+        "Biel Gilavert",
+        "Unai Aixeres Brugat",
+        "Adria Pastor",
+        "Ferran Baltà",
+        "Jefersson David Mendoza",
+        "Joel López"
+      ],
+      "no_juegan": [],
+      "rival_alineacion": [
+        "Ian Perez Artis",
+        "Mauro Cordova Orellana",
+        "Cristobal Cabeza Farran",
+        "Pera Valcarcel",
+        "Mario Romo Morales",
+        "JAVIER PEREZ"
+      ]
+    },
+    {
+      "id": "j4",
+      "jornada": 4,
+      "rival": "Bolivia Dortmund",
+      "local": false,
+      "fecha": "2026-10-23",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1",
+      "estado": "jugado",
+      "gf": "5",
+      "gc": "1",
+      "acta": "113608",
+      "eventos_web": [
+        {
+          "min": "14",
+          "lado": "visitante",
+          "jugador": "Marcel Rebollar",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v10"
+        },
+        {
+          "min": "24",
+          "lado": "local",
+          "jugador": "Iago Rodríguez",
+          "tipo": "gol",
+          "nuestro": false,
+          "jugador_id": null
+        },
+        {
+          "min": "29",
+          "lado": "visitante",
+          "jugador": "Joel López",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v99"
+        },
+        {
+          "min": "40",
+          "lado": "visitante",
+          "jugador": "Unai Aixeres Brugat",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v22"
+        },
+        {
+          "min": "47",
+          "lado": "visitante",
+          "jugador": "Marcel Rebollar",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v10"
+        },
+        {
+          "min": "49",
+          "lado": "visitante",
+          "jugador": "Igor Chantler",
+          "tipo": "gol",
+          "nuestro": true,
+          "jugador_id": "v2"
+        }
+      ],
+      "convocados": [
+        "Igor Chantler",
+        "Victor Benito",
+        "Joan López",
+        "Marcel Rebollar",
+        "Jan Bosch",
+        "Biel Gilavert",
+        "Unai Aixeres Brugat",
+        "Joel López"
+      ],
+      "no_juegan": [
+        "Adria Pastor",
+        "Ferran Baltà",
+        "Jefersson David Mendoza"
+      ],
+      "rival_alineacion": [
+        "Aarón Padilla",
+        "Alex Rodríguez",
+        "Fran Torres",
+        "Pau Calpe",
+        "Alejandro Herrero Terrero",
+        "Erik González",
+        "Adrián Sánchez",
+        "Adrià León",
+        "Pablo Jiménez",
+        "Luis Fernando Vasquez",
+        "Iago Rodríguez"
+      ]
+    },
+    {
+      "id": "j6",
+      "jornada": 6,
+      "rival": "Almeda Veteranos",
+      "local": true,
+      "fecha": "2026-11-06",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2",
+      "estado": "aplazado",
+      "gf": null,
+      "gc": null,
+      "acta": "113616"
+    },
+    {
+      "id": "j7",
+      "jornada": 7,
+      "rival": "Menuda Banda FC",
+      "local": false,
+      "fecha": "2026-11-13",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113619"
+    },
+    {
+      "id": "j8",
+      "jornada": 8,
+      "rival": "Gossos FC",
+      "local": false,
+      "fecha": "2026-11-20",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113622"
+    },
+    {
+      "id": "j9",
+      "jornada": 9,
+      "rival": "Sin Fronteras FC",
+      "local": true,
+      "fecha": "2026-11-27",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113626"
+    },
+    {
+      "id": "j10",
+      "jornada": 10,
+      "rival": "Los Calaveras",
+      "local": false,
+      "fecha": "2026-12-04",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113631"
+    },
+    {
+      "id": "j11",
+      "jornada": 11,
+      "rival": "Bolivia Dortmund",
+      "local": true,
+      "fecha": "2026-12-11",
+      "hora": "",
+      "campo": "",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113636"
+    },
+    {
+      "id": "j13",
+      "jornada": 13,
+      "rival": "Almeda Veteranos",
+      "local": false,
+      "fecha": "2027-01-08",
+      "hora": "",
+      "campo": "",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113644"
+    },
+    {
+      "id": "j14",
+      "jornada": 14,
+      "rival": "Menuda Banda FC",
+      "local": true,
+      "fecha": "2027-01-15",
+      "hora": "",
+      "campo": "",
+      "estado": "pendiente",
+      "gf": null,
+      "gc": null,
+      "acta": "113647"
+    }
+  ],
+  "descansos": [
+    5,
+    12
+  ],
+  "grupo_partidos": [
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "Menuda Banda FC",
+      "gf": "2",
+      "gc": "4",
+      "estado": "jugado",
+      "fecha": "2026-10-02",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "Sin Fronteras FC",
+      "gf": "1",
+      "gc": "5",
+      "estado": "jugado",
+      "fecha": "2026-10-02",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Gossos FC",
+      "gf": "2",
+      "gc": "3",
+      "estado": "jugado",
+      "fecha": "2026-10-02",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "Almeda Veteranos",
+      "gf": "4",
+      "gc": "2",
+      "estado": "jugado",
+      "fecha": "2026-10-09",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Bolivia Dortmund",
+      "gf": "2",
+      "gc": "3",
+      "estado": "jugado",
+      "fecha": "2026-10-09",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "La Farga FC",
+      "gf": "0",
+      "gc": "0",
+      "estado": "jugado",
+      "fecha": "2026-10-09",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "Sin Fronteras FC",
+      "gf": "5",
+      "gc": "4",
+      "estado": "jugado",
+      "fecha": "2026-10-16",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "Gossos FC",
+      "gf": "5",
+      "gc": "3",
+      "estado": "jugado",
+      "fecha": "2026-10-16",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Los Calaveras",
+      "gf": "1",
+      "gc": "1",
+      "estado": "jugado",
+      "fecha": "2026-10-16",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Almeda Veteranos",
+      "gf": "6",
+      "gc": "4",
+      "estado": "jugado",
+      "fecha": "2026-10-23",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "La Farga FC",
+      "gf": "1",
+      "gc": "5",
+      "estado": "jugado",
+      "fecha": "2026-10-23",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "Menuda Banda FC",
+      "gf": "4",
+      "gc": "5",
+      "estado": "jugado",
+      "fecha": "2026-10-23",
+      "hora": "",
+      "campo": "Promosportive (L'Hospitalet) · F7 C1"
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "Los Calaveras",
+      "gf": "1",
+      "gc": "5",
+      "estado": "jugado",
+      "fecha": "2026-10-30",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "Sin Fronteras FC",
+      "gf": "5",
+      "gc": "5",
+      "estado": "jugado",
+      "fecha": "2026-10-30",
+      "hora": "",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "Bolivia Dortmund",
+      "gf": "6",
+      "gc": "2",
+      "estado": "jugado",
+      "fecha": "2026-10-30",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C1"
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Almeda Veteranos",
+      "gf": null,
+      "gc": null,
+      "estado": "aplazado",
+      "fecha": "2026-11-06",
+      "hora": "",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Gossos FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-06",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "Menuda Banda FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-06",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "Los Calaveras",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-13",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "La Farga FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-13",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "Bolivia Dortmund",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-13",
+      "hora": "23:00",
+      "campo": "Promosportive (L'Hospitalet) · F7 C1"
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "Almeda Veteranos",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-20",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "Bolivia Dortmund",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-20",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "La Farga FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-20",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "Gossos FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-27",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "Los Calaveras",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-27",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Sin Fronteras FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-11-27",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "Almeda Veteranos",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-04",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "Menuda Banda FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-04",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "La Farga FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-04",
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Bolivia Dortmund",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-11",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "Sin Fronteras FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-11",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "Los Calaveras",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-11",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Sin Fronteras FC",
+      "visitante": "Gossos FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-18",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "Almeda Veteranos",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-18",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Menuda Banda FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2026-12-18",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Almeda Veteranos",
+      "visitante": "La Farga FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-08",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Gossos FC",
+      "visitante": "Los Calaveras",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-08",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Menuda Banda FC",
+      "visitante": "Bolivia Dortmund",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-08",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Sin Fronteras FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-15",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "La Farga FC",
+      "visitante": "Menuda Banda FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-15",
+      "hora": "",
+      "campo": ""
+    },
+    {
+      "local": "Bolivia Dortmund",
+      "visitante": "Gossos FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-15",
+      "hora": "",
+      "campo": ""
+    }
+  ],
+  "rivales": {
+    "Menuda Banda FC": {
+      "id": "3973",
+      "plantilla": [
+        {
+          "id": "v2",
+          "dorsal": "2",
+          "posicion": "",
+          "nombre": "Ferran Abad Crusat",
+          "edad": 37,
+          "pj": 3,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "",
+          "nombre": "Ruben Lopez Sanchez",
+          "edad": 37,
+          "pj": 3,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v6",
+          "dorsal": "6",
+          "posicion": "",
+          "nombre": "Daniel Garcia Buxeda",
+          "edad": 29,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "",
+          "nombre": "Fernando Cabezas Collado",
+          "edad": 39,
+          "pj": 4,
+          "goles": 4,
+          "amarillas": 1,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "",
+          "nombre": "Cristian Moya Elipe",
+          "edad": 37,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "",
+          "nombre": "Rafa Lorca Catalan",
+          "edad": 44,
+          "pj": 3,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "",
+          "nombre": "Sergio Villena Sanchez",
+          "edad": 34,
+          "pj": 3,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "",
+          "nombre": "Xavi Lorca Carrasco",
+          "edad": 24,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v12",
+          "dorsal": "12",
+          "posicion": "",
+          "nombre": "Oriol Lorca catalán",
+          "edad": 35,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v14",
+          "dorsal": "14",
+          "posicion": "",
+          "nombre": "Ismael Nadales Cordoba",
+          "edad": 37,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v20",
+          "dorsal": "20",
+          "posicion": "",
+          "nombre": "Cristofer Iniesta Rodríguez",
+          "edad": 35,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v23",
+          "dorsal": "23",
+          "posicion": "",
+          "nombre": "Victor Cebey Aubanell",
+          "edad": 30,
+          "pj": 4,
+          "goles": 4,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
+    "Los Calaveras": {
+      "id": "298",
+      "plantilla": [
+        {
+          "id": "v1",
+          "dorsal": "1",
+          "posicion": "Portero",
+          "nombre": "Ian Perez Artis",
+          "edad": null,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v2",
+          "dorsal": "2",
+          "posicion": "Defensa",
+          "nombre": "Mauro Cordova Orellana",
+          "edad": null,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v4",
+          "dorsal": "4",
+          "posicion": "Defensa",
+          "nombre": "David ventura Garrancho",
+          "edad": 55,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "Medio",
+          "nombre": "Carlos Sanz Moreno",
+          "edad": 49,
+          "pj": 1,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "Medio",
+          "nombre": "Luis Silva Ribera",
+          "edad": 44,
+          "pj": 2,
+          "goles": 3,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v12",
+          "dorsal": "12",
+          "posicion": "Delantero",
+          "nombre": "Cristobal Cabeza Farran",
+          "edad": null,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v15",
+          "dorsal": "15",
+          "posicion": "Medio",
+          "nombre": "Ivan Gomez Garcia",
+          "edad": 27,
+          "pj": 2,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v16",
+          "dorsal": "16",
+          "posicion": "Medio",
+          "nombre": "Pera Valcarcel Fernandez",
+          "edad": 48,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v17",
+          "dorsal": "17",
+          "posicion": "Defensa",
+          "nombre": "Francisco Ludeña Luque",
+          "edad": 34,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v18",
+          "dorsal": "18",
+          "posicion": "Medio",
+          "nombre": "Mario Romo Morales",
+          "edad": null,
+          "pj": 4,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v69",
+          "dorsal": "69",
+          "posicion": "Delantero",
+          "nombre": "Javier Perez Simo",
+          "edad": 54,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
+    "Gossos FC": {
+      "id": "4494",
+      "plantilla": [
+        {
+          "id": "v3",
+          "dorsal": "3",
+          "posicion": "Portero",
+          "nombre": "Alejandro Godoy Martínez",
+          "edad": 21,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "Medio",
+          "nombre": "Isaac Huguet Cámara",
+          "edad": 22,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "Carrilero",
+          "nombre": "Alejandro Comas Martínez",
+          "edad": 19,
+          "pj": 4,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "Medio",
+          "nombre": "Miguel Angel Hernández Gutiérrez",
+          "edad": 18,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "Medio",
+          "nombre": "Marc Torres Ruiz",
+          "edad": 20,
+          "pj": 4,
+          "goles": 4,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "Carrilero",
+          "nombre": "Aleix Arnalte Aguilar",
+          "edad": 18,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "Delantero",
+          "nombre": "Asier Llobet Benavente",
+          "edad": 19,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v21",
+          "dorsal": "21",
+          "posicion": "Delantero",
+          "nombre": "Gonzalo Dopeso Cantalejo",
+          "edad": 19,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v97",
+          "dorsal": "97",
+          "posicion": "Defensa",
+          "nombre": "Biel Huguet Camara",
+          "edad": 19,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Entrenador/a",
+          "nombre": "Adria Sánchez Borja",
+          "edad": 18,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Delegado/a",
+          "nombre": "Antonio Huguet Craywinckel",
+          "edad": 50,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
+    "Almeda Veteranos": {
+      "id": "4675",
+      "plantilla": [
+        {
+          "id": "v1",
+          "dorsal": "1",
+          "posicion": "Portero",
+          "nombre": "Javier Fernández Valverde",
+          "edad": 47,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v4",
+          "dorsal": "4",
+          "posicion": "Carrilero",
+          "nombre": "isma Gómez Perea",
+          "edad": 50,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "",
+          "nombre": "Oskar Aleixandre Haro",
+          "edad": 56,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v6",
+          "dorsal": "6",
+          "posicion": "Medio",
+          "nombre": "Sergio Fuentes Moreno",
+          "edad": 48,
+          "pj": 4,
+          "goles": 7,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "Carrilero",
+          "nombre": "Carlos Aragones Farre",
+          "edad": 43,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "Delantero",
+          "nombre": "Sergi Giménez Imbernon",
+          "edad": 33,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "Medio",
+          "nombre": "Cristian Pocostales Yuste",
+          "edad": 39,
+          "pj": 4,
+          "goles": 5,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v13",
+          "dorsal": "13",
+          "posicion": "",
+          "nombre": "jose antonio ruiz Pecho",
+          "edad": 50,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v15",
+          "dorsal": "15",
+          "posicion": "",
+          "nombre": "Francisco javier Barranco Gonzalez",
+          "edad": 38,
+          "pj": 3,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v",
+          "dorsal": "",
+          "posicion": "",
+          "nombre": "Joaquin Carbonell Guijaro",
+          "edad": 53,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v",
+          "dorsal": "",
+          "posicion": "",
+          "nombre": "Juan Pablo Cortés Mossello",
+          "edad": 31,
+          "pj": 1,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v",
+          "dorsal": "",
+          "posicion": "",
+          "nombre": "oriol mansilla de frutos",
+          "edad": 46,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v",
+          "dorsal": "",
+          "posicion": "",
+          "nombre": "renzo omar pintado",
+          "edad": null,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Entrenador/a",
+          "nombre": "vicente fuentes vidal",
+          "edad": null,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
+    "Sin Fronteras FC": {
+      "id": "4535",
+      "plantilla": [
+        {
+          "id": "v1",
+          "dorsal": "1",
+          "posicion": "Portero",
+          "nombre": "Alex Palma Luque",
+          "edad": 21,
+          "pj": 5,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v4",
+          "dorsal": "4",
+          "posicion": "Defensa",
+          "nombre": "Yeray García Fontanals",
+          "edad": 20,
+          "pj": 5,
+          "goles": 3,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "Defensa",
+          "nombre": "Luis Ortiz Erazo",
+          "edad": 21,
+          "pj": 5,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v6",
+          "dorsal": "6",
+          "posicion": "Medio",
+          "nombre": "Alex Fortuny Cabezas",
+          "edad": 22,
+          "pj": 5,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "Defensa",
+          "nombre": "Enrique Parrilla Serrano",
+          "edad": 20,
+          "pj": 5,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "Defensa",
+          "nombre": "Alex López Ventaja",
+          "edad": 21,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "Delantero",
+          "nombre": "Alan Smith risco",
+          "edad": 21,
+          "pj": 5,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "Delantero",
+          "nombre": "Alvaro Rojas Jura",
+          "edad": 20,
+          "pj": 4,
+          "goles": 6,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "Medio",
+          "nombre": "Alex Garrido Valero",
+          "edad": 22,
+          "pj": 4,
+          "goles": 4,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v14",
+          "dorsal": "14",
+          "posicion": "Defensa",
+          "nombre": "Jose Maria Molina Denia",
+          "edad": 21,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v19",
+          "dorsal": "19",
+          "posicion": "Defensa",
+          "nombre": "Pere Galofré Claret",
+          "edad": 22,
+          "pj": 5,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v23",
+          "dorsal": "23",
+          "posicion": "Medio",
+          "nombre": "Iker Bocanegra Garcia",
+          "edad": 21,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v30",
+          "dorsal": "30",
+          "posicion": "Medio",
+          "nombre": "Pau Cermeño Gomez",
+          "edad": 20,
+          "pj": 4,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Entrenador/a",
+          "nombre": "Arnau Jorge Esteban",
+          "edad": 21,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Entrenador/a",
+          "nombre": "Pau Tello Velasco",
+          "edad": 21,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
+    "Bolivia Dortmund": {
+      "id": "3985",
+      "plantilla": [
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "Defensa",
+          "nombre": "Aarón Padilla Grajeda",
+          "edad": 21,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v6",
+          "dorsal": "6",
+          "posicion": "Medio",
+          "nombre": "Alex Rodríguez Bejarano",
+          "edad": 22,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "Medio",
+          "nombre": "Fran Torres Pereyra",
+          "edad": 22,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "Medio",
+          "nombre": "Pau Calpe Tomé",
+          "edad": 21,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "Defensa",
+          "nombre": "Alejandro Herrero Terrero",
+          "edad": 21,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "Medio",
+          "nombre": "Carlos Barriga Arqué",
+          "edad": 22,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v13",
+          "dorsal": "13",
+          "posicion": "Medio",
+          "nombre": "Erik González Andreu",
+          "edad": 22,
+          "pj": 3,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v19",
+          "dorsal": "19",
+          "posicion": "Defensa",
+          "nombre": "Celestino Diaz Rodriguez",
+          "edad": 25,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v22",
+          "dorsal": "22",
+          "posicion": "Medio",
+          "nombre": "Adrián Sánchez Rivas",
+          "edad": 22,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v24",
+          "dorsal": "24",
+          "posicion": "Medio",
+          "nombre": "Adrià León Aris",
+          "edad": 23,
+          "pj": 4,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v29",
+          "dorsal": "29",
+          "posicion": "Portero",
+          "nombre": "Pablo Jiménez Prieto",
+          "edad": 23,
+          "pj": 3,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v69",
+          "dorsal": "69",
+          "posicion": "Delantero",
+          "nombre": "Alex Villalba Zarcero",
+          "edad": 21,
+          "pj": 2,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v87",
+          "dorsal": "87",
+          "posicion": "Delantero",
+          "nombre": "Luis Fernando Vasquez Honor",
+          "edad": 22,
+          "pj": 4,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v99",
+          "dorsal": "99",
+          "posicion": "Defensa",
+          "nombre": "Iago Rodríguez Domínguez",
+          "edad": 22,
+          "pj": 3,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    }
+  },
+  "sanciones": []
+}
