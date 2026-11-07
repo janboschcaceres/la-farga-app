@@ -11,6 +11,7 @@ let web = { clasificacion: [], partidos: [], plantilla: [] };
 let local = load();
 local.lesiones = local.lesiones || [];
 local.votos = local.votos || [];
+local.eventos = local.eventos || [];
 let fotos = [];
 let assets = null;
 let tab = 'inicio';
@@ -58,6 +59,16 @@ const store = {
     local.lesiones = local.lesiones.filter(x => x.id !== id);
     save(); render();
     if (db) await db.doc('lesiones/' + id).delete().catch(fallo);
+  },
+  async setEvento(ev) {
+    local.eventos = local.eventos.filter(x => x.id !== ev.id).concat(ev);
+    save(); render();
+    if (db) await db.doc('eventos/' + ev.id).set(ev).catch(fallo);
+  },
+  async delEvento(id) {
+    local.eventos = local.eventos.filter(x => x.id !== id);
+    save(); render();
+    if (db) await db.doc('eventos/' + id).delete().catch(fallo);
   },
   async setVoto(v) {
     local.votos = local.votos.filter(x => x.id !== v.id).concat(v);
@@ -115,6 +126,7 @@ async function conectarNube() {
   db.collection('votos').onSnapshot(s => { local.votos = s.docs.map(d => d.data()); save(); render(); }, () => {});
   db.collection('fotos').onSnapshot(s => { fotos = s.docs.map(d => d.data()); render(); }, () => {});
   if (!assets && window.claude && window.claude.use) window.claude.use('assets').then(a => { assets = a; }).catch(() => {});
+  db.collection('eventos').onSnapshot(s => { local.eventos = s.docs.map(d => d.data()); save(); render(); }, () => {});
   db.collection('lesiones').onSnapshot(s => { local.lesiones = s.docs.map(d => d.data()); save(); render(); }, () => {});
   db.doc('meta/borrados').onSnapshot(d => { local.borrados = (d.exists && d.data().ids) || []; save(); render(); }, () => {});
   db.doc('liga/actual').onSnapshot(d => { if (d.exists) { web = d.data(); pintarCabecera(); render(); } }, () => {});
@@ -129,7 +141,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 function jugadores() {
   const base = (web.plantilla || []).map(p => ({ ...p, id: p.id || 'w-' + p.nombre, fuente: 'web' }));
   const ids = new Set(local.jugadores.map(j => j.id));
-  return [...base.filter(b => !ids.has(b.id)), ...local.jugadores]
+  const OFICIAL = ['pj', 'goles', 'amarillas', 'rojas', 'edad', 'invitado'];
+  const mezcla = l => { const b = base.find(x => x.id === l.id); return b ? { ...l, ...Object.fromEntries(OFICIAL.filter(k => k in b).map(k => [k, b[k]])) } : l; };
+  return [...base.filter(b => !ids.has(b.id)), ...local.jugadores.map(mezcla)]
     .sort((a, b) => (+(a.camiseta || a.dorsal) || 99) - (+(b.camiseta || b.dorsal) || 99));
 }
 function partidos() {
@@ -409,6 +423,203 @@ function bannerPartido(p) {
   return `<div class="banner">${t}<small>${esc(p.hora || '')} · ${esc(p.campo || '')}</small></div>`;
 }
 
+/* ---------- Calendario personalizable ---------- */
+const CAPAS = {
+  farga: { nombre: 'Partidos de La Farga', color: '#f2a823', emoji: '⚽' },
+  grupo: { nombre: 'Resto del grupo', color: '#7a8699', emoji: '🏟️' },
+  entreno: { nombre: 'Entrenamientos', color: '#3ccf7a', emoji: '🏃' },
+  evento: { nombre: 'Eventos y quedadas', color: '#b57bff', emoji: '🎉' },
+  cumple: { nombre: 'Cumpleaños', color: '#ff7ab8', emoji: '🎂' },
+  lesion: { nombre: 'Vuelta de lesionados', color: '#ff5a5a', emoji: '🩹' },
+};
+const TIPOS = { entreno: 'Entrenamiento', evento: 'Evento / quedada', cena: 'Cena / tercer tiempo', otro: 'Otro' };
+let calMes = null, calDia = null;
+function calPrefs() {
+  let p = {};
+  try { p = JSON.parse(localStorage.getItem('lafarga.cal')) || {}; } catch (e) { /* sin almacenamiento */ }
+  const capas = Object.fromEntries(Object.keys(CAPAS).map(k => [k, k !== 'grupo']));
+  return { vista: 'mes', lunes: true, compacto: false, ...p, capas: { ...capas, ...(p.capas || {}) }, colores: { ...(p.colores || {}) } };
+}
+function guardarPrefs(p) { try { localStorage.setItem('lafarga.cal', JSON.stringify(p)); } catch (e) { /* sin almacenamiento */ } }
+const colorCapa = (pr, k) => pr.colores[k] || CAPAS[k].color;
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const MESES_L = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+function eventosEn(desde, hasta, pr) {
+  // Devuelve { 'YYYY-MM-DD': [items] } entre dos fechas (incluidas)
+  const out = {}, add = (f, it) => { if (f >= desde && f <= hasta) (out[f] = out[f] || []).push(it); };
+  if (pr.capas.farga) for (const p of partidos()) if (p.fecha) {
+    const r = res(p);
+    add(p.fecha, { capa: 'farga', hora: jugado(p) ? '' : p.hora, titulo: `${p.local === false ? '@' : 'vs'} ${p.rival}`,
+      extra: jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? 'aplazado' : '', res: r, act: 'ver-partido', id: p.id, logo: p.rival });
+  }
+  if (pr.capas.grupo) for (const p of web.grupo_partidos || []) if (p.fecha && ![p.local, p.visitante].includes(EQUIPO))
+    add(p.fecha, { capa: 'grupo', hora: p.hora, titulo: `${p.local} - ${p.visitante}`, extra: p.estado === 'jugado' ? `${p.gf}-${p.gc}` : '', act: 'ver-equipo', eq: p.local });
+  for (const ev of local.eventos) {
+    const capa = ev.tipo === 'entreno' ? 'entreno' : 'evento';
+    if (!pr.capas[capa]) continue;
+    const paso = { semanal: 7, quincenal: 14 }[ev.repetir] || 0;
+    const fin = ev.repetir && ev.hasta ? ev.hasta : hasta;
+    let d = new Date(ev.fecha + 'T12:00'), n = 0;
+    while (iso(d) <= hasta && iso(d) <= fin && n < 400) {
+      add(iso(d), { capa, hora: ev.hora, titulo: ev.titulo, extra: ev.lugar || '', color: ev.color, act: 'editar-evento', id: ev.id, emoji: ev.emoji });
+      if (!paso) break; d.setDate(d.getDate() + paso); n++;
+    }
+  }
+  if (pr.capas.cumple) for (const j of jugadores()) if (j.cumple && !j.invitado) {
+    const md = j.cumple.slice(5);
+    for (let y = +desde.slice(0, 4); y <= +hasta.slice(0, 4); y++) add(`${y}-${md}`, { capa: 'cumple', titulo: `Cumple de ${corto(j)}`, extra: `${y - +j.cumple.slice(0, 4)} años`, act: 'editar-jugador', id: j.id });
+  }
+  if (pr.capas.lesion) for (const l of lesionesActivas()) {
+    const j = jugadores().find(x => x.id === l.jugador);
+    add(iso(vuelta(l)), { capa: 'lesion', titulo: `Vuelve ${j ? corto(j) : '¿?'}`, act: 'editar-lesion', id: l.id });
+  }
+  for (const k in out) out[k].sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99'));
+  return out;
+}
+
+function chip(it, pr, largo) {
+  const c = it.color || colorCapa(pr, it.capa);
+  const emoji = it.emoji || CAPAS[it.capa].emoji;
+  if (!largo) return `<span class="chip ${it.res ? 'r-' + it.res : ''}" style="--c:${esc(c)}">${it.capa === 'farga' && it.logo ? logo(it.logo, 12) : emoji}<span>${esc(it.capa === 'farga' ? it.titulo.replace(/^(vs|@) /, '') : it.titulo)}</span></span>`;
+  const dataExtra = it.eq ? `data-eq="${esc(it.eq)}"` : `data-id="${esc(it.id || '')}"`;
+  return `<div class="agenda-item" style="--c:${esc(c)}" data-act="${it.act}" ${dataExtra}>
+    <span class="hora">${esc(it.hora || '—')}</span>
+    <span class="barra-c"></span>
+    <div style="flex:1;min-width:0"><b>${it.capa === 'farga' && it.logo ? logo(it.logo, 16) + ' ' : emoji + ' '}${esc(it.titulo)}</b>
+      ${it.extra ? `<div class="muted" style="font-size:13px">${esc(it.extra)}</div>` : ''}<div class="muted" style="font-size:11px">${esc(CAPAS[it.capa].nombre)}</div></div>
+    ${it.res ? `<span class="score ${it.res}" style="font-size:18px">${{ w: 'G', d: 'E', l: 'P' }[it.res]}</span>` : ''}</div>`;
+}
+
+function calendario(pr) {
+  const h = hoy();
+  if (!calMes) calMes = h.slice(0, 7);
+  if (!calDia) calDia = h;
+  const [y, m] = calMes.split('-').map(Number);
+  let celdas = [], titulo;
+  if (pr.vista === 'semana') {
+    const d = new Date(calDia + 'T12:00'), dow = (d.getDay() + (pr.lunes ? 6 : 0)) % 7;
+    d.setDate(d.getDate() - dow);
+    for (let i = 0; i < 7; i++) { celdas.push(iso(d)); d.setDate(d.getDate() + 1); }
+    titulo = `Semana del ${fFecha(celdas[0]).replace(/^\S+ /, '')}`;
+  } else {
+    const primero = new Date(y, m - 1, 1, 12), dow = (primero.getDay() + (pr.lunes ? 6 : 0)) % 7;
+    const d = new Date(primero); d.setDate(1 - dow);
+    for (let i = 0; i < 42; i++) { celdas.push(iso(d)); d.setDate(d.getDate() + 1); }
+    if (celdas.slice(35).every(c => c.slice(0, 7) !== calMes)) celdas = celdas.slice(0, 35);
+    titulo = `${MESES_L[m - 1].toLowerCase()} de ${y}`;
+  }
+  const ev = eventosEn(celdas[0], celdas[celdas.length - 1], pr);
+  const dias = pr.lunes ? ['L', 'M', 'X', 'J', 'V', 'S', 'D'] : ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+  const max = pr.compacto ? 0 : 3;
+  const delDia = ev[calDia] || [];
+  return `
+    <div class="card cal">
+      <button class="cal-cabecera" data-act="cal-hoy">${new Date(h + "T12:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</button>
+      <div class="row spread cal-nav">
+        <div class="cal-titulo">${titulo}</div>
+        <div class="row" style="gap:4px">
+          <button class="icon-btn" data-act="cal-mover" data-v="-1" aria-label="Anterior">▲</button>
+          <button class="icon-btn" data-act="cal-mover" data-v="1" aria-label="Siguiente">▼</button>
+        </div>
+      </div>
+      <div class="cal-grid ${pr.vista === 'semana' ? 'semana' : ''}">
+        ${dias.map((d, i) => `<div class="cal-dow ${d === 'V' ? 'vie' : ''}">${d}</div>`).join('')}
+        ${celdas.map(f => {
+          const its = ev[f] || [], fuera = pr.vista === 'mes' && f.slice(0, 7) !== calMes;
+          const partido = its.find(i => i.capa === 'farga');
+          return `<button class="cal-dia ${fuera ? 'fuera' : ''} ${f === h ? 'hoy' : ''} ${f === calDia ? 'sel' : ''} ${partido ? 'jugamos' : ''}" data-act="cal-dia" data-v="${f}">
+            <span class="num-dia">${+f.slice(8)}</span>
+            ${max ? its.slice(0, max).map(i => chip(i, pr)).join('') + (its.length > max ? `<span class="mas">+${its.length - max}</span>` : '')
+              : `<span class="puntos">${its.slice(0, 4).map(i => `<i style="background:${esc(i.color || colorCapa(pr, i.capa))}"></i>`).join('')}</span>`}
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="cal-leyenda">${Object.keys(CAPAS).filter(k => pr.capas[k]).map(k => `<span><i style="background:${esc(colorCapa(pr, k))}"></i>${CAPAS[k].nombre}</span>`).join('')}</div>
+    </div>
+    <h2>${fFecha(calDia)} <span class="row" style="gap:6px"><button class="btn ghost sm" data-act="cal-ajustes">🎨 Personalizar</button><button class="btn sm" data-act="nuevo-evento" data-v="${calDia}">+ Evento</button></span></h2>
+    ${delDia.length ? delDia.map(i => chip(i, pr, true)).join('') : '<div class="card empty" style="padding:16px">Nada este día.</div>'}`;
+}
+
+function editarEvento(id, fecha) {
+  const ev = id ? local.eventos.find(x => x.id === id) : { id: 'e-' + uid(), titulo: '', tipo: 'entreno', fecha: fecha || hoy(), hora: '21:00', lugar: '', color: '', repetir: '', hasta: '', nota: '', emoji: '' };
+  if (!ev) return;
+  modal(`
+    <button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
+    <h3 style="margin-left:34px">${id ? 'Editar evento' : 'Nuevo evento'}</h3>
+    <label>Qué es<input name="titulo" required value="${esc(ev.titulo)}" placeholder="Entreno, cena de equipo, torneo..."></label>
+    <div class="grid2">
+      <label>Tipo<select name="tipo">${Object.entries(TIPOS).map(([k, t]) => `<option value="${k}" ${ev.tipo === k ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label>Emoji<input name="emoji" maxlength="4" value="${esc(ev.emoji || '')}" placeholder="🍕"></label>
+    </div>
+    <div class="grid2">
+      <label>Fecha<input type="date" name="fecha" required value="${esc(ev.fecha)}"></label>
+      <label>Hora<input type="time" name="hora" value="${esc(ev.hora || '')}"></label>
+    </div>
+    <label>Dónde<input name="lugar" value="${esc(ev.lugar || '')}" placeholder="Sant Ildefons, bar..."></label>
+    <div class="grid2">
+      <label>Repetir<select name="repetir">${[['', 'No se repite'], ['semanal', 'Cada semana'], ['quincenal', 'Cada 2 semanas']].map(([k, t]) => `<option value="${k}" ${ev.repetir === k ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label>Hasta<input type="date" name="hasta" value="${esc(ev.hasta || '')}"></label>
+    </div>
+    <label>Color<input type="color" name="color" value="${esc(ev.color || CAPAS[ev.tipo === 'entreno' ? 'entreno' : 'evento'].color)}"></label>
+    <label>Notas<textarea name="nota" rows="2">${esc(ev.nota || '')}</textarea></label>
+    <div class="actions">
+      ${id ? '<button class="btn danger" value="delete" formnovalidate>Borrar</button>' : ''}
+      <button class="btn" value="ok">Guardar</button>
+    </div>`, (fd, accion) => {
+    if (accion === 'delete') return store.delEvento(ev.id);
+    const v = k => (fd.get(k) || '').trim();
+    calDia = v('fecha'); calMes = calDia.slice(0, 7);
+    store.setEvento({ id: ev.id, titulo: v('titulo'), tipo: v('tipo'), emoji: v('emoji'), fecha: v('fecha'), hora: v('hora'), lugar: v('lugar'),
+      repetir: v('repetir'), hasta: v('hasta'), color: v('color'), nota: v('nota') });
+  });
+}
+
+function ajustesCalendario() {
+  const pr = calPrefs();
+  modal(`
+    <button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
+    <h3 style="margin-left:34px">Personalizar calendario</h3>
+    <p class="muted" style="margin:0">Elige qué ver y de qué color. Se guarda en este móvil.</p>
+    ${Object.entries(CAPAS).map(([k, c]) => `<div class="row spread capa">
+      <label class="row" style="flex-direction:row;gap:10px;color:var(--text);font-size:15px"><input type="checkbox" name="capa_${k}" ${pr.capas[k] ? 'checked' : ''} style="width:20px;height:20px">${c.emoji} ${c.nombre}</label>
+      <input type="color" name="color_${k}" value="${esc(colorCapa(pr, k))}" style="width:44px;height:32px;padding:2px"></div>`).join('')}
+    <label class="row" style="flex-direction:row;gap:10px;color:var(--text);font-size:15px"><input type="checkbox" name="lunes" ${pr.lunes ? 'checked' : ''} style="width:20px;height:20px">La semana empieza en lunes</label>
+    <label class="row" style="flex-direction:row;gap:10px;color:var(--text);font-size:15px"><input type="checkbox" name="compacto" ${pr.compacto ? 'checked' : ''} style="width:20px;height:20px">Vista compacta (solo puntos de color)</label>
+    <button type="button" class="btn ghost" id="ics">📲 Pasar los partidos al calendario del móvil</button>
+    <div class="actions"><button class="btn ghost" value="reset" formnovalidate>Colores de serie</button><button class="btn" value="ok">Guardar</button></div>`, (fd, accion) => {
+    const n = calPrefs();
+    if (accion === 'reset') { n.colores = {}; guardarPrefs(n); return render(); }
+    for (const k of Object.keys(CAPAS)) { n.capas[k] = fd.get('capa_' + k) === 'on'; const c = fd.get('color_' + k); if (c && c !== CAPAS[k].color) n.colores[k] = c; else delete n.colores[k]; }
+    n.lunes = fd.get('lunes') === 'on'; n.compacto = fd.get('compacto') === 'on';
+    guardarPrefs(n); render();
+  });
+  document.getElementById('ics').onclick = exportarICS;
+}
+
+function exportarICS() {
+  const f = s => s.replace(/[\\,;]/g, m => '\\' + m).replace(/\n/g, '\\n');
+  const lin = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//La Farga FC//App//ES', 'X-WR-CALNAME:La Farga FC', 'X-WR-TIMEZONE:Europe/Madrid'];
+  const add = (uid_, fecha, hora, titulo, lugar, dur = 60) => {
+    if (!fecha) return;
+    const d = fecha.replace(/-/g, '');
+    lin.push('BEGIN:VEVENT', `UID:${uid_}@lafarga`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`);
+    if (/^\d\d:\d\d$/.test(hora || '')) {
+      const [hh, mm] = hora.split(':').map(Number), fin = hh * 60 + mm + dur;
+      lin.push(`DTSTART;TZID=Europe/Madrid:${d}T${hora.replace(':', '')}00`, `DTEND;TZID=Europe/Madrid:${d}T${String(Math.floor(fin / 60) % 24).padStart(2, '0')}${String(fin % 60).padStart(2, '0')}00`);
+    } else lin.push(`DTSTART;VALUE=DATE:${d}`);
+    lin.push(`SUMMARY:${f(titulo)}`); if (lugar) lin.push(`LOCATION:${f(lugar)}`);
+    lin.push('BEGIN:VALARM', 'TRIGGER:-PT3H', 'ACTION:DISPLAY', `DESCRIPTION:${f(titulo)}`, 'END:VALARM', 'END:VEVENT');
+  };
+  for (const p of partidos()) if (!jugado(p) && p.estado !== 'aplazado') add(p.id, p.fecha, p.hora, `⚽ ${p.local === false ? p.rival + ' - La Farga' : 'La Farga - ' + p.rival}`, p.campo, 60);
+  for (const e of local.eventos) if (!e.repetir) add(e.id, e.fecha, e.hora, e.titulo, e.lugar, 90);
+  lin.push('END:VCALENDAR');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lin.join('\r\n')], { type: 'text/calendar' }));
+  a.download = 'la-farga.ics'; document.body.appendChild(a); a.click(); a.remove();
+  toast('Abre el archivo para añadirlo a tu calendario');
+}
+
 /* ---------- Resumen de partido ---------- */
 const ICO = { gol: '⚽', amarilla: '🟨', roja: '🟥', propia: '⚽ (p.p.)', asist: '🅰️', mvp: '⭐' };
 function resumenPartido(id) {
@@ -490,8 +701,13 @@ const V = {
     const ps = partidos();
     const prox = ps.filter(p => !jugado(p));
     const jug = ps.filter(jugado).reverse();
+    const pr = calPrefs();
     return `
-      <h2>Calendario <button class="btn sm" data-act="nuevo-partido">+ Partido</button></h2>
+      <div class="seg vistas" style="margin-top:8px">${[['mes', '🗓️ Mes'], ['semana', '📆 Semana'], ['lista', '📋 Lista']].map(([v, t]) =>
+        `<button data-act="cal-vista" data-v="${v}" class="${pr.vista === v ? 'on-cal' : ''}">${t}</button>`).join('')}</div>
+      ${pr.vista !== 'lista' ? calendario(pr) : ''}
+      ${pr.vista === 'lista' ? '' : '<h2 style="margin-top:26px">Partidos</h2>'}
+      <h2 style="${pr.vista === 'lista' ? '' : 'display:none'}">Calendario <button class="btn sm" data-act="nuevo-partido">+ Partido</button></h2>
       ${prox.length ? prox.map(matchCard).join('') : '<div class="card empty">Sin partidos pendientes.</div>'}
       <h2>Resultados</h2>
       ${jug.length ? jug.map(matchCard).join('') : '<div class="card empty">Sin resultados todavía.</div>'}`;
@@ -689,14 +905,15 @@ function editarJugador(id) {
       <label>Posición<select name="posicion">${['', 'Portero', 'Defensa', 'Medio', 'Delantero'].map(o =>
         `<option ${j.posicion === o ? 'selected' : ''}>${o}</option>`).join('')}</select></label>
     </div>
-    <label>Teléfono (opcional)<input type="tel" name="tel" value="${esc(j.tel || '')}"></label>
+    <div class="grid2"><label>Teléfono (opcional)<input type="tel" name="tel" value="${esc(j.tel || '')}"></label>
+      <label>Cumpleaños<input type="date" name="cumple" value="${esc(j.cumple || '')}"></label></div>
     <div class="actions">
       ${id ? '<button class="btn danger" value="delete" formnovalidate>Borrar</button>' : ''}
       <button class="btn ghost" value="cancel" formnovalidate>Cancelar</button>
       <button class="btn" value="ok">Guardar</button>
     </div>`, (fd, accion) => {
     if (accion === 'delete') store.delJugador(j.id);
-    else store.setJugador({ ...Object.fromEntries(Object.entries(j).filter(([k]) => k !== 'fuente')), id: j.id, nombre: fd.get('nombre').trim(), dorsal: fd.get('dorsal'), posicion: fd.get('posicion'), tel: fd.get('tel').trim() });
+    else store.setJugador({ ...Object.fromEntries(Object.entries(j).filter(([k]) => k !== 'fuente')), id: j.id, nombre: fd.get('nombre').trim(), dorsal: fd.get('dorsal'), posicion: fd.get('posicion'), tel: fd.get('tel').trim(), cumple: fd.get('cumple') || '' });
   });
 }
 
@@ -753,6 +970,18 @@ document.addEventListener('click', e => {
     store.setVoto({ id: `${a.dataset.p}__${yo}`, partido: a.dataset.p, votante: yo, voto: a.dataset.v }).then(() => reabrir(a.dataset.p));
   }
   else if (act === 'nueva-lesion') editarLesion();
+  else if (act === 'cal-vista') { const p = calPrefs(); p.vista = a.dataset.v; guardarPrefs(p); render(); }
+  else if (act === 'cal-dia') { calDia = a.dataset.v; if (calPrefs().vista === 'mes' && calDia.slice(0, 7) !== calMes) calMes = calDia.slice(0, 7); render(); }
+  else if (act === 'cal-hoy') { calDia = hoy(); calMes = calDia.slice(0, 7); render(); }
+  else if (act === 'cal-mover') {
+    const n = +a.dataset.v;
+    if (calPrefs().vista === 'semana') { const d = new Date(calDia + 'T12:00'); d.setDate(d.getDate() + 7 * n); calDia = iso(d); calMes = calDia.slice(0, 7); }
+    else { const [y, m] = calMes.split('-').map(Number), d = new Date(y, m - 1 + n, 1, 12); calMes = iso(d).slice(0, 7); calDia = calMes === hoy().slice(0, 7) ? hoy() : calMes + '-01'; }
+    render();
+  }
+  else if (act === 'cal-ajustes') ajustesCalendario();
+  else if (act === 'nuevo-evento') editarEvento(null, a.dataset.v);
+  else if (act === 'editar-evento') editarEvento(a.dataset.id);
   else if (act === 'editar-lesion') editarLesion(a.dataset.id);
   else if (act === 'nuevo-jugador') editarJugador();
   else if (act === 'editar-jugador') editarJugador(a.dataset.id);
