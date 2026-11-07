@@ -795,6 +795,8 @@ function patrocinadores() {
     <div class="sponsors">
       <div class="sponsor wmx"><b>WINAMAX</b><small>POKER</small></div>
       <div class="sponsor rz"><b>RUSTEEZE</b><small>PATROCINADOR OFICIAL</small></div>
+      <div class="sponsor mon"><b>MONSTER</b><small>ENERGY</small></div>
+      <div class="sponsor bs"><img src="icons/braseria-sants.webp" alt="Braseria Sants" onerror="this.remove()"><b>BRASERIA SANTS</b></div>
     </div>`;
 }
 

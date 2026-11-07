@@ -503,3 +503,11 @@ body { padding-top: var(--cab, 74px); overflow-anchor: none; }
 .top.mini .c-u i { display: block; position: absolute; top: 100%; left: 50%; translate: -50% 0; opacity: 0; }
 .c-rival > span { transition-delay: calc(var(--k) * 40ms); }
 .cuenta::before { transition-delay: 0s; }
+
+.sponsor.mon { background: #0b0b0b; border: 1px solid #3a3a3a; }
+.sponsor.mon b { font: 900 italic 24px/1 Impact, "Arial Black", sans-serif; letter-spacing: 1px; color: #9be22d; text-shadow: 0 0 10px rgba(155, 226, 45, .35); }
+.sponsor.mon small { font-size: 10px; letter-spacing: 4px; color: #e8e8e8; }
+.sponsor.bs { background: #14100c; border: 1px solid var(--line-gold); }
+.sponsor.bs img { max-width: 100%; max-height: 56px; object-fit: contain; }
+.sponsor.bs img + b { display: none; }
+.sponsor.bs b { font: 800 18px/1.1 var(--stencil); letter-spacing: 2px; color: var(--accent-2); }
