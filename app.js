@@ -1133,7 +1133,7 @@ function encajar(top, quiere) {
     g.className = 'cuenta-fantasma' + (c.classList.contains('vivo') ? ' vivo' : '');
     Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     document.body.appendChild(g);
-    g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: 'ease-out', fill: 'forwards' }).onfinish = () => g.remove();
+    g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: 'ease-out', fill: 'forwards' }).onfinish = () => g.remove();
   }
   top.classList.toggle('mini', quiere);
   if (!ver) return;
