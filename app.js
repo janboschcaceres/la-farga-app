@@ -296,7 +296,7 @@ function reabrir(pid) { const d = document.getElementById('modal'); if (d.open) 
 
 /* ---------- Equipos y rivales ---------- */
 const slug = n => n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-function logo(n, px = 22) {
+function logo(n, px = 19) {
   const src = n === EQUIPO ? 'icons/escudo.webp' : `icons/equipos/${slug(n)}.png`;
   return `<img class="logo" src="${src}" alt="" width="${px}" height="${px}" onerror="this.style.visibility='hidden'">`;
 }

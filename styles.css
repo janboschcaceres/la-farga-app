@@ -347,3 +347,34 @@ dialog::backdrop { background: rgba(0, 0, 0, .6); -webkit-backdrop-filter: blur(
   .revela { opacity: 1; transform: none; }
 }
 html, body { overflow-x: clip; max-width: 100%; }
+
+/* ---------- Resaltado al pasar el ratón en todo lo pulsable + iconos que crecen ---------- */
+.tabs button svg { width: 19px; height: 19px; }
+.logo { transition: transform .25s var(--ease); }
+.icon-btn { font-size: 13px; }
+.icon-btn > *, .tabs button svg, .logo, .chip img, .dorsal, .num { transition: transform .25s var(--ease), background .2s, color .2s, border-color .2s; }
+.agenda-item, .cal-dia, .voto, .seg button, .btn, .icon-btn, .tabs button, .link, .cal-cabecera, tr.clic td, .galeria a, .sponsor, .kpi, .player, .match, .lesion { transition: background .2s, border-color .2s, color .2s, transform .15s var(--ease), filter .2s; }
+@media (hover: hover) {
+  .card[data-act]:hover, .agenda-item:hover { background: rgba(38, 33, 26, .9); border-color: var(--line-gold); }
+  tr.clic:hover td { background: rgba(255, 255, 255, .06); }
+  .cal-dia:hover { background: rgba(255, 255, 255, .08); border-color: var(--line-gold); }
+  .cal-dia.fuera:hover { opacity: .7; }
+  .seg button:not([class*="on-"]):hover, .voto:not(.on):hover { background: rgba(255, 255, 255, .07); }
+  .btn.ghost:hover, .icon-btn:hover { background: rgba(255, 255, 255, .06); }
+  .btn:not(.ghost):not(.danger):hover { filter: brightness(1.12); }
+  .btn.danger:hover { background: rgba(255, 90, 90, .1); }
+  .tabs button:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
+  .tabs button.on:hover { color: var(--accent); }
+  .link:hover, .cal-cabecera:hover { color: var(--accent-2); }
+  .galeria a:hover img, .galeria a:hover video { filter: brightness(1.15); }
+  .sponsor:hover { filter: brightness(1.12); }
+  .kpi:hover { border-color: var(--line-gold); }
+  /* iconos: algo más pequeños en reposo, crecen al pasar el ratón */
+  .tabs button:hover svg { transform: scale(1.18); }
+  .tabs button.on:hover svg { transform: translateY(-2px) scale(1.18); }
+  tr.clic:hover .logo, .card[data-act]:hover .logo, .agenda-item:hover .logo { transform: scale(1.2); }
+  .icon-btn:hover { transform: scale(1.08); border-color: var(--accent); }
+  .player:hover .dorsal { background: rgba(242, 168, 35, .12); transform: scale(1.05); }
+  tr:hover .num, .player:hover .num { transform: scale(1.1); }
+  .cal-dia:hover .chip .logo { transform: scale(1.15); }
+}
