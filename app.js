@@ -1014,18 +1014,28 @@ function objetivoCuenta() {
     .map(p => ({ p, t: instanteMadrid(p.fecha, p.hora) }))
     .filter(x => x.t + DURACION > ahora).sort((a, b) => a.t - b.t)[0] || null;
 }
+// Nombre del rival letra a letra, para poder hacerlo desaparecer/aparecer con transición
+const letras = n => { const t = [...(n || '')]; return `<span class="c-rival" style="--n:${t.length}">${t.map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('')}</span>`; };
 function pintarCuenta() {
   const el = document.getElementById('cuenta'); if (!el) return;
-  if (!cuentaObj) { el.hidden = true; return; }
+  if (!cuentaObj) { el.hidden = true; el.dataset.key = ''; return; }
   const { p, t } = cuentaObj, falta = t - Date.now();
   if (falta + DURACION <= 0) { objetivoCuenta(); return pintarCuenta(); }
   el.hidden = false;
-  if (falta <= 0) { el.innerHTML = `<span class="c-vivo">● EN JUEGO</span><span class="c-vs">${VS(p.rival)}</span><span class="c-rival">${esc(p.rival || '')}</span>`; el.classList.add('vivo'); return; }
-  el.classList.remove('vivo');
-  const s = Math.floor(falta / 1000), dd = Math.floor(s / 86400), hh = Math.floor(s % 86400 / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
-  const b = (n, l) => `<span class="c-u"><b>${String(n).padStart(2, '0')}</b><i>${l}</i></span>`;
-  el.innerHTML = `<span class="c-info"><span class="c-vs">${VS(p.rival)}</span><span class="c-rival">${esc(p.rival || '')}</span><span class="c-fecha">${fFecha(p.fecha)} · ${esc(p.hora || '')}</span></span>
-    <span class="c-reloj">${b(dd, 'días')}<em>:</em>${b(hh, 'h')}<em>:</em>${b(mm, 'min')}<em>:</em>${b(ss, 'seg')}</span>`;
+  const vivo = falta <= 0, key = `${p.id}|${vivo}`;
+  el.classList.toggle('vivo', vivo);
+  // la estructura solo se rehace si cambia el partido; cada segundo solo cambian los números
+  if (el.dataset.key !== key) {
+    el.dataset.key = key;
+    const b = (u, l) => `<span class="c-u"><b data-u="${u}">00</b><i>${l}</i></span>`;
+    el.innerHTML = vivo
+      ? `<span class="c-vivo">● EN JUEGO</span><span class="c-info"><span class="c-vs">${VS(p.rival)}</span>${letras(p.rival)}</span>`
+      : `<span class="c-info"><span class="c-vs">${VS(p.rival)}</span>${letras(p.rival)}<span class="c-fecha">${fFecha(p.fecha)} · ${esc(p.hora || '')}</span></span>
+        <span class="c-reloj">${b('d', 'días')}<em>:</em>${b('h', 'h')}<em>:</em>${b('m', 'min')}<em>:</em>${b('s', 'seg')}</span>`;
+  }
+  if (vivo) return;
+  const s = Math.floor(falta / 1000), v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+  el.querySelectorAll('[data-u]').forEach(x => { const n = String(v[x.dataset.u]).padStart(2, '0'); if (x.textContent !== n) x.textContent = n; });
 }
 // Se ajusta al cambio exacto de cada segundo del reloj
 function tickCuenta() { pintarCuenta(); clearTimeout(cuentaT); cuentaT = setTimeout(tickCuenta, 1000 - (Date.now() % 1000) + 5); }
@@ -1098,7 +1108,37 @@ function contar(raiz) {
 })();
 
 // Cabecera compacta al bajar
-addEventListener('scroll', () => document.querySelector('.top').classList.toggle('mini', scrollY > 24), { passive: true });
+// y el contador pasa de burbuja a la propia cabecera con una transición.
+// Al bajar: primero se borra el nombre del rival letra a letra y luego se encaja en la cabecera.
+let miniT = 0;
+function encajar(top, quiere) {
+  const c = document.getElementById('cuenta'), ver = c && !c.hidden && !sinMov && c.animate;
+  const a = ver && c.getBoundingClientRect();
+  top.classList.toggle('mini', quiere);
+  if (!ver) return;
+  const b = c.getBoundingClientRect();
+  c.getAnimations().forEach(x => x.cancel());
+  c.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width}, ${a.height / b.height})`, opacity: .85 },
+    { transformOrigin: '0 0', transform: 'none', opacity: 1 }], { duration: 480, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+}
+addEventListener('scroll', () => {
+  const top = document.querySelector('.top'), c = document.getElementById('cuenta');
+  const mini = top.classList.contains('mini'), yendo = top.dataset.yendo === '1';
+  const quiere = (mini || yendo) ? scrollY > 8 : scrollY > 40;
+  if (quiere === (mini || yendo)) return;
+  clearTimeout(miniT);
+  if (quiere) {
+    top.dataset.yendo = '1';
+    if (!c || c.hidden || sinMov) { top.dataset.yendo = ''; return encajar(top, true); }
+    c.classList.add('sin-nombre');
+    const n = (c.querySelector('.c-rival') || { style: {} }).style.getPropertyValue('--n') || 10;
+    miniT = setTimeout(() => { top.dataset.yendo = ''; encajar(top, true); }, Math.min(700, n * 22 + 200));
+  } else {
+    top.dataset.yendo = '';
+    if (mini) encajar(top, false);
+    if (c) requestAnimationFrame(() => c.classList.remove('sin-nombre'));
+  }
+}, { passive: true });
 
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-tab]');

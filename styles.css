@@ -418,18 +418,31 @@ body:has(#cuenta:not([hidden])) main { padding-top: 92px; }
 .cuenta.vivo { background: rgba(60, 12, 12, .9); border-color: rgba(255, 90, 90, .5); }
 @media (hover: hover) { .cuenta:hover .c-vs .logo { transform: scale(1.15); } }
 
-/* Burbuja del mismo ancho que el contenido, con bordes alineados */
-.cuenta { width: calc(min(640px, 100vw) - 32px); max-width: none; padding: 12px 14px; justify-content: space-between; }
-.c-info { align-items: flex-start; gap: 4px; min-width: 0; }
-.c-vs { gap: 8px; }
-.c-vs .logo { width: 34px; height: 34px; }
-.c-vs em { font-size: 15px; }
-.c-rival { font-size: 15px; max-width: 100%; }
-.c-u b { font-size: 26px; line-height: 26px; min-width: 40px; padding: 4px 5px 1px; }
-.c-u { min-width: 40px; }
-.c-reloj em { font-size: 20px; line-height: 30px; }
-.top.mini .cuenta { padding: 8px 12px; }
-.top.mini .c-vs .logo { width: 26px; height: 26px; }
-.top.mini .c-fecha { display: none; }
-body:has(#cuenta:not([hidden])) main { padding-top: 128px; }
-@media (max-width: 380px) { .c-u b { font-size: 21px; min-width: 32px; } .c-u { min-width: 32px; } .c-reloj { gap: 2px; } .c-vs .logo { width: 28px; height: 28px; } }
+/* Burbuja ajustada a su contenido bajo la cabecera; al bajar se integra en la cabecera */
+.cuenta { padding: 8px 12px; }
+.c-info { align-items: flex-start; gap: 3px; min-width: 0; }
+.c-vs { gap: 6px; }
+.c-rival { font-size: 13px; max-width: 100%; }
+body:has(#cuenta:not([hidden])) main { padding-top: 112px; }
+.top { flex-wrap: nowrap; }
+.top .brand { order: 0; min-width: 0; } .top .cuenta { order: 1; } .top #btn-ajustes { order: 2; flex: none; }
+.top.mini .cuenta { position: static; translate: none; flex: 1 1 auto; width: auto; max-width: none; margin: 0 8px; padding: 0;
+  justify-content: center; gap: 10px; background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; animation: none; }
+.top.mini:has(#cuenta:not([hidden])) .brand > div { display: none; }
+.top.mini .c-info { flex-direction: row; align-items: center; }
+.top.mini .c-rival, .top.mini .c-fecha, .top.mini .c-u i { display: none; }
+.top.mini .c-vs { gap: 4px; }
+.top.mini .c-vs .logo { width: 22px; height: 22px; }
+.top.mini .c-vs em { font-size: 11px; }
+.top.mini .c-reloj { gap: 2px; }
+.top.mini .c-u { min-width: 0; }
+.top.mini .c-u b { font-size: 17px; line-height: 20px; min-width: 26px; padding: 2px 3px 0; }
+.top.mini .c-reloj em { font-size: 14px; line-height: 22px; }
+.top.mini .cuenta.vivo { background: none; }
+
+/* Nombre del rival: se borra letra a letra (de la última a la primera) y reaparece en orden */
+.c-rival { white-space: nowrap; }
+.c-rival > span { display: inline-block; transition: opacity .2s ease, transform .2s var(--ease), filter .2s; transition-delay: calc(var(--k) * 22ms + 120ms); }
+.cuenta.sin-nombre .c-rival > span { opacity: 0; transform: translateY(-6px); filter: blur(2px); transition-delay: calc((var(--n) - var(--k)) * 22ms); }
+.c-fecha { transition: opacity .25s ease; }
+.cuenta.sin-nombre .c-fecha { opacity: 0; }
