@@ -308,9 +308,11 @@ function formaDe(n) {
 const formaHTML = f => `<div class="form">${f.map(r => `<i class="${r}">${{ w: 'G', d: 'E', l: 'P' }[r]}</i>`).join('')}</div>`;
 function fichaEquipo(n) {
   document.getElementById('modal').dataset.partido = '';
-  if (n === EQUIPO) { document.getElementById('modal').close(); irA('stats'); return; }
   const c = (web.clasificacion || []).find(e => e.equipo === n) || {};
-  const r = (web.rivales || {})[n] || { plantilla: [] };
+  const propio = n === EQUIPO;
+  const r = propio
+    ? { plantilla: jugadores().filter(j => !j.invitado).map(j => ({ ...j, dorsal: j.camiseta || j.dorsal, nombre: j.apodo ? `${j.apodo} · ${j.nombre || ''}` : j.nombre, pj: j.pj || 0 })) }
+    : (web.rivales || {})[n] || { plantilla: [] };
   const gp = (web.grupo_partidos || []).filter(p => p.local === n || p.visitante === n).sort((a, b) => a.fecha.localeCompare(b.fecha));
   const jug = gp.filter(p => p.estado === 'jugado'), pend = gp.filter(p => p.estado !== 'jugado');
   const nuestros = partidos().filter(p => p.rival === n);
@@ -332,10 +334,11 @@ function fichaEquipo(n) {
       <div class="kpi"><b>${pjs ? (c.gf / pjs).toFixed(1) : '–'}</b><span>Goles/partido</span></div>
       <div class="kpi"><b>${pjs ? (c.gc / pjs).toFixed(1) : '–'}</b><span>Encajados/partido</span></div>
     </div>
-    <h3>Contra La Farga</h3>
+    ${propio ? '' : `    <h3>Contra La Farga</h3>
     ${nuestros.length ? nuestros.map(p => `<div class="row spread" style="padding:4px 0"><span>${p.jornada ? 'J' + p.jornada + ' · ' : ''}${fFecha(p.fecha, jugado(p) ? '' : p.hora)} <span class="muted">${p.local === false ? '(fuera)' : '(en casa)'}</span></span>
       <b class="score ${res(p) || ''}" style="font-size:20px">${jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? 'aplaz.' : 'pend.'}</b></div>`).join('') : '<p class="muted" style="margin:0">Sin partidos contra vosotros.</p>'}
-    <h3>Peligro: goleadores</h3>
+`}
+    <h3>${propio ? 'Goleadores' : 'Peligro: goleadores'}</h3>
     ${goleadores.length ? `<table><tbody>${goleadores.map(j => `<tr><td class="n">${esc(j.dorsal)}</td><td>${esc(j.nombre)} <span class="muted">${esc(j.posicion || '')}</span></td><td class="n"><b>${j.goles}</b></td></tr>`).join('')}</tbody></table>` : '<p class="muted" style="margin:0">Sin goles registrados.</p>'}
     ${tarjetas.length ? `<p class="muted" style="margin:0">Tarjetas: ${tarjetas.map(j => `${esc(j.nombre.split(' ')[0])} ${'🟨'.repeat(j.amarillas)}${'🟥'.repeat(j.rojas)}`).join(' · ')}</p>` : ''}
     ${sanc.length ? `<p style="margin:0;color:var(--loss)">Sancionados: ${sanc.map(x => `${esc(x.jugador)} (${x.partidos} partido${x.partidos > 1 ? 's' : ''})`).join(', ')}</p>` : ''}
@@ -839,23 +842,49 @@ function guardarPartido(p) {
 let modalFuera = false;
 function modal(html, onSubmit) {
   const dlg = document.getElementById('modal');
-  dlg.dataset.fuera = modalFuera ? '1' : ''; modalFuera = false;
+  dlg.dataset.fuera = modalFuera ? '1' : ''; modalFuera = false; dlg.dataset.zoom = ''; dlg.style.animation = '';
   if (!dlg.dataset.clicFuera) {
     dlg.dataset.clicFuera = '1';
     dlg.addEventListener('click', e => {
       if (dlg.dataset.fuera !== '1' || e.target !== dlg) return;
       const r = dlg.getBoundingClientRect();
-      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) cerrarModal(dlg);
     });
   }
   const f = document.getElementById('modal-form');
   f.innerHTML = html;
   f.onsubmit = e => {
     const accion = e.submitter && e.submitter.value;
-    if (accion === 'cancel') return;
+    if (accion === 'cancel') { if (dlg.dataset.zoom) { e.preventDefault(); cerrarModal(dlg); } return; }
     onSubmit(new FormData(f), accion, f);
   };
   dlg.showModal();
+  if (zoomDesde) { crecerDesde(dlg, zoomDesde); zoomDesde = null; }
+}
+
+// La ficha crece desde la fila pulsada hasta ocupar su sitio (y vuelve a ella al cerrarse)
+let zoomDesde = null;
+function crecerDesde(dlg, o) {
+  if (sinMov || !dlg.animate) return;
+  const d = dlg.getBoundingClientRect();
+  // arranca con la ficha recortada al tamaño de la fila y colocada encima de ella
+  const left = Math.max(0, o.left - d.left), right = Math.max(0, d.right - o.right);
+  const bottom = Math.max(0, d.height - o.height), dy = o.top - d.top;
+  const desde = { clipPath: `inset(0px ${right}px ${bottom}px ${left}px)`, transform: `translateY(${dy}px)` };
+  const hasta = { clipPath: 'inset(0px 0px 0px 0px)', transform: 'none' };
+  dlg.style.animation = 'none';
+  const opts = { duration: 560, easing: 'cubic-bezier(.2, .8, .2, 1)' };
+  dlg.animate([{ ...desde, opacity: .6 }, { ...hasta, opacity: 1 }], opts);
+  dlg.firstElementChild.animate([{ opacity: 0 }, { opacity: 0, offset: .3 }, { opacity: 1 }], opts);
+  dlg.dataset.zoom = JSON.stringify(desde);
+}
+// Cierre animado (vuelve a la fila) para las fichas abiertas con zoom
+function cerrarModal(dlg) {
+  const z = dlg.dataset.zoom; dlg.dataset.zoom = '';
+  if (!z || sinMov || !dlg.animate) return dlg.close();
+  dlg.firstElementChild.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' });
+  dlg.animate([{ clipPath: 'inset(0px 0px 0px 0px)', transform: 'none', opacity: 1 }, { ...JSON.parse(z), opacity: .4 }], { duration: 340, easing: 'cubic-bezier(.4, 0, .2, 1)' })
+    .onfinish = () => { dlg.close(); dlg.style.animation = ''; dlg.firstElementChild.getAnimations().forEach(a => a.cancel()); };
 }
 
 function editarPartido(id) {
@@ -961,6 +990,46 @@ function toast(msg) {
 }
 
 /* ---------- Render y eventos ---------- */
+/* ---------- Cuenta atrás hasta el próximo partido (hora de Madrid) ---------- */
+// Convierte fecha y hora de Madrid a instante exacto, sea cual sea la zona del móvil
+function instanteMadrid(fecha, hora) {
+  const [y, m, d] = fecha.split('-').map(Number), [h, mi] = (hora || '22:30').split(':').map(Number);
+  const utc = Date.UTC(y, m - 1, d, h, mi);
+  const off = t => {
+    const pa = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      .formatToParts(new Date(t)).map(x => [x.type, x.value]));
+    return Date.UTC(+pa.year, pa.month - 1, +pa.day, +pa.hour, +pa.minute, +pa.second) - t;
+  };
+  let t = utc - off(utc); t = utc - off(t);
+  return t;
+}
+const DURACION = 50 * 60e3;
+let cuentaObj = null, cuentaT = 0;
+function objetivoCuenta() {
+  const ahora = Date.now();
+  cuentaObj = partidos().filter(p => p.fecha && p.estado !== 'aplazado' && !jugado(p))
+    .map(p => ({ p, t: instanteMadrid(p.fecha, p.hora) }))
+    .filter(x => x.t + DURACION > ahora).sort((a, b) => a.t - b.t)[0] || null;
+}
+function pintarCuenta() {
+  const el = document.getElementById('cuenta'); if (!el) return;
+  if (!cuentaObj) { el.hidden = true; return; }
+  const { p, t } = cuentaObj, falta = t - Date.now();
+  if (falta + DURACION <= 0) { objetivoCuenta(); return pintarCuenta(); }
+  el.hidden = false;
+  const rival = esc(p.rival || '');
+  if (falta <= 0) { el.innerHTML = `<span class="c-vivo">● EN JUEGO</span><span class="c-rival">vs ${rival}</span>`; el.classList.add('vivo'); return; }
+  el.classList.remove('vivo');
+  const s = Math.floor(falta / 1000), dd = Math.floor(s / 86400), hh = Math.floor(s % 86400 / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
+  const b = (n, l) => `<span class="c-u"><b>${String(n).padStart(2, '0')}</b><i>${l}</i></span>`;
+  el.innerHTML = `<span class="c-info"><span class="c-rival">vs ${rival}</span><span class="c-fecha">${fFecha(p.fecha)} · ${esc(p.hora || '')}</span></span>
+    <span class="c-reloj">${b(dd, 'días')}<em>:</em>${b(hh, 'h')}<em>:</em>${b(mm, 'min')}<em>:</em>${b(ss, 'seg')}</span>`;
+}
+// Se ajusta al cambio exacto de cada segundo del reloj
+function tickCuenta() { pintarCuenta(); clearTimeout(cuentaT); cuentaT = setTimeout(tickCuenta, 1000 - (Date.now() % 1000) + 5); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { objetivoCuenta(); tickCuenta(); } });
+
 /* ---------- Movimiento ---------- */
 const ORDEN = ['inicio', 'partidos', 'tabla', 'plantilla', 'stats'];
 const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -972,6 +1041,7 @@ function render(dir = 0) {
   main.innerHTML = V[tab]();
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   document.querySelector('.tabs').style.setProperty('--i', ORDEN.indexOf(tab));
+  objetivoCuenta(); if (!cuentaT) tickCuenta(); else pintarCuenta();
   if (calAnim) { const g = main.querySelector('.cal-grid'); if (g) g.classList.add(calAnim > 0 ? 'anim-d' : 'anim-i'); calAnim = 0; }
   if (!dir || sinMov) return;
   main.classList.remove('anim-d', 'anim-i', 'sale-d', 'sale-i'); void main.offsetWidth;
@@ -1038,7 +1108,7 @@ document.addEventListener('click', e => {
   if (act === 'nuevo-partido') editarPartido();
   else if (act === 'editar-partido') editarPartido(a.dataset.id);
   else if (act === 'ver-partido') resumenPartido(a.dataset.id);
-  else if (act === 'ver-equipo') { const d = document.getElementById('modal'); if (d.open) d.close(); fichaEquipo(a.dataset.eq); }
+  else if (act === 'ver-equipo') { const d = document.getElementById('modal'); if (d.open) d.close(); else zoomDesde = a.getBoundingClientRect(); fichaEquipo(a.dataset.eq); }
   else if (act === 'votar') {
     const yo = yoId(); if (!yo) return;
     store.setVoto({ id: `${a.dataset.p}__${yo}`, partido: a.dataset.p, votante: yo, voto: a.dataset.v }).then(() => reabrir(a.dataset.p));
