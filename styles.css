@@ -446,3 +446,48 @@ body:has(#cuenta:not([hidden])) main { padding-top: 112px; }
 .cuenta.sin-nombre .c-rival > span { opacity: 0; transform: translateY(-6px); filter: blur(2px); transition-delay: calc((var(--n) - var(--k)) * 22ms); }
 .c-fecha { transition: opacity .25s ease; }
 .cuenta.sin-nombre .c-fecha { opacity: 0; }
+
+/* ---- Transición cabecera v2: más lenta, el fondo de la burbuja se desvanece aparte ---- */
+.cuenta { background: none; border-color: transparent; box-shadow: none; }
+.cuenta::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(242,168,35,.2), rgba(242,168,35,.07)), #0d0b09;
+  border: 1px solid var(--line-gold); box-shadow: 0 10px 28px rgba(0, 0, 0, .55); transition: opacity .55s ease; }
+.cuenta { isolation: isolate; }
+.cuenta.vivo::before { background: rgba(60, 12, 12, .95); border-color: rgba(255, 90, 90, .5); }
+.top.mini .cuenta::before { opacity: 0; transition-duration: .3s; }
+.c-u i { transition: opacity .35s ease; }
+.cuenta.sin-nombre .c-u i { opacity: 0; }
+.c-rival > span { transition: opacity .3s ease, transform .3s var(--ease), filter .3s; transition-delay: calc(var(--k) * 40ms + 200ms); }
+.cuenta.sin-nombre .c-rival > span { transition-delay: calc((var(--n) - var(--k)) * 40ms); }
+.c-fecha { transition: opacity .4s ease; }
+.top.mini .cuenta { position: relative; }
+
+/* En la cabecera compacta: escudo · contador · "LA FARGA F.C." a la derecha · ajustes */
+.top.mini:has(#cuenta:not([hidden])) .brand { display: contents; }
+.top.mini:has(#cuenta:not([hidden])) .brand > img { order: 0; height: 32px; }
+.top.mini:has(#cuenta:not([hidden])) .brand > div { display: block; order: 2; text-align: right; margin-right: 8px; flex: none; }
+.top.mini:has(#cuenta:not([hidden])) .brand h1 { font-size: 14px; line-height: 1; letter-spacing: 1.5px; width: min-content; margin-left: auto; }
+.top.mini:has(#cuenta:not([hidden])) .brand p { display: none; }
+.top.mini .cuenta { margin: 0 6px; gap: 8px; }
+.top.mini .c-vs { gap: 5px; }
+.top.mini .c-vs .logo { width: 30px; height: 30px; }
+.top.mini .c-u b { font-size: 16px; min-width: 24px; padding: 2px 2px 0; }
+.top.mini .c-reloj em { font-size: 12px; }
+@media (max-width: 370px) { .top.mini .c-vs .logo { width: 26px; height: 26px; } .top.mini .c-u b { font-size: 14px; min-width: 21px; } }
+/* texto "LA FARGA F.C." justo a la derecha del escudo; el contador después */
+.top.mini:has(#cuenta:not([hidden])) .brand > div { order: 1; text-align: left; margin: 0 0 0 8px; }
+.top.mini:has(#cuenta:not([hidden])) .brand h1 { margin-left: 0; }
+.top.mini .cuenta { order: 2; margin-left: auto; flex: 0 1 auto; }
+.top.mini #btn-ajustes { order: 3; }
+
+.top.mini:has(#cuenta:not([hidden])) .brand h1 { width: auto; white-space: nowrap; font-size: 13px; letter-spacing: 1px; }
+.top.mini .cuenta { left: auto; top: auto; }
+@media (max-width: 370px) {
+  .top.mini:has(#cuenta:not([hidden])) .brand h1 { white-space: normal; width: 58px; font-size: 11px; line-height: 1.1; }
+  .top.mini:has(#cuenta:not([hidden])) .brand > img { height: 28px; }
+  .top.mini .cuenta { margin: 0 4px; gap: 5px; }
+  .top.mini .c-vs { gap: 3px; } .top.mini .c-vs .logo { width: 24px; height: 24px; }
+  .top.mini .c-u b { font-size: 13px; min-width: 19px; padding: 2px 1px 0; } .top.mini .c-reloj em { font-size: 10px; }
+  .top.mini .icon-btn { width: 32px; height: 32px; }
+}
+.cuenta::before { transition-delay: .35s; } .top.mini .cuenta::before { transition-delay: 0s; }

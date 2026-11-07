@@ -1113,13 +1113,21 @@ function contar(raiz) {
 let miniT = 0;
 function encajar(top, quiere) {
   const c = document.getElementById('cuenta'), ver = c && !c.hidden && !sinMov && c.animate;
-  const a = ver && c.getBoundingClientRect();
+  // cada pieza (escudos, "vs", números y separadores) viaja por separado de su sitio viejo al nuevo
+  const piezas = ver ? [...c.querySelectorAll('.c-vs > *, .c-u b, .c-reloj > em')] : [];
+  const marca = document.querySelector('.brand > div');
+  const antes = piezas.map(e => e.getBoundingClientRect());
   top.classList.toggle('mini', quiere);
   if (!ver) return;
-  const b = c.getBoundingClientRect();
-  c.getAnimations().forEach(x => x.cancel());
-  c.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width}, ${a.height / b.height})`, opacity: .85 },
-    { transformOrigin: '0 0', transform: 'none', opacity: 1 }], { duration: 480, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+  const opts = { duration: 820, easing: 'cubic-bezier(.65, 0, .25, 1)' };
+  piezas.forEach((e, k) => {
+    const a = antes[k], b = e.getBoundingClientRect();
+    if (!b.width) return;
+    e.getAnimations().forEach(x => x.cancel());
+    e.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width})` },
+      { transformOrigin: '0 0', transform: 'none' }], { ...opts, delay: k * 18 });
+  });
+  if (marca && quiere) marca.animate([{ opacity: 0, transform: 'translateX(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 450, easing: 'ease-out', fill: 'backwards' });
 }
 addEventListener('scroll', () => {
   const top = document.querySelector('.top'), c = document.getElementById('cuenta');
@@ -1132,11 +1140,11 @@ addEventListener('scroll', () => {
     if (!c || c.hidden || sinMov) { top.dataset.yendo = ''; return encajar(top, true); }
     c.classList.add('sin-nombre');
     const n = (c.querySelector('.c-rival') || { style: {} }).style.getPropertyValue('--n') || 10;
-    miniT = setTimeout(() => { top.dataset.yendo = ''; encajar(top, true); }, Math.min(700, n * 22 + 200));
+    miniT = setTimeout(() => { top.dataset.yendo = ''; encajar(top, true); }, Math.min(1000, n * 40 + 380));
   } else {
     top.dataset.yendo = '';
     if (mini) encajar(top, false);
-    if (c) requestAnimationFrame(() => c.classList.remove('sin-nombre'));
+    if (c) miniT = setTimeout(() => c.classList.remove('sin-nombre'), mini ? 700 : 0);
   }
 }, { passive: true });
 
