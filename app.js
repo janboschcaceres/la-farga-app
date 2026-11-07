@@ -1005,6 +1005,8 @@ function instanteMadrid(fecha, hora) {
   return t;
 }
 const DURACION = 50 * 60e3;
+// Formato fijo de enfrentamiento: escudo de La Farga vs escudo del rival
+const VS = rival => `<img class="logo" src="icons/escudo.webp" alt="La Farga" width="34" height="34"><em>vs</em>${logo(rival, 34)}`;
 let cuentaObj = null, cuentaT = 0;
 function objetivoCuenta() {
   const ahora = Date.now();
@@ -1018,11 +1020,11 @@ function pintarCuenta() {
   const { p, t } = cuentaObj, falta = t - Date.now();
   if (falta + DURACION <= 0) { objetivoCuenta(); return pintarCuenta(); }
   el.hidden = false;
-  if (falta <= 0) { el.innerHTML = `<span class="c-vivo">● EN JUEGO</span><span class="c-vs">${logo(p.rival, 26)}<em>vs</em><img class="logo" src="icons/escudo.webp" alt="La Farga" width="26" height="26"></span>`; el.classList.add('vivo'); return; }
+  if (falta <= 0) { el.innerHTML = `<span class="c-vivo">● EN JUEGO</span><span class="c-vs">${VS(p.rival)}</span><span class="c-rival">${esc(p.rival || '')}</span>`; el.classList.add('vivo'); return; }
   el.classList.remove('vivo');
   const s = Math.floor(falta / 1000), dd = Math.floor(s / 86400), hh = Math.floor(s % 86400 / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
   const b = (n, l) => `<span class="c-u"><b>${String(n).padStart(2, '0')}</b><i>${l}</i></span>`;
-  el.innerHTML = `<span class="c-info"><span class="c-vs">${logo(p.rival, 26)}<em>vs</em><img class="logo" src="icons/escudo.webp" alt="La Farga" width="26" height="26"></span><span class="c-fecha">${fFecha(p.fecha)} · ${esc(p.hora || '')}</span></span>
+  el.innerHTML = `<span class="c-info"><span class="c-vs">${VS(p.rival)}</span><span class="c-rival">${esc(p.rival || '')}</span><span class="c-fecha">${fFecha(p.fecha)} · ${esc(p.hora || '')}</span></span>
     <span class="c-reloj">${b(dd, 'días')}<em>:</em>${b(hh, 'h')}<em>:</em>${b(mm, 'min')}<em>:</em>${b(ss, 'seg')}</span>`;
 }
 // Se ajusta al cambio exacto de cada segundo del reloj

@@ -405,7 +405,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 /* Cuenta atrás flotante: burbuja ajustada a su contenido, colgando bajo la cabecera */
 .top { position: sticky; }
 .cuenta { position: absolute; top: 100%; left: 50%; translate: -50% 0; flex: none; width: max-content; max-width: calc(100vw - 24px);
-  margin: 10px 0 0; padding: 8px 12px; gap: 14px; background: linear-gradient(90deg, rgba(242,168,35,.2), rgba(242,168,35,.07)), rgba(10, 9, 8, .96);
+  margin: 10px 0 0; padding: 8px 12px; gap: 14px; background: linear-gradient(90deg, rgba(242,168,35,.2), rgba(242,168,35,.07)), #0d0b09;
   border: 1px solid var(--line-gold); box-shadow: 0 10px 28px rgba(0, 0, 0, .55); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   animation: aparece .5s var(--ease) both; }
 .top.mini .cuenta { margin: 8px 0 0; padding: 6px 10px; }
@@ -417,3 +417,19 @@ html, body { overflow-x: clip; max-width: 100%; }
 body:has(#cuenta:not([hidden])) main { padding-top: 92px; }
 .cuenta.vivo { background: rgba(60, 12, 12, .9); border-color: rgba(255, 90, 90, .5); }
 @media (hover: hover) { .cuenta:hover .c-vs .logo { transform: scale(1.15); } }
+
+/* Burbuja del mismo ancho que el contenido, con bordes alineados */
+.cuenta { width: calc(min(640px, 100vw) - 32px); max-width: none; padding: 12px 14px; justify-content: space-between; }
+.c-info { align-items: flex-start; gap: 4px; min-width: 0; }
+.c-vs { gap: 8px; }
+.c-vs .logo { width: 34px; height: 34px; }
+.c-vs em { font-size: 15px; }
+.c-rival { font-size: 15px; max-width: 100%; }
+.c-u b { font-size: 26px; line-height: 26px; min-width: 40px; padding: 4px 5px 1px; }
+.c-u { min-width: 40px; }
+.c-reloj em { font-size: 20px; line-height: 30px; }
+.top.mini .cuenta { padding: 8px 12px; }
+.top.mini .c-vs .logo { width: 26px; height: 26px; }
+.top.mini .c-fecha { display: none; }
+body:has(#cuenta:not([hidden])) main { padding-top: 128px; }
+@media (max-width: 380px) { .c-u b { font-size: 21px; min-width: 32px; } .c-u { min-width: 32px; } .c-reloj { gap: 2px; } .c-vs .logo { width: 28px; height: 28px; } }
