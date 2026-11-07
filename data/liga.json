@@ -4,27 +4,27 @@
   "grupo": "Viernes - B",
   "fase": "Primer Split",
   "fuente": "https://virtual.fundaciovalldor7.com/cornella-hospitalet-f7-es-26-27/equipo/4497",
-  "actualizado": "2026-11-06",
+  "actualizado": "2026-11-07",
   "clasificacion": [
     {
       "pos": 1,
       "equipo": "Menuda Banda FC",
-      "pts": 9,
-      "pj": 4,
-      "g": 3,
+      "pts": 12,
+      "pj": 5,
+      "g": 4,
       "e": 0,
       "p": 1,
-      "gf": 15,
+      "gf": 18,
       "gc": 14,
-      "dg": 1
+      "dg": 4
     },
     {
       "pos": 2,
       "equipo": "Los Calaveras",
-      "pts": 7,
-      "pj": 4,
+      "pts": 8,
+      "pj": 5,
       "g": 2,
-      "e": 1,
+      "e": 2,
       "p": 1,
       "gf": 14,
       "gc": 9,
@@ -33,10 +33,10 @@
     {
       "pos": 3,
       "equipo": "Gossos FC",
-      "pts": 7,
-      "pj": 4,
+      "pts": 8,
+      "pj": 5,
       "g": 2,
-      "e": 1,
+      "e": 2,
       "p": 1,
       "gf": 15,
       "gc": 14,
@@ -82,13 +82,13 @@
       "pos": 7,
       "equipo": "Bolivia Dortmund",
       "pts": 3,
-      "pj": 4,
+      "pj": 5,
       "g": 1,
       "e": 0,
-      "p": 3,
+      "p": 4,
       "gf": 7,
-      "gc": 18,
-      "dg": -11
+      "gc": 21,
+      "dg": -14
     }
   ],
   "plantilla": [
@@ -736,21 +736,21 @@
     {
       "local": "Los Calaveras",
       "visitante": "Gossos FC",
-      "gf": null,
-      "gc": null,
-      "estado": "pendiente",
+      "gf": "0",
+      "gc": "0",
+      "estado": "jugado",
       "fecha": "2026-11-06",
-      "hora": "22:30",
+      "hora": "",
       "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
     },
     {
       "local": "Bolivia Dortmund",
       "visitante": "Menuda Banda FC",
-      "gf": null,
-      "gc": null,
-      "estado": "pendiente",
+      "gf": "0",
+      "gc": "3",
+      "estado": "jugado",
       "fecha": "2026-11-06",
-      "hora": "22:30",
+      "hora": "",
       "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
     },
     {
@@ -1004,7 +1004,7 @@
           "posicion": "",
           "nombre": "Ferran Abad Crusat",
           "edad": 37,
-          "pj": 3,
+          "pj": 4,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1015,8 +1015,8 @@
           "posicion": "",
           "nombre": "Ruben Lopez Sanchez",
           "edad": 37,
-          "pj": 3,
-          "goles": 1,
+          "pj": 4,
+          "goles": 2,
           "amarillas": 0,
           "rojas": 0
         },
@@ -1037,8 +1037,8 @@
           "posicion": "",
           "nombre": "Fernando Cabezas Collado",
           "edad": 39,
-          "pj": 4,
-          "goles": 4,
+          "pj": 5,
+          "goles": 5,
           "amarillas": 1,
           "rojas": 0
         },
@@ -1048,7 +1048,7 @@
           "posicion": "",
           "nombre": "Cristian Moya Elipe",
           "edad": 37,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1059,8 +1059,8 @@
           "posicion": "",
           "nombre": "Rafa Lorca Catalan",
           "edad": 44,
-          "pj": 3,
-          "goles": 2,
+          "pj": 4,
+          "goles": 3,
           "amarillas": 0,
           "rojas": 0
         },
@@ -1070,7 +1070,7 @@
           "posicion": "",
           "nombre": "Sergio Villena Sanchez",
           "edad": 34,
-          "pj": 3,
+          "pj": 4,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1081,7 +1081,7 @@
           "posicion": "",
           "nombre": "Xavi Lorca Carrasco",
           "edad": 24,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1092,7 +1092,7 @@
           "posicion": "",
           "nombre": "Oriol Lorca catalán",
           "edad": 35,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1114,7 +1114,7 @@
           "posicion": "",
           "nombre": "Cristofer Iniesta Rodríguez",
           "edad": 35,
-          "pj": 3,
+          "pj": 4,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1125,7 +1125,7 @@
           "posicion": "",
           "nombre": "Victor Cebey Aubanell",
           "edad": 30,
-          "pj": 4,
+          "pj": 5,
           "goles": 4,
           "amarillas": 0,
           "rojas": 0
@@ -1141,7 +1141,7 @@
           "posicion": "Portero",
           "nombre": "Ian Perez Artis",
           "edad": null,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1152,7 +1152,7 @@
           "posicion": "Defensa",
           "nombre": "Mauro Cordova Orellana",
           "edad": null,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1163,7 +1163,7 @@
           "posicion": "Defensa",
           "nombre": "David ventura Garrancho",
           "edad": 55,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1174,7 +1174,7 @@
           "posicion": "Medio",
           "nombre": "Carlos Sanz Moreno",
           "edad": 49,
-          "pj": 1,
+          "pj": 2,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1185,7 +1185,7 @@
           "posicion": "Medio",
           "nombre": "Luis Silva Ribera",
           "edad": 44,
-          "pj": 2,
+          "pj": 3,
           "goles": 3,
           "amarillas": 0,
           "rojas": 0
@@ -1196,7 +1196,7 @@
           "posicion": "Delantero",
           "nombre": "Cristobal Cabeza Farran",
           "edad": null,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1207,7 +1207,7 @@
           "posicion": "Medio",
           "nombre": "Ivan Gomez Garcia",
           "edad": 27,
-          "pj": 2,
+          "pj": 3,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
@@ -1240,7 +1240,7 @@
           "posicion": "Medio",
           "nombre": "Mario Romo Morales",
           "edad": null,
-          "pj": 4,
+          "pj": 5,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
@@ -1251,7 +1251,7 @@
           "posicion": "Delantero",
           "nombre": "Javier Perez Simo",
           "edad": 54,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1267,7 +1267,7 @@
           "posicion": "Portero",
           "nombre": "Alejandro Godoy Martínez",
           "edad": 21,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1278,7 +1278,7 @@
           "posicion": "Medio",
           "nombre": "Isaac Huguet Cámara",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1289,7 +1289,7 @@
           "posicion": "Carrilero",
           "nombre": "Alejandro Comas Martínez",
           "edad": 19,
-          "pj": 4,
+          "pj": 5,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
@@ -1300,7 +1300,7 @@
           "posicion": "Medio",
           "nombre": "Miguel Angel Hernández Gutiérrez",
           "edad": 18,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1311,7 +1311,7 @@
           "posicion": "Medio",
           "nombre": "Marc Torres Ruiz",
           "edad": 20,
-          "pj": 4,
+          "pj": 5,
           "goles": 4,
           "amarillas": 0,
           "rojas": 0
@@ -1322,7 +1322,7 @@
           "posicion": "Carrilero",
           "nombre": "Aleix Arnalte Aguilar",
           "edad": 18,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1333,7 +1333,7 @@
           "posicion": "Delantero",
           "nombre": "Asier Llobet Benavente",
           "edad": 19,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1344,7 +1344,7 @@
           "posicion": "Delantero",
           "nombre": "Gonzalo Dopeso Cantalejo",
           "edad": 19,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1355,7 +1355,7 @@
           "posicion": "Defensa",
           "nombre": "Biel Huguet Camara",
           "edad": 19,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1722,7 +1722,7 @@
           "posicion": "Defensa",
           "nombre": "Aarón Padilla Grajeda",
           "edad": 21,
-          "pj": 3,
+          "pj": 4,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1733,7 +1733,7 @@
           "posicion": "Medio",
           "nombre": "Alex Rodríguez Bejarano",
           "edad": 22,
-          "pj": 3,
+          "pj": 4,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1744,7 +1744,7 @@
           "posicion": "Medio",
           "nombre": "Fran Torres Pereyra",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1766,7 +1766,7 @@
           "posicion": "Defensa",
           "nombre": "Alejandro Herrero Terrero",
           "edad": 21,
-          "pj": 3,
+          "pj": 4,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1777,7 +1777,7 @@
           "posicion": "Medio",
           "nombre": "Carlos Barriga Arqué",
           "edad": 22,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1788,7 +1788,7 @@
           "posicion": "Medio",
           "nombre": "Erik González Andreu",
           "edad": 22,
-          "pj": 3,
+          "pj": 4,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1810,7 +1810,7 @@
           "posicion": "Medio",
           "nombre": "Adrián Sánchez Rivas",
           "edad": 22,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1832,7 +1832,7 @@
           "posicion": "Portero",
           "nombre": "Pablo Jiménez Prieto",
           "edad": 23,
-          "pj": 3,
+          "pj": 4,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1843,7 +1843,7 @@
           "posicion": "Delantero",
           "nombre": "Alex Villalba Zarcero",
           "edad": 21,
-          "pj": 2,
+          "pj": 3,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1854,7 +1854,7 @@
           "posicion": "Delantero",
           "nombre": "Luis Fernando Vasquez Honor",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1865,7 +1865,7 @@
           "posicion": "Defensa",
           "nombre": "Iago Rodríguez Domínguez",
           "edad": 22,
-          "pj": 3,
+          "pj": 4,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
