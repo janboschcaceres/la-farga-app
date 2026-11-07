@@ -401,3 +401,19 @@ html, body { overflow-x: clip; max-width: 100%; }
 .c-vivo { font: 800 15px/1 var(--stencil); letter-spacing: 2px; color: var(--loss); animation: latido 1.2s ease-in-out infinite; }
 @keyframes latido { 50% { opacity: .35; } }
 @media (max-width: 360px) { .c-u { min-width: 28px; } .c-u b { font-size: 18px; min-width: 28px; } .c-fecha { display: none; } }
+
+/* Cuenta atrás flotante: burbuja ajustada a su contenido, colgando bajo la cabecera */
+.top { position: sticky; }
+.cuenta { position: absolute; top: 100%; left: 50%; translate: -50% 0; flex: none; width: max-content; max-width: calc(100vw - 24px);
+  margin: 10px 0 0; padding: 8px 12px; gap: 14px; background: linear-gradient(90deg, rgba(242,168,35,.2), rgba(242,168,35,.07)), rgba(10, 9, 8, .96);
+  border: 1px solid var(--line-gold); box-shadow: 0 10px 28px rgba(0, 0, 0, .55); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  animation: aparece .5s var(--ease) both; }
+.top.mini .cuenta { margin: 8px 0 0; padding: 6px 10px; }
+.c-info { align-items: center; gap: 3px; }
+.c-vs { display: flex; align-items: center; gap: 6px; }
+.c-vs em { font: 800 13px/1 var(--stencil); font-style: normal; color: var(--accent); letter-spacing: 1px; }
+.c-vs .logo { width: 26px; height: 26px; }
+.top.mini .c-vs .logo { width: 20px; height: 20px; }
+body:has(#cuenta:not([hidden])) main { padding-top: 92px; }
+.cuenta.vivo { background: rgba(60, 12, 12, .9); border-color: rgba(255, 90, 90, .5); }
+@media (hover: hover) { .cuenta:hover .c-vs .logo { transform: scale(1.15); } }
