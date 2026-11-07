@@ -495,3 +495,11 @@ body:has(#cuenta:not([hidden])) main { padding-top: 112px; }
 /* Cabecera fija: al compactarse no mueve el contenido (sin tirones al empezar a deslizar) */
 .top { position: fixed; top: 0; left: 0; right: 0; }
 body { padding-top: var(--cab, 74px); overflow-anchor: none; }
+
+/* Todo simultáneo: el nombre, la fecha y las etiquetas siguen ahí (fuera del flujo) mientras se borran */
+.top.mini .c-info { position: relative; }
+.top.mini .c-rival, .top.mini .c-fecha { display: block; position: absolute; left: 0; top: 100%; pointer-events: none; }
+.top.mini .c-u { position: relative; }
+.top.mini .c-u i { display: block; position: absolute; top: 100%; left: 50%; translate: -50% 0; opacity: 0; }
+.c-rival > span { transition-delay: calc(var(--k) * 40ms); }
+.cuenta::before { transition-delay: 0s; }

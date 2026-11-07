@@ -1122,7 +1122,7 @@ let miniT = 0;
 function encajar(top, quiere) {
   const c = document.getElementById('cuenta'), ver = c && !c.hidden && !sinMov && c.animate;
   // cada pieza (escudos, "vs", números y separadores) viaja por separado de su sitio viejo al nuevo
-  const piezas = ver ? [...c.querySelectorAll('.c-vs > *, .c-u b, .c-reloj > em')] : [];
+  const piezas = ver ? [...c.querySelectorAll('.c-vs > *, .c-rival, .c-fecha, .c-u b, .c-u i, .c-reloj > em')] : [];
   const marca = document.querySelector('.brand > div');
   const antes = piezas.map(e => e.getBoundingClientRect());
   top.classList.toggle('mini', quiere);
@@ -1133,9 +1133,9 @@ function encajar(top, quiere) {
     if (!b.width) return;
     e.getAnimations().forEach(x => x.cancel());
     e.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width})` },
-      { transformOrigin: '0 0', transform: 'none' }], { ...opts, delay: k * 18 });
+      { transformOrigin: '0 0', transform: 'none' }], opts);
   });
-  if (marca && quiere) marca.animate([{ opacity: 0, transform: 'translateX(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 450, easing: 'ease-out', fill: 'backwards' });
+  if (marca && quiere) marca.animate([{ opacity: 0, transform: 'translateX(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 820, easing: 'cubic-bezier(.65, 0, .25, 1)' });
 }
 addEventListener('scroll', () => {
   const top = document.querySelector('.top'), c = document.getElementById('cuenta');
@@ -1143,17 +1143,10 @@ addEventListener('scroll', () => {
   const quiere = scrollY > 0; // arriba del todo = normal; en cuanto se mueve, transición
   if (quiere === (mini || yendo)) return;
   clearTimeout(miniT);
-  if (quiere) {
-    top.dataset.yendo = '1';
-    if (!c || c.hidden || sinMov) { top.dataset.yendo = ''; return encajar(top, true); }
-    c.classList.add('sin-nombre');
-    const n = (c.querySelector('.c-rival') || { style: {} }).style.getPropertyValue('--n') || 10;
-    miniT = setTimeout(() => { top.dataset.yendo = ''; encajar(top, true); }, Math.min(1000, n * 40 + 380));
-  } else {
-    top.dataset.yendo = '';
-    if (mini) encajar(top, false);
-    if (c) miniT = setTimeout(() => c.classList.remove('sin-nombre'), mini ? 700 : 0);
-  }
+  // todo a la vez: el nombre se borra mientras las piezas viajan y la cabecera se adapta
+  top.dataset.yendo = '';
+  if (c) c.classList.toggle('sin-nombre', quiere);
+  encajar(top, quiere);
 }, { passive: true });
 
 document.addEventListener('click', e => {
