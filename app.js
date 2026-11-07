@@ -1127,6 +1127,14 @@ function encajar(top, quiere) {
   const piezas = ver ? [...c.querySelectorAll('.c-vs > *, .c-rival, .c-fecha, .c-u b, .c-u i, .c-reloj > em')] : [];
   const marca = document.querySelector('.brand > div');
   const antes = piezas.map(e => e.getBoundingClientRect());
+  // el fondo de la burbuja se desvanece en SU sitio (copia fantasma), no en la cabecera
+  if (ver && quiere && !top.classList.contains('mini')) {
+    const r = c.getBoundingClientRect(), g = document.createElement('div');
+    g.className = 'cuenta-fantasma' + (c.classList.contains('vivo') ? ' vivo' : '');
+    Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    document.body.appendChild(g);
+    g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: 'ease-out', fill: 'forwards' }).onfinish = () => g.remove();
+  }
   top.classList.toggle('mini', quiere);
   if (!ver) return;
   const opts = { duration: 820, easing: 'cubic-bezier(.65, 0, .25, 1)' };
