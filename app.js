@@ -1108,6 +1108,14 @@ function contar(raiz) {
 })();
 
 // Cabecera compacta al bajar
+// Altura de la cabecera grande, para reservar su hueco aunque luego se compacte
+function medirCabecera() {
+  const top = document.querySelector('.top'); if (!top || top.classList.contains('mini')) return;
+  document.body.style.setProperty('--cab', top.offsetHeight + 'px');
+}
+addEventListener('resize', medirCabecera);
+addEventListener('load', medirCabecera);
+requestAnimationFrame(medirCabecera);
 // y el contador pasa de burbuja a la propia cabecera con una transición.
 // Al bajar: primero se borra el nombre del rival letra a letra y luego se encaja en la cabecera.
 let miniT = 0;
@@ -1132,7 +1140,7 @@ function encajar(top, quiere) {
 addEventListener('scroll', () => {
   const top = document.querySelector('.top'), c = document.getElementById('cuenta');
   const mini = top.classList.contains('mini'), yendo = top.dataset.yendo === '1';
-  const quiere = (mini || yendo) ? scrollY > 8 : scrollY > 40;
+  const quiere = scrollY > 0; // arriba del todo = normal; en cuanto se mueve, transición
   if (quiere === (mini || yendo)) return;
   clearTimeout(miniT);
   if (quiere) {

@@ -491,3 +491,7 @@ body:has(#cuenta:not([hidden])) main { padding-top: 112px; }
   .top.mini .icon-btn { width: 32px; height: 32px; }
 }
 .cuenta::before { transition-delay: .35s; } .top.mini .cuenta::before { transition-delay: 0s; }
+
+/* Cabecera fija: al compactarse no mueve el contenido (sin tirones al empezar a deslizar) */
+.top { position: fixed; top: 0; left: 0; right: 0; }
+body { padding-top: var(--cab, 74px); overflow-anchor: none; }
