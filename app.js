@@ -1142,8 +1142,10 @@ function encajar(top, quiere) {
     const a = antes[k], b = e.getBoundingClientRect();
     if (!b.width) return;
     e.getAnimations().forEach(x => x.cancel());
-    e.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width})` },
-      { transformOrigin: '0 0', transform: 'none' }], opts);
+    // al irse a la cabecera, cada pieza da una vuelta completa hacia la derecha mientras viaja
+    const giro = quiere ? 360 : 0;
+    e.animate([{ transformOrigin: '50% 50%', transform: `translate(${(a.left + a.width / 2) - (b.left + b.width / 2)}px, ${(a.top + a.height / 2) - (b.top + b.height / 2)}px) scale(${a.width / b.width}) rotate(0deg)` },
+      { transformOrigin: '50% 50%', transform: `translate(0px, 0px) scale(1) rotate(${giro}deg)` }], opts);
   });
   if (marca && quiere) marca.animate([{ opacity: 0, transform: 'translateX(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 820, easing: 'cubic-bezier(.65, 0, .25, 1)' });
 }
