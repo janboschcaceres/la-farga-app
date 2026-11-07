@@ -320,7 +320,7 @@ function fichaEquipo(n) {
   const pjs = c.pj || 0;
   const fila = p => `<tr class="${[p.local, p.visitante].includes(EQUIPO) ? 'me' : ''}"><td class="muted" style="width:56px">${fFecha(p.fecha).replace(/^\S+ /, '')}</td><td>${esc(p.local === n ? p.visitante : p.local)} <span class="muted">${p.local === n ? '(L)' : '(V)'}</span></td>
     <td class="n" style="width:auto;white-space:nowrap"><b>${p.estado === 'jugado' ? (p.local === n ? `${p.gf}-${p.gc}` : `${p.gc}-${p.gf}`) : esc(p.hora || p.estado)}</b></td></tr>`;
-  modal(`
+  modalFuera = true; modal(`
     <button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
     <div class="marcador" style="text-align:left">
       <div class="row" style="gap:12px">${logo(n, 56)}<div><div class="eq" style="font-size:26px">${esc(n)}</div>
@@ -636,7 +636,7 @@ function resumenPartido(id) {
   const sinAutor = jugado(p) ? +p.gf - nuestrosGoles - manual.filter(e => e.tipo === 'gol').length : 0;
   const conv = (p.convocados || []).map(n => { const j = js.find(x => x.nombre.startsWith(n.split(' ')[0]) && n.split(' ').slice(0, 2).every(w => x.nombre.includes(w))); return j ? corto(j) : n; });
   const noj = (p.no_juegan || []).map(n => { const j = js.find(x => x.nombre.startsWith(n.split(' ')[0]) && n.split(' ').slice(0, 2).every(w => x.nombre.includes(w))); return j ? corto(j) : n; });
-  modal(`
+  modalFuera = true; modal(`
     <div class="marcador ${r || ''}">
       <div class="muted">${p.jornada ? 'Jornada ' + p.jornada + ' · ' : ''}${fFecha(p.fecha, jugado(p) ? '' : p.hora)}</div>
       <div class="row spread" style="margin-top:8px"><b class="eq">${esc(izq)}</b><span class="res">${esc(marc)}</span><b class="eq" style="text-align:right">${esc(der)}</b></div>
@@ -835,8 +835,19 @@ function guardarPartido(p) {
   store.setPartido(resto);
 }
 
+// Las fichas de solo lectura (equipo, resumen de partido) se cierran al tocar fuera.
+let modalFuera = false;
 function modal(html, onSubmit) {
   const dlg = document.getElementById('modal');
+  dlg.dataset.fuera = modalFuera ? '1' : ''; modalFuera = false;
+  if (!dlg.dataset.clicFuera) {
+    dlg.dataset.clicFuera = '1';
+    dlg.addEventListener('click', e => {
+      if (dlg.dataset.fuera !== '1' || e.target !== dlg) return;
+      const r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+  }
   const f = document.getElementById('modal-form');
   f.innerHTML = html;
   f.onsubmit = e => {
