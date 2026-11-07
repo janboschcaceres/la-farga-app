@@ -308,7 +308,7 @@ function formaDe(n) {
 const formaHTML = f => `<div class="form">${f.map(r => `<i class="${r}">${{ w: 'G', d: 'E', l: 'P' }[r]}</i>`).join('')}</div>`;
 function fichaEquipo(n) {
   document.getElementById('modal').dataset.partido = '';
-  if (n === EQUIPO) { tab = 'stats'; render(); return; }
+  if (n === EQUIPO) { document.getElementById('modal').close(); irA('stats'); return; }
   const c = (web.clasificacion || []).find(e => e.equipo === n) || {};
   const r = (web.rivales || {})[n] || { plantilla: [] };
   const gp = (web.grupo_partidos || []).filter(p => p.local === n || p.visitante === n).sort((a, b) => a.fecha.localeCompare(b.fecha));
@@ -961,14 +961,68 @@ function toast(msg) {
 }
 
 /* ---------- Render y eventos ---------- */
-function render() {
-  document.getElementById('view').innerHTML = V[tab]();
+/* ---------- Movimiento ---------- */
+const ORDEN = ['inicio', 'partidos', 'tabla', 'plantilla', 'stats'];
+const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let calAnim = 0;
+
+// dir: 1 entra por la derecha, -1 por la izquierda, 0 sin animación (refrescos de datos)
+function render(dir = 0) {
+  const main = document.getElementById('view');
+  main.innerHTML = V[tab]();
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  document.querySelector('.tabs').style.setProperty('--i', ORDEN.indexOf(tab));
+  if (calAnim) { const g = main.querySelector('.cal-grid'); if (g) g.classList.add(calAnim > 0 ? 'anim-d' : 'anim-i'); calAnim = 0; }
+  if (!dir || sinMov) return;
+  main.classList.remove('anim-d', 'anim-i'); void main.offsetWidth;
+  [...main.children].forEach((c, i) => c.style.setProperty('--d', i));
+  main.classList.add(dir > 0 ? 'anim-d' : 'anim-i');
+  contar(main);
 }
+
+function irA(nuevo) {
+  if (!V[nuevo] || nuevo === tab) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const dir = ORDEN.indexOf(nuevo) > ORDEN.indexOf(tab) ? 1 : -1;
+  tab = nuevo; window.scrollTo(0, 0); render(dir);
+  if (navigator.vibrate) navigator.vibrate(6);
+}
+
+// Los números grandes suben desde 0 al entrar en la pestaña
+function contar(raiz) {
+  raiz.querySelectorAll('.kpi b, .big').forEach(el => {
+    const fin = el.textContent.trim();
+    if (!/^\d{1,4}$/.test(fin) || +fin === 0) return;
+    const n = +fin, t0 = performance.now(), dur = 600;
+    const paso = t => { const k = Math.min(1, (t - t0) / dur); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(paso); else el.textContent = fin; };
+    requestAnimationFrame(paso);
+  });
+}
+
+// Deslizar el dedo: en el calendario cambia de mes, en el resto cambia de pestaña
+(() => {
+  let x0 = 0, y0 = 0, t0 = 0, enCal = false, bloqueado = false;
+  addEventListener('touchstart', e => {
+    const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now();
+    enCal = !!e.target.closest('.cal');
+    bloqueado = !!e.target.closest('dialog, input, textarea, select, .galeria, table') || document.getElementById('modal').open;
+  }, { passive: true });
+  addEventListener('touchend', e => {
+    if (bloqueado) return;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * .6 || Date.now() - t0 > 600) return;
+    const n = dx < 0 ? 1 : -1;
+    if (enCal) { const b = document.querySelector(`[data-act="cal-mover"][data-v="${n}"]`); if (b) b.click(); return; }
+    const i = ORDEN.indexOf(tab) + n;
+    if (i >= 0 && i < ORDEN.length) irA(ORDEN[i]);
+  }, { passive: true });
+})();
+
+// Cabecera compacta al bajar
+addEventListener('scroll', () => document.querySelector('.top').classList.toggle('mini', scrollY > 24), { passive: true });
 
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-tab]');
-  if (t) { tab = t.dataset.tab; render(); window.scrollTo(0, 0); return; }
+  if (t) { irA(t.dataset.tab); return; }
   const a = e.target.closest('[data-act]');
   if (!a) return;
   const act = a.dataset.act;
@@ -988,7 +1042,7 @@ document.addEventListener('click', e => {
     const n = +a.dataset.v;
     if (calPrefs().vista === 'semana') { const d = new Date(calDia + 'T12:00'); d.setDate(d.getDate() + 7 * n); calDia = iso(d); calMes = calDia.slice(0, 7); }
     else { const [y, m] = calMes.split('-').map(Number), d = new Date(y, m - 1 + n, 1, 12); calMes = iso(d).slice(0, 7); calDia = calMes === hoy().slice(0, 7) ? hoy() : calMes + '-01'; }
-    render();
+    calAnim = n; render();
   }
   else if (act === 'cal-ajustes') ajustesCalendario();
   else if (act === 'nuevo-evento') editarEvento(null, a.dataset.v);
