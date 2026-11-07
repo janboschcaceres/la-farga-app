@@ -974,7 +974,7 @@ function render(dir = 0) {
   document.querySelector('.tabs').style.setProperty('--i', ORDEN.indexOf(tab));
   if (calAnim) { const g = main.querySelector('.cal-grid'); if (g) g.classList.add(calAnim > 0 ? 'anim-d' : 'anim-i'); calAnim = 0; }
   if (!dir || sinMov) return;
-  main.classList.remove('anim-d', 'anim-i'); void main.offsetWidth;
+  main.classList.remove('anim-d', 'anim-i', 'sale-d', 'sale-i'); void main.offsetWidth;
   [...main.children].forEach((c, i) => c.style.setProperty('--d', i));
   main.classList.add(dir > 0 ? 'anim-d' : 'anim-i');
   contar(main);
@@ -983,7 +983,16 @@ function render(dir = 0) {
 function irA(nuevo) {
   if (!V[nuevo] || nuevo === tab) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const dir = ORDEN.indexOf(nuevo) > ORDEN.indexOf(tab) ? 1 : -1;
-  tab = nuevo; window.scrollTo(0, 0); render(dir);
+  tab = nuevo;
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  document.querySelector('.tabs').style.setProperty('--i', ORDEN.indexOf(tab));
+  const main = document.getElementById('view');
+  clearTimeout(irA.t);
+  if (sinMov) { window.scrollTo(0, 0); render(dir); return; }
+  // primero sale lo que había, luego entra lo nuevo
+  main.classList.remove('anim-d', 'anim-i', 'sale-d', 'sale-i'); void main.offsetWidth;
+  main.classList.add(dir > 0 ? 'sale-d' : 'sale-i');
+  irA.t = setTimeout(() => { main.classList.remove('sale-d', 'sale-i'); window.scrollTo(0, 0); render(dir); }, 240);
   if (navigator.vibrate) navigator.vibrate(6);
 }
 

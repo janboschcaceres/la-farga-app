@@ -297,7 +297,7 @@ label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
 /* Barra inferior con iconos de línea e indicador que se desliza */
 .tabs { background: rgba(8, 7, 6, .94); border-top: 1px solid var(--line); padding-top: 0; --i: 0; }
 .tabs::before { content: ""; position: absolute; top: -1px; left: 0; width: 20%; height: 2px; background: var(--accent);
-  transform: translateX(calc(var(--i) * 100%)); transition: transform .35s var(--ease); }
+  transform: translateX(calc(var(--i) * 100%)); transition: transform .5s var(--ease); }
 .tabs button { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; gap: 4px; padding: 10px 0 4px; transition: color .2s; }
 .tabs button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: square; stroke-linejoin: miter;
   transition: transform .3s var(--ease); }
@@ -307,8 +307,12 @@ label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
 @keyframes entraDer { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
 @keyframes entraIzq { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
 @keyframes aparece { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-main.anim-d > * { animation: entraDer .38s var(--ease) both; animation-delay: calc(min(var(--d, 0), 10) * 35ms); }
-main.anim-i > * { animation: entraIzq .38s var(--ease) both; animation-delay: calc(min(var(--d, 0), 10) * 35ms); }
+main.anim-d > * { animation: entraDer .6s var(--ease) both; animation-delay: calc(min(var(--d, 0), 10) * 55ms); }
+main.anim-i > * { animation: entraIzq .6s var(--ease) both; animation-delay: calc(min(var(--d, 0), 10) * 55ms); }
+@keyframes saleIzq { to { opacity: 0; transform: translateX(-36px); } }
+@keyframes saleDer { to { opacity: 0; transform: translateX(36px); } }
+main.sale-d > * { animation: saleIzq .26s cubic-bezier(.4, 0, 1, 1) both; }
+main.sale-i > * { animation: saleDer .26s cubic-bezier(.4, 0, 1, 1) both; }
 .revela { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .revela.visto { opacity: 1; transform: none; }
 
@@ -333,8 +337,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .6); -webkit-backdrop-filter: blur(
 .cal-dia.jugamos { background: linear-gradient(160deg, rgba(242, 168, 35, .2), rgba(255,255,255,.02) 70%); }
 .cal-dia.sel { box-shadow: none; border-color: var(--accent); }
 .cal-grid { gap: 2px; }
-.cal-grid.anim-d { animation: entraDer .3s var(--ease); }
-.cal-grid.anim-i { animation: entraIzq .3s var(--ease); }
+.cal-grid.anim-d { animation: entraDer .45s var(--ease); }
+.cal-grid.anim-i { animation: entraIzq .45s var(--ease); }
 .agenda-item { background: var(--card); border: 1px solid var(--line); transition: border-color .2s, transform .12s; }
 .chip { border-left-width: 2px; }
 
