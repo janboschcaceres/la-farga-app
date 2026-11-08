@@ -1517,3 +1517,5 @@ html[data-vt-dir="i"]::view-transition-new(vista) { animation-name: vtEntraI; }
 /* CY · buscador */
 .res-busq.atajo { border-color: var(--accent); background: linear-gradient(90deg, rgba(242,168,35,.12), transparent); }
 @media (prefers-reduced-motion: reduce) { .alarma-conv, .ac-ico, .ac-puntos i { animation: none !important; } .vistazo .vz-sem .vz-c { opacity: 1; transform: none; } .vistazo .vz-sem .vz-c.libre { opacity: .35; } }
+.gal-acc { display: flex; gap: 6px; align-items: center; }
+.gal-mas { min-width: 36px; justify-content: center; font: 800 20px/1 var(--sans, Inter, sans-serif); padding: 5px 10px; cursor: pointer; }

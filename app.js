@@ -282,14 +282,14 @@ const GALERIA_FIJA = [
 ];
 function galeria(p, titulo = '<h3>📸 Fotos y vídeos</h3>') {
   const fs = [...GALERIA_FIJA.filter(f => f.partido === p.id), ...fotos.filter(f => f.partido === p.id).sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))];
-  if (!fs.length && !assets) return '';
   return `${titulo}
     ${fs.length ? `<div class="galeria">${fs.map(f => f.tipo && f.tipo.startsWith('video')
       ? `<video src="${esc(f.url)}" ${f.poster ? `poster="${esc(f.poster)}"` : ''} controls playsinline preload="${f.poster ? 'none' : 'metadata'}"></video>`
       : `<a href="${esc(f.url)}" target="_blank" rel="noopener"><img src="${esc(f.url)}" alt="Foto del partido" loading="lazy"></a>`).join('')}</div>` : '<p class="muted" style="margin:0">Aún no hay fotos de este partido.</p>'}
-    ${assets ? `<label class="btn ghost sm subir">+ Subir foto o vídeo<input type="file" accept="image/*,video/*" multiple data-act="subir" data-p="${esc(p.id)}" hidden></label>` : ''}`;
+    <label class="btn ghost sm subir">+ Subir foto o vídeo<input type="file" accept="image/*,video/*" multiple data-act="subir" data-p="${esc(p.id)}" hidden></label>`;
 }
 async function subirFotos(pid, files) {
+  if (!assets) { toast(db ? 'No se han podido preparar las subidas: recarga la app' : 'Para subir fotos falta conectar la base de datos del equipo (Supabase)'); return; }
   for (const f of files) {
     try {
       toast('Subiendo…');
@@ -1742,7 +1742,7 @@ const V = {
         <div class="kpi"><b>${r.gc}</b><span>En contra</span></div>
         <div class="kpi"><b>${top ? esc(corto(top.j)) : '–'}</b><span>Pichichi${top ? ' · ' + top.gol : ''}</span></div>
       </div>
-      <div class="card" style="padding:12px">${galeria({ id: 'general' }, '<h2 style="margin-top:0;display:flex;justify-content:space-between;align-items:center">📸 Galería del equipo <button type="button" class="btn ghost sm" data-act="albumes">Álbumes</button></h2>')}</div>
+      <div class="card" style="padding:12px">${galeria({ id: 'general' }, '<h2 style="margin-top:0;display:flex;justify-content:space-between;align-items:center">📸 Galería del equipo <span class="gal-acc"><button type="button" class="btn ghost sm" data-act="albumes">Álbumes</button><label class="btn sm gal-mas" aria-label="Añadir foto o vídeo">+<input type="file" accept="image/*,video/*" multiple data-act="subir" data-p="general" hidden></label></span></h2>')}</div>
       ${instalarCard()}
       ${haceCuanto()}
       ${patrocinadores()}
@@ -2891,7 +2891,6 @@ let calAnim = 0;
 // dir: 1 entra por la derecha, -1 por la izquierda, 0 sin animación (refrescos de datos)
 function render(dir = 0) {
   const main = document.getElementById('view');
-  const ff = document.querySelector('.fab-foto'); if (ff) ff.hidden = !assets;
   if (!cargado && !web.actualizado) { main.innerHTML = esqueleto(); return; }
   main.innerHTML = V[tab]();
   observar(main, !!dir);
@@ -3221,3 +3220,8 @@ async function init() {
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 init();
+// Sin nube no se puede subir: se avisa antes de abrir el selector de archivos
+document.addEventListener('click', e => {
+  const i = e.target.closest && e.target.closest('input[data-act="subir"]');
+  if (i && !assets) { e.preventDefault(); toast(db ? 'Preparando las subidas, prueba en unos segundos' : 'Para subir fotos falta conectar la base de datos del equipo (Supabase)'); }
+}, true);
