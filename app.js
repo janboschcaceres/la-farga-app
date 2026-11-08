@@ -312,7 +312,20 @@ function formaDe(n) {
     .sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(-5)
     .map(p => { const a = p.local === n ? +p.gf : +p.gc, b = p.local === n ? +p.gc : +p.gf; return a > b ? 'w' : a < b ? 'l' : 'd'; });
 }
-const formaHTML = f => `<div class="form">${f.map(r => `<i class="${r}">${{ w: 'G', d: 'E', l: 'P' }[r]}</i>`).join('')}</div>`;
+const claveG = g => `${g.fecha}|${g.local}|${g.visitante}`;
+const grupoPorClave = k => (web.grupo_partidos || []).find(g => claveG(g) === k);
+const pidDe = g => [g.local, g.visitante].includes(EQUIPO) ? (partidos().find(x => x.fecha === g.fecha && [g.local, g.visitante].includes(x.rival)) || {}).id || '' : '';
+// Atributos para que un cuadrito abra la burbuja y, al pulsar, el partido (nuestro o de otros)
+function attrsPartido(g, eq) {
+  const pid = g && pidDe(g);
+  if (pid) return `data-act="ver-ult" data-id="${esc(pid)}" tabindex="0" role="button"`;
+  return g ? `data-act="ver-g" data-g="${esc(claveG(g))}" data-eq="${esc(eq || '')}" tabindex="0" role="button"` : '';
+}
+function formaListaDe(n) {
+  return (web.grupo_partidos || []).filter(p => p.estado === 'jugado' && (p.local === n || p.visitante === n))
+    .sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(-5).map(g => ({ r: resDe(g, n), g }));
+}
+const formaHTML = (f, n) => `<div class="form">${f.map(o => `<i class="${o.r} clic" ${attrsPartido(o.g, n)}>${{ w: 'G', d: 'E', l: 'P' }[o.r]}</i>`).join('')}</div>`;
 function fichaEquipo(n) {
   document.getElementById('modal').dataset.partido = '';
   const c = (web.clasificacion || []).find(e => e.equipo === n) || {};
@@ -334,7 +347,7 @@ function fichaEquipo(n) {
     <div class="marcador" style="text-align:left">
       <div class="row" style="gap:12px">${logo(n, 56)}<div><div class="eq" style="font-size:26px">${esc(n)}</div>
         <div class="muted">${c.pos ? c.pos + 'º · ' + c.pts + ' pts' : ''}</div></div></div>
-      <div style="margin-top:10px">${formaHTML(formaDe(n))}</div>
+      <div style="margin-top:10px">${formaHTML(formaListaDe(n), n)}</div>
     </div>
     <div class="grid3">
       <div class="kpi"><b>${c.g ?? 0}-${c.e ?? 0}-${c.p ?? 0}</b><span>G-E-P</span></div>
@@ -343,7 +356,7 @@ function fichaEquipo(n) {
     </div>
     ${propio ? '' : `    <h3>Contra La Farga</h3>
     ${nuestros.length ? nuestros.map(p => `<div class="row spread" style="padding:4px 0"><span>${p.jornada ? 'J' + p.jornada + ' · ' : ''}${fFecha(p.fecha, jugado(p) ? '' : p.hora)} <span class="muted">${p.local === false ? '(fuera)' : '(en casa)'}</span></span>
-      <b class="score ${res(p) || ''}" style="font-size:20px">${jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? 'aplaz.' : 'pend.'}</b></div>`).join('') : '<p class="muted" style="margin:0">Sin partidos contra vosotros.</p>'}
+      <b class="score ${res(p) || ''} clic" data-act="ver-ult" data-id="${esc(p.id)}" tabindex="0" role="button" style="font-size:20px">${jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? 'aplaz.' : 'pend.'}</b></div>`).join('') : '<p class="muted" style="margin:0">Sin partidos contra vosotros.</p>'}
     ${rivalesComunes(n)}
 `}
     <h3>${propio ? 'Goleadores' : 'Peligro: goleadores'}</h3>
@@ -494,7 +507,7 @@ function eventosEn(desde, hasta, pr) {
       extra: jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? 'aplazado' : '', res: r, act: 'ver-partido', id: p.id, logo: p.rival });
   }
   if (pr.capas.grupo) for (const p of web.grupo_partidos || []) if (p.fecha && ![p.local, p.visitante].includes(EQUIPO))
-    add(p.fecha, { capa: 'grupo', hora: p.hora, titulo: `${p.local} - ${p.visitante}`, extra: p.estado === 'jugado' ? `${p.gf}-${p.gc}` : '', act: 'ver-equipo', eq: p.local });
+    add(p.fecha, { capa: 'grupo', hora: p.hora, titulo: `${p.local} - ${p.visitante}`, extra: p.estado === 'jugado' ? `${p.gf}-${p.gc}` : '', act: 'ver-g', g: claveG(p) });
   for (const ev of local.eventos) {
     const capa = ev.tipo === 'entreno' ? 'entreno' : 'evento';
     if (!pr.capas[capa]) continue;
@@ -522,13 +535,13 @@ function chip(it, pr, largo) {
   const c = it.color || colorCapa(pr, it.capa);
   const emoji = it.emoji || CAPAS[it.capa].emoji;
   if (!largo) return `<span class="chip ${it.res ? 'r-' + it.res : ''}" style="--c:${esc(c)}">${it.capa === 'farga' && it.logo ? logo(it.logo, 12) : emoji}<span>${esc(it.capa === 'farga' ? it.titulo.replace(/^(vs|@) /, '') : it.titulo)}</span></span>`;
-  const dataExtra = it.eq ? `data-eq="${esc(it.eq)}"` : `data-id="${esc(it.id || '')}"`;
+  const dataExtra = it.g ? `data-g="${esc(it.g)}" data-eq=""` : it.eq ? `data-eq="${esc(it.eq)}"` : `data-id="${esc(it.id || '')}"`;
   return `<div class="agenda-item" style="--c:${esc(c)}" data-act="${it.act}" ${dataExtra}>
     <span class="hora">${esc(it.hora || '—')}</span>
     <span class="barra-c"></span>
     <div style="flex:1;min-width:0"><b>${it.capa === 'farga' && it.logo ? logo(it.logo, 16) + ' ' : emoji + ' '}${esc(it.titulo)}</b>
       ${it.extra ? `<div class="muted" style="font-size:13px">${esc(it.extra)}</div>` : ''}<div class="muted" style="font-size:11px">${esc(CAPAS[it.capa].nombre)}</div></div>
-    ${it.res ? `<span class="score ${it.res}" style="font-size:18px">${{ w: 'G', d: 'E', l: 'P' }[it.res]}</span>` : ''}</div>`;
+    ${it.res ? `<span class="score ${it.res}" data-act="ver-ult" data-id="${esc(it.id)}" style="font-size:18px">${{ w: 'G', d: 'E', l: 'P' }[it.res]}</span>` : ''}</div>`;
 }
 
 function calendario(pr) {
@@ -745,9 +758,9 @@ const tiempoCache = {};
 function previa(p) {
   const rival = p.rival;
   const previos = [
-    ...partidos().filter(x => x.rival === rival && jugado(x) && x.id !== p.id).map(x => ({ fecha: x.fecha, a: +x.gf, b: +x.gc })),
+    ...partidos().filter(x => x.rival === rival && jugado(x) && x.id !== p.id).map(x => ({ fecha: x.fecha, a: +x.gf, b: +x.gc, id: x.id })),
     ...(web.grupo_partidos || []).filter(x => x.estado === 'jugado' && [x.local, x.visitante].includes(EQUIPO) && [x.local, x.visitante].includes(rival))
-      .map(x => ({ fecha: x.fecha, a: x.local === EQUIPO ? +x.gf : +x.gc, b: x.local === EQUIPO ? +x.gc : +x.gf }))
+      .map(x => ({ fecha: x.fecha, a: x.local === EQUIPO ? +x.gf : +x.gc, b: x.local === EQUIPO ? +x.gc : +x.gf, g: x }))
   ].filter((x, i, arr) => arr.findIndex(y => y.fecha === x.fecha) === i).sort((a, b) => b.fecha.localeCompare(a.fecha));
   const bal = { w: 0, d: 0, l: 0 }; previos.forEach(x => bal[x.a > x.b ? 'w' : x.a < x.b ? 'l' : 'd']++);
   const cl = (web.clasificacion || []).find(c => c.equipo === rival);
@@ -757,9 +770,9 @@ function previa(p) {
     <div class="h2h">
       <div class="row spread"><span class="muted">Contra ${esc(rival)}</span>${cl ? `<span class="muted">${cl.pos}º · ${cl.pts} pts</span>` : ''}</div>
       ${previos.length ? `<div class="row spread" style="margin-top:6px"><b class="h2h-bal"><span class="w">${bal.w}G</span> <span class="d">${bal.d}E</span> <span class="l">${bal.l}P</span></b>
-        <span class="h2h-res">${previos.slice(0, 4).map(x => `<i class="${x.a > x.b ? 'w' : x.a < x.b ? 'l' : 'd'}">${x.a}-${x.b}</i>`).join('')}</span></div>`
+        <span class="h2h-res">${previos.slice(0, 4).map(x => `<i class="${x.a > x.b ? 'w' : x.a < x.b ? 'l' : 'd'} clic" ${x.id ? `data-act="ver-ult" data-id="${esc(x.id)}" tabindex="0" role="button"` : attrsPartido(x.g, EQUIPO)}>${x.a}-${x.b}</i>`).join('')}</span></div>`
         : `<div style="margin-top:6px"><b>Primer enfrentamiento</b> <span class="muted">· aún no hemos jugado contra ellos</span></div>`}
-      ${formaDe(rival).length ? `<div class="row spread" style="margin-top:8px"><span class="muted">Su forma</span>${formaHTML(formaDe(rival))}</div>` : ''}
+      ${formaDe(rival).length ? `<div class="row spread" style="margin-top:8px"><span class="muted">Su forma</span>${formaHTML(formaListaDe(rival), rival)}</div>` : ''}
     </div>${versus(rival)}${peligrosos(rival)}</div>`;
 }
 // Jugadores del rival a vigilar: goleadores y tarjetas, según Valldor
@@ -1093,7 +1106,7 @@ const V = {
         <table>
           <thead><tr><th class="n">#</th><th>Equipo</th><th class="forma-col">Forma</th><th class="n">PTS</th><th class="n">J</th><th class="n">G</th><th class="n">E</th><th class="n">P</th><th class="n">DG</th></tr></thead>
           <tbody>${c.map(e => `<tr class="${e.equipo === EQUIPO ? 'me' : ''} ${e.sim ? 'sim-cambia' : ''} clic" data-act="ver-equipo" data-eq="${esc(e.equipo)}">
-            <td class="n">${e.pos}</td><td><span class="row" style="gap:6px">${mov(e)}${logo(e.equipo)}<span>${esc(e.equipo)}</span></span></td><td class="forma-col"><span class="forma-mini">${formaDe(e.equipo).map((r, k) => `<i class="${r}" style="--k:${k}" title="${{ w: 'Ganó', d: 'Empató', l: 'Perdió' }[r]}"></i>`).join('')}</span></td><td class="n"><b>${e.pts}</b></td>
+            <td class="n">${e.pos}</td><td><span class="row" style="gap:6px">${mov(e)}${logo(e.equipo)}<span>${esc(e.equipo)}</span></span></td><td class="forma-col"><span class="forma-mini">${formaListaDe(e.equipo).map((o, k) => `<i class="${o.r}" style="--k:${k}" ${attrsPartido(o.g, e.equipo)} aria-label="${{ w: 'Ganó', d: 'Empató', l: 'Perdió' }[o.r]}"></i>`).join('')}</span></td><td class="n"><b>${e.pts}</b></td>
             <td class="n">${e.pj ?? ''}</td><td class="n">${e.g ?? ''}</td><td class="n">${e.e ?? ''}</td><td class="n">${e.p ?? ''}</td>
             <td class="n">${e.dg > 0 ? '+' : ''}${e.dg}</td></tr>`).join('')}</tbody>
         </table>
@@ -1324,8 +1337,66 @@ function ocultarPop(ya) {
   const fuera = () => { const v = document.querySelector('.pop-ult'); if (!v) return; v.classList.add('sale'); setTimeout(() => v.remove(), 160); };
   if (ya) fuera(); else popT = setTimeout(fuera, 140);
 }
+// Desde qué equipo se lee el resultado: el del cuadrito, el resaltado en la liga o ninguno
+function eqDe(el, g) { const e = el.dataset.eq || ([g.local, g.visitante].includes(resaltado) ? resaltado : ''); return [g.local, g.visitante].includes(e) ? e : ''; }
+const jornadaDe = f => (jornadasLiga().find(j => j.f === f) || {}).n;
+function mostrarPopG(el) {
+  const g = grupoPorClave(el.dataset.g); if (!g) return;
+  const k = claveG(g), eq = eqDe(el, g), r = resDe(g, eq), jug = g.estado === 'jugado';
+  let v = document.querySelector('.pop-ult');
+  if (v && v.dataset.id === k + eq) return;
+  if (v) v.remove();
+  const j = jornadaDe(g.fecha);
+  v = document.createElement('div'); v.className = `pop-ult ${r}`; v.dataset.id = k + eq;
+  v.innerHTML = `<button type="button" data-act="pop-g" data-g="${esc(k)}" data-eq="${esc(eq)}">
+    <div class="pu-vs">${logo(g.local, 34)}<em>vs</em>${logo(g.visitante, 34)}</div>
+    <b class="pu-rival">${esc(g.local)} <span class="muted">–</span> ${esc(g.visitante)}</b>
+    <div class="pu-res">${jug ? `${g.gf}-${g.gc} <span>${r ? { w: 'GANA', d: 'EMPATA', l: 'PIERDE' }[r] + ' ' + esc(abrev(eq)) : +g.gf > +g.gc ? 'GANA ' + esc(abrev(g.local)) : +g.gf < +g.gc ? 'GANA ' + esc(abrev(g.visitante)) : 'EMPATE'}</span>` : g.estado === 'aplazado' ? '<span>APLAZADO</span>' : `${esc(g.hora || 'vs')} <span>PENDIENTE</span>`}</div>
+    <div class="pu-meta">${j ? 'Jornada ' + j + ' · ' : ''}${fFecha(g.fecha)}${g.campo ? '<br>' + esc(g.campo.split('·')[0].trim()) : ''}</div>
+    <div class="pu-ver">Toca para ver el partido</div></button>`;
+  colocarPop(v, el);
+}
+function abrirGrupo(el, k, eq) {
+  const d = document.getElementById('modal'); if (d.open) d.close();
+  const l = el.querySelector && el.querySelector('.logo');
+  const base = l || el; zoomDesde = { escudo: base, r: base.getBoundingClientRect() };
+  resumenGrupo(k, eq);
+}
+// Ficha de un partido entre otros equipos del grupo
+function resumenGrupo(k, eq) {
+  const g = grupoPorClave(k); if (!g) return;
+  const jug = g.estado === 'jugado', r = resDe(g, eq), j = jornadaDe(g.fecha);
+  const lado = n => `<button type="button" class="rg-eq" data-act="ver-equipo" data-eq="${esc(n)}">${logo(n, 64)}<b>${esc(n)}</b>${(() => { const c = (web.clasificacion || []).find(e => e.equipo === n); return c ? `<span class="muted">${c.pos}º · ${c.pts} pts</span>` : ''; })()}</button>`;
+  const misma = (web.grupo_partidos || []).filter(x => x.fecha === g.fecha && claveG(x) !== k);
+  const antes = (web.grupo_partidos || []).filter(x => x.estado === 'jugado' && claveG(x) !== k && [x.local, x.visitante].includes(g.local) && [x.local, x.visitante].includes(g.visitante));
+  const filaG = x => `<div class="rg-otro clic" ${attrsPartido(x, eq)}>${logo(x.local, 18)}<span>${esc(abrev(x.local))}</span><b>${x.estado === 'jugado' ? `${x.gf}-${x.gc}` : esc(x.hora || '–')}</b><span>${esc(abrev(x.visitante))}</span>${logo(x.visitante, 18)}</div>`;
+  const ganador = jug ? (+g.gf > +g.gc ? g.local : +g.gf < +g.gc ? g.visitante : '') : '';
+  modalFuera = true; modal(`<button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
+    <div class="marcador ${r}">
+      <div class="muted">${j ? 'Jornada ' + j + ' · ' : ''}${fFecha(g.fecha, jug ? '' : g.hora)}</div>
+      <div class="rg-cara">${lado(g.local)}<span class="res">${jug ? rodillo(`${g.gf}-${g.gc}`) : g.estado === 'aplazado' ? 'APLAZ.' : 'vs'}</span>${lado(g.visitante)}</div>
+      <div class="muted" style="margin-top:6px">${esc(g.campo || '')}</div>
+      ${jug ? `<div class="veredicto">${r ? { w: 'VICTORIA', d: 'EMPATE', l: 'DERROTA' }[r] + ' · ' + esc(eq) : ganador ? 'GANA ' + esc(ganador) : 'EMPATE'}</div>` : ''}
+    </div>
+    ${antes.length ? `<h3>Otros enfrentamientos</h3>${antes.map(filaG).join('')}` : ''}
+    ${misma.length ? `<h3>Resto de la jornada${j ? ' ' + j : ''}</h3>${misma.map(filaG).join('')}` : ''}
+    <p class="muted" style="font-size:11px;margin-top:12px">Toca un escudo para ver la ficha del equipo.</p>`);
+}
+function colocarPop(v, el) {
+  document.body.appendChild(v);
+  const o = el.getBoundingClientRect(), w = v.offsetWidth, h = v.offsetHeight;
+  const x = Math.max(8, Math.min(innerWidth - w - 8, o.left + o.width / 2 - w / 2));
+  const arriba = o.top - h - 10 > 70;
+  v.style.left = x + 'px'; v.style.top = (arriba ? o.top - h - 10 : o.bottom + 10) + 'px';
+  v.style.setProperty('--fx', (o.left + o.width / 2 - x) + 'px');
+  v.classList.add(arriba ? 'arriba' : 'abajo');
+  v.addEventListener('mouseenter', () => clearTimeout(popT));
+  v.addEventListener('mouseleave', () => ocultarPop());
+  v._de = el;
+}
 function mostrarPop(el) {
   clearTimeout(popT);
+  if (el.dataset.act === 'ver-g') return mostrarPopG(el);
   const p = getPartido(el.dataset.id || el.dataset.pid); if (!p) return;
   let v = document.querySelector('.pop-ult');
   if (v && v.dataset.id === p.id) return;
@@ -1338,23 +1409,15 @@ function mostrarPop(el) {
     <div class="pu-res">${jugado(p) ? `${p.gf}-${p.gc} <span>${{ w: 'VICTORIA', d: 'EMPATE', l: 'DERROTA' }[r]}</span>` : p.estado === 'aplazado' ? '<span>APLAZADO</span>' : `${esc(p.hora || 'vs')} <span>${p.fecha === hoy() ? 'HOY' : 'PRÓXIMO'}</span>`}</div>
     <div class="pu-meta">${p.jornada ? 'Jornada ' + esc(p.jornada) + ' · ' : ''}${fFecha(p.fecha)}${p.campo ? '<br>' + esc(p.campo.split('·')[0].trim()) : ''}</div>
     <div class="pu-ver">Toca para ver el partido</div></button>`;
-  document.body.appendChild(v);
-  const o = el.getBoundingClientRect(), w = v.offsetWidth, h = v.offsetHeight;
-  const x = Math.max(8, Math.min(innerWidth - w - 8, o.left + o.width / 2 - w / 2));
-  const arriba = o.top - h - 10 > 70;
-  v.style.left = x + 'px'; v.style.top = (arriba ? o.top - h - 10 : o.bottom + 10) + 'px';
-  v.style.setProperty('--fx', (o.left + o.width / 2 - x) + 'px');
-  v.classList.add(arriba ? 'arriba' : 'abajo');
-  v.addEventListener('mouseenter', () => clearTimeout(popT));
-  v.addEventListener('mouseleave', () => ocultarPop());
+  colocarPop(v, el);
 }
 if (matchMedia('(hover: hover)').matches) {
-  document.addEventListener('mouseover', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], .cal-dia[data-pid]'); if (el) mostrarPop(el); });
-  document.addEventListener('mouseout', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], .cal-dia[data-pid]'); if (el && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.pop-ult'))) ocultarPop(); });
+  document.addEventListener('mouseover', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], [data-act="ver-g"], .cal-dia[data-pid]'); if (el) mostrarPop(el); });
+  document.addEventListener('mouseout', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], [data-act="ver-g"], .cal-dia[data-pid]'); if (el && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.pop-ult'))) ocultarPop(); });
   addEventListener('scroll', () => ocultarPop(true), { passive: true });
 }
-document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el) mostrarPop(el); });
-document.addEventListener('keydown', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ocultarPop(true); abrirDesde(el, el.dataset.id); } }, true);
+document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], [data-act="ver-g"]'); if (el) mostrarPop(el); });
+document.addEventListener('keydown', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], [data-act="ver-g"]'); if (el && el.tagName !== 'BUTTON' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ocultarPop(true); el.dataset.act === 'ver-g' ? abrirGrupo(el, el.dataset.g, el.dataset.eq) : abrirDesde(el, el.dataset.id); } }, true);
 /* ---------- Resultados de toda la liga por jornadas, con un equipo resaltado ---------- */
 let resaltado = EQUIPO;
 function jornadasLiga() {
@@ -1386,8 +1449,8 @@ function resultadosLiga() {
     const pid = nuestro ? (partidos().find(x => x.fecha === p.fecha && [p.local, p.visitante].includes(x.rival)) || {}).id : '';
     const marc = p.estado === 'jugado' ? `${p.gf}-${p.gc}` : esc(p.hora || (p.estado === 'aplazado' ? 'APLAZ.' : '–'));
     return `<div class="rl-fila" data-l="${esc(p.local)}" data-v="${esc(p.visitante)}" data-rl="${esc(resDe(p, p.local))}" data-rv="${esc(resDe(p, p.visitante))}">
-      ${lado(p.local)}<${pid ? `button type="button" data-act="ver-ult" data-id="${esc(pid)}"` : 'span'} class="rl-marc ${p.estado === 'jugado' ? '' : 'pend'}">${marc}</${pid ? 'button' : 'span'}>${lado(p.visitante, true)}
-      <i class="rl-tag"></i></div>`;
+      ${lado(p.local)}<button type="button" ${pid ? `data-act="ver-ult" data-id="${esc(pid)}"` : `data-act="ver-g" data-g="${esc(claveG(p))}" data-eq=""`} class="rl-marc ${p.estado === 'jugado' ? '' : 'pend'}">${marc}</button>${lado(p.visitante, true)}
+      <i class="rl-tag" ${p.estado === 'jugado' ? (pid ? `data-act="ver-ult" data-id="${esc(pid)}"` : `data-act="ver-g" data-g="${esc(claveG(p))}" data-eq=""`) : ''}></i></div>`;
   };
   return `<h2>Resultados de la liga</h2>
     <div class="rl-equipos">${eqs.map(e => `<button type="button" class="rl-chip" data-act="resaltar" data-eq="${esc(e)}" title="${esc(e)}">${logo(e, 26)}</button>`).join('')}</div>
@@ -1512,13 +1575,13 @@ function comprobarSubida() {
 function rivalesComunes(n) {
   const gp = (web.grupo_partidos || []).filter(p => p.estado === 'jugado');
   const de = (eq, x) => gp.filter(p => [p.local, p.visitante].includes(eq) && [p.local, p.visitante].includes(x))
-    .map(p => ({ r: resDe(p, eq), m: p.local === eq ? `${p.gf}-${p.gc}` : `${p.gc}-${p.gf}` }));
+    .map(p => ({ r: resDe(p, eq), m: p.local === eq ? `${p.gf}-${p.gc}` : `${p.gc}-${p.gf}`, g: p, eq }));
   const eqs = (web.clasificacion || []).map(e => e.equipo).filter(x => x !== n && x !== EQUIPO);
   const l = eqs.map(x => ({ x, nos: de(EQUIPO, x), ellos: de(n, x) })).filter(o => o.nos.length && o.ellos.length);
   if (!l.length) return '';
   const pts = arr => arr.reduce((s, o) => s + (o.r === 'w' ? 3 : o.r === 'd' ? 1 : 0), 0);
   const a = l.reduce((s, o) => s + pts(o.nos), 0), b = l.reduce((s, o) => s + pts(o.ellos), 0);
-  const chip = o => `<b class="rc-r ${o.r}">${o.m}</b>`;
+  const chip = o => `<b class="rc-r ${o.r} clic" ${attrsPartido(o.g, o.eq)}>${o.m}</b>`;
   return `<h3>Rivales comunes</h3><div class="rivales-comunes">
     <div class="rc-fila rc-cab"><span></span><span>Nosotros</span><span>Ellos</span></div>
     ${l.map(o => `<div class="rc-fila"><span class="rc-eq">${logo(o.x, 18)} ${esc(abrev(o.x))}</span><span>${o.nos.map(chip).join(' ')}</span><span>${o.ellos.map(chip).join(' ')}</span></div>`).join('')}
@@ -1575,7 +1638,7 @@ function matchCard(p) {
         <div class="muted">${fFecha(p.fecha, p.hora)}${p.campo ? ' · ' + esc(p.campo) : ''}</div>
         ${p.jornada ? `<span class="tag">J${p.jornada}</span> ` : ''}${p.estado === 'aplazado' ? '<span class="tag manual">aplazado</span> ' : ''}${p.fuente !== 'web' ? `<span class="tag manual">manual</span>` : `<span class="tag">web</span>`}${!jugado(p) && p.estado !== 'aplazado' ? ' ' + dificultad(p.rival) : ''}
       </div>
-      <div class="score ${r || ''}">${jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? '–' : 'vs'}</div>
+      <div class="score ${r || ''}" ${jugado(p) ? `data-act="ver-ult" data-id="${esc(p.id)}"` : ''}>${jugado(p) ? `${p.gf}-${p.gc}` : p.estado === 'aplazado' ? '–' : 'vs'}</div>
     </div>`;
 }
 
@@ -2335,7 +2398,9 @@ document.addEventListener('click', e => {
   else if (act === 'wrapped') wrapped();
   else if (act === 'vienes') { marcarAsistencia(a.dataset.p, yoId(), a.dataset.v); toast(a.dataset.v === 'si' ? '¡Apuntado! 💪' : a.dataset.v === 'no' ? 'Apuntado que no vienes' : 'Apuntado como duda'); }
   else if (act === 'ver-ult') { ocultarPop(true); abrirDesde(a, a.dataset.id); }
-  else if (act === 'pop-ult') { const o = document.querySelector(`.form [data-id="${CSS.escape(a.dataset.id)}"]`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"] .logo`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"]`); ocultarPop(true); abrirDesde(o || a, a.dataset.id); }
+  else if (act === 'ver-g') { ocultarPop(true); const g = grupoPorClave(a.dataset.g); abrirGrupo(a, a.dataset.g, a.dataset.eq || (g && [g.local, g.visitante].includes(resaltado) ? resaltado : '')); }
+  else if (act === 'pop-g') { const de = a.closest('.pop-ult')._de; ocultarPop(true); abrirGrupo(de && de.isConnected ? de : a, a.dataset.g, a.dataset.eq); }
+  else if (act === 'pop-ult') { const de0 = a.closest('.pop-ult')._de; const o = (de0 && de0.isConnected && (de0.querySelector('.logo') || de0)) || document.querySelector(`.form [data-id="${CSS.escape(a.dataset.id)}"]`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"] .logo`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"]`); ocultarPop(true); abrirDesde(o || a, a.dataset.id); }
   else if (act === 'resaltar') { resaltado = a.dataset.eq; pintarResaltado(true); vibrar(6); }
   else if (act === 'novedades-fuera') { novedadesFuera = true; const c = a.closest('.novedades'); if (c) c.remove(); guardarVisita(); }
   else if (act === 'albumes') albumes();
