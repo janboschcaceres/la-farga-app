@@ -181,7 +181,7 @@ def main(outdir, dest):
             i += 4
 
     data = {"equipo": EQUIPO, "competicion": "F7 Baix Llobregat (Cornellà–Hospitalet) 2026-27", "grupo": "Viernes - B",
-            "fase": "Primer Split", "fuente": f"{BASE}/equipo/{EQUIPO_ID}", "actualizado": datetime.date.today().isoformat(),
+            "fase": "Primer Split", "fuente": f"{BASE}/equipo/{EQUIPO_ID}", "actualizado": datetime.date.today().isoformat(), "actualizado_ts": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
             "clasificacion": clas, "plantilla": plantilla,
             "partidos": sorted([p for p in partidos if not p.get("descansa")], key=lambda p: p["fecha"]),
             "descansos": sorted(p["jornada"] for p in partidos if p.get("descansa")),

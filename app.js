@@ -357,7 +357,7 @@ function evolucion() {
   const fechas = [...new Set(gp.map(p => p.fecha))].sort();
   const eqs = (web.clasificacion || []).map(e => e.equipo);
   const acc = Object.fromEntries(eqs.map(e => [e, { pts: 0, dg: 0, gf: 0 }]));
-  const puntos = [];
+  const puntos = [], ordenes = [];
   for (const f of fechas) {
     for (const p of gp.filter(x => x.fecha === f)) {
       const a = +p.gf, b = +p.gc, L = acc[p.local], Vv = acc[p.visitante];
@@ -367,8 +367,9 @@ function evolucion() {
     }
     const orden = [...eqs].sort((x, y) => acc[y].pts - acc[x].pts || acc[y].dg - acc[x].dg || acc[y].gf - acc[x].gf);
     puntos.push({ f, pos: orden.indexOf(EQUIPO) + 1, pts: acc[EQUIPO] ? acc[EQUIPO].pts : 0 });
+    ordenes.push(orden);
   }
-  return { puntos, n: eqs.length };
+  return { puntos, n: eqs.length, ordenes };
 }
 function graficas() {
   const { puntos, n } = evolucion();
@@ -381,21 +382,21 @@ function graficas() {
   const maxG = Math.max(1, ...ps.map(p => Math.max(+p.gf, +p.gc)));
   const bw = Math.min(28, (W - 40) / Math.max(1, ps.length) / 2.4);
   return `<h2>📈 Evolución en la tabla</h2>
-    <div class="card"><svg viewBox="0 0 ${W} ${H + 18}" width="100%" role="img" aria-label="Posición de La Farga jornada a jornada">
+    <div class="card grafica"><svg viewBox="0 0 ${W} ${H + 18}" width="100%" role="img" aria-label="Posición de La Farga jornada a jornada">
       ${Array.from({ length: n }, (_, i) => `<line x1="${px}" x2="${W - 8}" y1="${y(i + 1)}" y2="${y(i + 1)}" stroke="var(--line)" stroke-width="1"/>
         <text x="${px - 8}" y="${y(i + 1) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${i + 1}º</text>`).join('')}
-      <path d="${linea}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      ${puntos.map((p, i) => `<circle cx="${x(i)}" cy="${y(p.pos)}" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.5"><title>${fFecha(p.f)}: ${p.pos}º con ${p.pts} pts</title></circle>
+      <path class="g-linea" pathLength="1" d="${linea}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      ${puntos.map((p, i) => `<circle class="g-punto" style="--i:${i}" cx="${x(i)}" cy="${y(p.pos)}" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.5"><title>${fFecha(p.f)}: ${p.pos}º con ${p.pts} pts</title></circle>
         <text x="${x(i)}" y="${H + 14}" text-anchor="middle" font-size="10" fill="var(--muted)">${new Date(p.f + 'T12:00').getDate()}/${new Date(p.f + 'T12:00').getMonth() + 1}</text>`).join('')}
     </svg><div class="muted" style="font-size:12px">Posición tras cada viernes de liga. Ahora: ${puntos[puntos.length - 1].pos}º.</div></div>
     <h2>⚽ Goles por partido</h2>
-    <div class="card"><svg viewBox="0 0 ${W} ${H + 18}" width="100%" role="img" aria-label="Goles a favor y en contra por partido">
+    <div class="card grafica"><svg viewBox="0 0 ${W} ${H + 18}" width="100%" role="img" aria-label="Goles a favor y en contra por partido">
       <line x1="10" x2="${W - 8}" y1="${H}" y2="${H}" stroke="var(--line)"/>
       ${ps.map((p, i) => { const cx = 20 + (i + .5) * (W - 30) / ps.length, h = v => v / maxG * (H - 24);
-        return `<rect x="${cx - bw - 1}" y="${H - h(+p.gf)}" width="${bw}" height="${h(+p.gf)}" rx="3" fill="var(--accent)"><title>A favor: ${p.gf}</title></rect>
-          <rect x="${cx + 1}" y="${H - h(+p.gc)}" width="${bw}" height="${h(+p.gc)}" rx="3" fill="var(--loss)" opacity=".75"><title>En contra: ${p.gc}</title></rect>
-          <text x="${cx - bw / 2 - 1}" y="${H - h(+p.gf) - 4}" text-anchor="middle" font-size="11" fill="var(--text)">${p.gf}</text>
-          <text x="${cx + bw / 2 + 1}" y="${H - h(+p.gc) - 4}" text-anchor="middle" font-size="11" fill="var(--text)">${p.gc}</text>
+        return `<rect class="g-barra" style="--i:${i}" x="${cx - bw - 1}" y="${H - h(+p.gf)}" width="${bw}" height="${h(+p.gf)}" rx="3" fill="var(--accent)"><title>A favor: ${p.gf}</title></rect>
+          <rect class="g-barra" style="--i:${i}" x="${cx + 1}" y="${H - h(+p.gc)}" width="${bw}" height="${h(+p.gc)}" rx="3" fill="var(--loss)" opacity=".75"><title>En contra: ${p.gc}</title></rect>
+          <text class="g-num" style="--i:${i}" x="${cx - bw / 2 - 1}" y="${H - h(+p.gf) - 4}" text-anchor="middle" font-size="11" fill="var(--text)">${p.gf}</text>
+          <text class="g-num" style="--i:${i}" x="${cx + bw / 2 + 1}" y="${H - h(+p.gc) - 4}" text-anchor="middle" font-size="11" fill="var(--text)">${p.gc}</text>
           <text x="${cx}" y="${H + 14}" text-anchor="middle" font-size="10" fill="var(--muted)">${p.jornada ? 'J' + p.jornada : ''}</text>`; }).join('')}
     </svg><div class="row" style="gap:14px;font-size:12px"><span><i class="ley" style="background:var(--accent)"></i>A favor</span><span><i class="ley" style="background:var(--loss)"></i>En contra</span></div></div>`;
 }
@@ -661,6 +662,7 @@ function resumenPartido(id) {
       <button class="btn ghost" value="editar" formnovalidate>Editar / añadir asistencias</button>
       <button class="btn" value="cancel" formnovalidate>Cerrar</button>
     </div>`, (fd, accion) => { if (accion === 'editar') setTimeout(() => editarPartido(id), 0); });
+  if (r === 'w' && !resumenPartido.visto?.has(id)) { (resumenPartido.visto ||= new Set()).add(id); setTimeout(confeti, 450); }
 }
 
 const V = {
@@ -683,7 +685,7 @@ const V = {
 
       ${bannerPartido(prox)}
       <h2>Próximo partido ${prox ? `<button class="btn ghost sm" data-act="ver-equipo" data-eq="${esc(prox.rival)}">Estudiar rival</button>` : ''}</h2>
-      ${prox ? matchCard(prox) : `<div class="card empty">No hay próximo partido.<br><button class="btn sm" style="margin-top:10px" data-act="nuevo-partido">Añadir partido</button></div>`}
+      ${prox ? matchCard(prox) + comoLlegar(prox) : `<div class="card empty">No hay próximo partido.<br><button class="btn sm" style="margin-top:10px" data-act="nuevo-partido">Añadir partido</button></div>`}
       ${prox ? asistenciaCard(prox) : ''}
       ${enfermeria(false)}
 
@@ -696,8 +698,9 @@ const V = {
         <div class="kpi"><b>${top ? esc(corto(top.j)) : '–'}</b><span>Pichichi${top ? ' · ' + top.gol : ''}</span></div>
       </div>
       <div class="card" style="padding:12px">${galeria({ id: 'general' }, '<h2 style="margin-top:0">📸 Galería del equipo</h2>')}</div>
+      ${haceCuanto()}
       ${patrocinadores()}
-      <p class="muted" style="margin-top:18px">Datos de la web actualizados el ${esc(web.actualizado || '–')}.</p>`;
+`;
   },
 
   partidos() {
@@ -718,18 +721,25 @@ const V = {
 
   tabla() {
     const c = web.clasificacion || [];
+    // cuánto ha subido o bajado cada equipo respecto a la jornada anterior
+    const { ordenes } = evolucion(), previa = ordenes.length > 1 ? ordenes[ordenes.length - 2] : null;
+    const mov = e => {
+      if (!previa || previa.indexOf(e.equipo) < 0) return '<span class="mov igual">–</span>';
+      const d = previa.indexOf(e.equipo) + 1 - e.pos;
+      return d > 0 ? `<span class="mov sube" title="Sube ${d}">▲${d > 1 ? d : ''}</span>` : d < 0 ? `<span class="mov baja" title="Baja ${-d}">▼${d < -1 ? -d : ''}</span>` : '<span class="mov igual">–</span>';
+    };
     return `
       <h2>${esc(web.grupo || 'Clasificación')}</h2>
       <div class="card" style="padding:4px 8px">
         <table>
           <thead><tr><th class="n">#</th><th>Equipo</th><th class="n">PTS</th><th class="n">J</th><th class="n">G</th><th class="n">E</th><th class="n">P</th><th class="n">DG</th></tr></thead>
           <tbody>${c.map(e => `<tr class="${e.equipo === EQUIPO ? 'me' : ''} clic" data-act="ver-equipo" data-eq="${esc(e.equipo)}">
-            <td class="n">${e.pos}</td><td><span class="row" style="gap:6px">${logo(e.equipo)}<span>${esc(e.equipo)}</span></span></td><td class="n"><b>${e.pts}</b></td>
+            <td class="n">${e.pos}</td><td><span class="row" style="gap:6px">${mov(e)}${logo(e.equipo)}<span>${esc(e.equipo)}</span></span></td><td class="n"><b>${e.pts}</b></td>
             <td class="n">${e.pj ?? ''}</td><td class="n">${e.g ?? ''}</td><td class="n">${e.e ?? ''}</td><td class="n">${e.p ?? ''}</td>
             <td class="n">${e.dg > 0 ? '+' : ''}${e.dg}</td></tr>`).join('')}</tbody>
         </table>
       </div>
-      <p class="muted">Toca un equipo para ver su ficha. Datos de Valldor · ${esc(web.actualizado || '')}</p>
+      <p class="muted">Toca un equipo para ver su ficha.</p>${haceCuanto()}
       ${grupoPorFecha()}`;
   },
 
@@ -826,8 +836,9 @@ function asistenciaCard(p) {
   if (!portero) avisos.push('🧤 No hay portero confirmado.');
   if (faltan) avisos.push(`${faltan} sin responder.`);
   return `<div class="card"><div class="row spread" style="margin-bottom:8px"><b>¿Quién viene?</b><span class="muted">${n} confirmados</span></div>
+    <p class="muted pista-desliza">Desliza un nombre: → voy · ← no voy</p>
     <div class="aviso ${n >= 7 && portero ? 'ok' : ''}">${avisos.join('<br>')}</div>
-    ${js.map(j => lesionDe(j.id) ? `<div class="row spread" style="padding:5px 0;opacity:.6"><span>${esc(corto(j))}</span><span class="tag baja">LESIONADO</span></div>` : `<div class="row spread" style="padding:5px 0"><span>${esc(corto(j))}</span>
+    ${js.map(j => lesionDe(j.id) ? `<div class="row spread" style="padding:5px 0;opacity:.6"><span>${esc(corto(j))}</span><span class="tag baja">LESIONADO</span></div>` : `<div class="row spread asis-fila ${a[j.id] ? 'r-' + a[j.id] : ''}" data-p="${esc(p.id)}" data-j="${esc(j.id)}" style="padding:5px 0"><span class="asis-nombre">${esc(corto(j))}</span>
       <div class="seg" style="flex:0 0 150px">${['si', 'duda', 'no'].map(v =>
         `<button data-act="asist" data-p="${esc(p.id)}" data-j="${esc(j.id)}" data-v="${v}" class="${a[j.id] === v ? 'on-' + v : ''}">${{ si: 'Sí', duda: '?', no: 'No' }[v]}</button>`).join('')}</div></div>`).join('')}
   </div>`;
@@ -858,6 +869,7 @@ function modal(html, onSubmit) {
   f.onsubmit = e => {
     const accion = e.submitter && e.submitter.value;
     if (accion === 'cancel') { if (dlg.dataset.zoom) { e.preventDefault(); cerrarModal(dlg); } return; }
+    vibrar(12);
     onSubmit(new FormData(f), accion, f);
   };
   dlg.showModal();
@@ -1043,6 +1055,188 @@ function pintarCuenta() {
 function tickCuenta() { pintarCuenta(); clearTimeout(cuentaT); cuentaT = setTimeout(tickCuenta, 1000 - (Date.now() % 1000) + 5); }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { objetivoCuenta(); tickCuenta(); } });
 
+// Abre Google Maps con el campo del partido (sin el número de pista)
+function comoLlegar(p) {
+  const lugar = (p.campo || '').split('·')[0].trim();
+  if (!lugar) return '';
+  const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lugar);
+  return `<a class="btn ghost como-llegar" href="${url}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Cómo llegar · ${esc(lugar)}</a>`;
+}
+
+/* ---------- Pantalla de entrada: destello dorado y el escudo vuela a la cabecera ---------- */
+function entrada() {
+  const capa = document.getElementById('entrada'); if (!capa) return;
+  const img = capa.querySelector('img'), dest = document.querySelector('.brand img');
+  if (sinMov || !img.animate || !dest) { capa.remove(); return; }
+  const empezar = () => {
+    capa.classList.add('brilla');
+    setTimeout(() => {
+      const a = img.getBoundingClientRect(), b = dest.getBoundingClientRect();
+      const dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+      img.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(${b.height / a.height})` }],
+        { duration: 700, easing: 'cubic-bezier(.65, 0, .25, 1)', fill: 'forwards' });
+      capa.animate([{ backgroundColor: 'rgba(8,7,6,1)' }, { backgroundColor: 'rgba(8,7,6,0)' }], { duration: 700, easing: 'ease-in', fill: 'forwards' })
+        .onfinish = () => capa.remove();
+    }, 650);
+  };
+  img.complete ? empezar() : (img.onload = empezar, img.onerror = () => capa.remove());
+}
+
+/* ---------- Aparecer al entrar en pantalla (gráficas, tarjetas) ---------- */
+const vistoObs = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('visto'); vistoObs.unobserve(e.target); }
+}), { threshold: .25 }) : null;
+function observar(raiz, revelar) {
+  raiz.querySelectorAll('.grafica').forEach(el => { if (sinMov || !vistoObs) el.classList.add('visto'); else vistoObs.observe(el); });
+  // al entrar en una pestaña, lo que queda por debajo de la pantalla aparece suave al llegar con el scroll
+  if (!revelar || sinMov || !vistoObs) return;
+  const limite = innerHeight - 40;
+  raiz.querySelectorAll(':scope > .card, :scope > h2, :scope > .grid2, :scope > .grid3, :scope > .sponsors, :scope > .banner').forEach(el => {
+    if (el.getBoundingClientRect().top > limite) { el.classList.add('revela'); vistoObs.observe(el); }
+  });
+}
+
+/* ---------- Carga: bloques que brillan mientras llegan los datos ---------- */
+let cargado = false;
+function esqueleto() {
+  const b = (h, w = '100%') => `<div class="sk" style="height:${h}px;width:${w}"></div>`;
+  return `<div class="esqueleto">${b(150)}<div class="sk-t"></div>${b(96)}${b(120)}<div class="sk-t"></div><div class="grid3">${b(70)}${b(70)}${b(70)}</div>${b(90)}</div>`;
+}
+
+/* ---------- Confeti dorado ---------- */
+function confeti() {
+  if (sinMov || !document.body.animate) return;
+  const capa = document.createElement('div'); capa.className = 'confeti';
+  const dlg = document.getElementById('modal'); (dlg.open ? dlg : document.body).appendChild(capa); // por encima de la ficha abierta
+  const cols = ['#f2a823', '#ffd27a', '#d68a10', '#fff1c9', '#b8860b'];
+  for (let i = 0; i < 90; i++) {
+    const c = document.createElement('i'), x = Math.random() * 100, d = 1600 + Math.random() * 1600;
+    c.style.cssText = `left:${x}vw;background:${cols[i % cols.length]};width:${5 + Math.random() * 6}px;height:${8 + Math.random() * 8}px`;
+    capa.appendChild(c);
+    c.animate([{ transform: `translate(0,-20px) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${(Math.random() - .5) * 160}px, 105vh) rotate(${(Math.random() - .5) * 900}deg)`, opacity: .9 }],
+      { duration: d, delay: Math.random() * 500, easing: 'cubic-bezier(.25,.6,.4,1)', fill: 'both' });
+  }
+  setTimeout(() => capa.remove(), 3800);
+}
+
+/* ---------- Frescura de los datos y conexión ---------- */
+function haceCuanto() {
+  const ts = web.actualizado_ts ? new Date(web.actualizado_ts) : web.actualizado ? new Date(web.actualizado + 'T10:00') : null;
+  if (!ts || isNaN(ts)) return '';
+  const min = Math.max(0, Math.round((Date.now() - ts) / 60000));
+  const t = min < 1 ? 'ahora mismo' : min < 60 ? `hace ${min} min` : min < 1440 ? `hace ${Math.round(min / 60)} h` : min < 2880 ? 'ayer' : `hace ${Math.round(min / 1440)} días`;
+  return `<p class="frescura"><i class="${navigator.onLine === false ? 'off' : 'on'}"></i>Datos de Valldor actualizados ${t}</p>`;
+}
+function avisoRed() {
+  let b = document.getElementById('sin-red');
+  if (navigator.onLine !== false) { if (b) { b.classList.add('fuera'); setTimeout(() => b.remove(), 400); } return; }
+  if (b) return;
+  b = document.createElement('div'); b.id = 'sin-red'; b.textContent = 'Sin conexión · mostrando los datos guardados';
+  document.body.appendChild(b);
+}
+addEventListener('online', () => { avisoRed(); toast('Conexión recuperada'); render(); });
+addEventListener('offline', () => { avisoRed(); render(); });
+
+/* ---------- Buscador: jugadores, rivales y partidos ---------- */
+const normal = t => (t || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function resultadosBusqueda(q) {
+  q = normal(q).trim(); if (q.length < 2) return '<p class="muted">Escribe al menos 2 letras.</p>';
+  const out = [];
+  for (const j of jugadores().filter(j => !j.invitado))
+    if (normal(`${j.apodo} ${j.nombre} ${j.camiseta || j.dorsal}`).includes(q))
+      out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="tab" data-v="plantilla"><span class="num">${esc(j.camiseta || j.dorsal || '')}</span><span><b>${esc(j.apodo || j.nombre)}</b><small>${esc(j.nombre || '')} · La Farga</small></span></button>`);
+  for (const e of (web.clasificacion || []))
+    if (normal(e.equipo).includes(q))
+      out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="equipo" data-v="${esc(e.equipo)}">${logo(e.equipo, 26)}<span><b>${esc(e.equipo)}</b><small>${e.pos}º · ${e.pts} pts</small></span></button>`);
+  for (const [eq, r] of Object.entries(web.rivales || {}))
+    for (const j of r.plantilla || [])
+      if (normal(j.nombre).includes(q))
+        out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="equipo" data-v="${esc(eq)}">${logo(eq, 26)}<span><b>${esc(j.nombre)}</b><small>#${esc(j.dorsal)} · ${esc(eq)}${j.goles ? ' · ' + j.goles + ' goles' : ''}</small></span></button>`);
+  for (const p of partidos())
+    if (normal(`${p.rival} j${p.jornada} ${fFecha(p.fecha)}`).includes(q))
+      out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="partido" data-v="${esc(p.id)}"><span class="c-vs">${VS(p.rival)}</span><span><b>${p.jornada ? 'J' + p.jornada + ' · ' : ''}${esc(p.rival)}</b><small>${fFecha(p.fecha)}${jugado(p) ? ' · ' + p.gf + '-' + p.gc : ''}</small></span></button>`);
+  return out.length ? out.slice(0, 30).join('') : '<p class="muted">Nada con ese nombre.</p>';
+}
+function buscar() {
+  modalFuera = true;
+  modal(`<button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
+    <h3 style="margin-left:34px">Buscar</h3>
+    <input id="q-busq" type="search" placeholder="Jugador, rival o partido..." autocomplete="off" enterkeyhint="search">
+    <div id="res-busq" class="lista-busq"><p class="muted">Escribe al menos 2 letras.</p></div>`, () => {});
+  const i = document.getElementById('q-busq');
+  i.oninput = () => { document.getElementById('res-busq').innerHTML = resultadosBusqueda(i.value); };
+  i.onkeydown = e => { if (e.key === 'Enter') e.preventDefault(); };
+  setTimeout(() => i.focus(), 50);
+}
+document.getElementById('btn-buscar').onclick = buscar;
+
+/* ---------- Vibración suave (Android) ---------- */
+const vibrar = (ms = 12) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* sin vibración */ } };
+
+/* ---------- Deslizar en "¿Quién viene?": derecha = voy, izquierda = no voy ---------- */
+function marcarAsistencia(pid, jid, v) {
+  const p = getPartido(pid); if (!p) return;
+  p.asistencia = { ...(p.asistencia || {}), [jid]: v };
+  guardarPartido(p); vibrar(v === 'si' ? 15 : [10, 40, 10]);
+}
+(() => {
+  let fila = null, x0 = 0, y0 = 0, dx = 0, horiz = null;
+  addEventListener('touchstart', e => {
+    fila = e.target.closest('.asis-fila'); if (!fila || e.target.closest('button')) { fila = null; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; horiz = null; fila.style.transition = 'none';
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (!fila) return;
+    const t = e.touches[0]; dx = t.clientX - x0;
+    if (horiz === null && (Math.abs(dx) > 8 || Math.abs(t.clientY - y0) > 8)) horiz = Math.abs(dx) > Math.abs(t.clientY - y0);
+    if (!horiz) return;
+    const lim = Math.max(-110, Math.min(110, dx));
+    fila.style.transform = `translateX(${lim}px)`;
+    fila.classList.toggle('tira-si', dx > 70); fila.classList.toggle('tira-no', dx < -70);
+  }, { passive: true });
+  addEventListener('touchend', () => {
+    if (!fila) return;
+    const f = fila; fila = null;
+    f.style.transition = ''; f.style.transform = ''; f.classList.remove('tira-si', 'tira-no');
+    if (horiz && Math.abs(dx) > 70) marcarAsistencia(f.dataset.p, f.dataset.j, dx > 0 ? 'si' : 'no');
+  }, { passive: true });
+})();
+
+/* ---------- Tirar hacia abajo para recargar ---------- */
+async function recargarDatos() {
+  try {
+    const r = await fetch('data/liga.json', { cache: 'no-cache' }); const j = await r.json();
+    if (!web.actualizado_ts || (j.actualizado_ts || j.actualizado) >= (web.actualizado_ts || web.actualizado)) web = j;
+    pintarCabecera(); objetivoCuenta(); render(); toast('Datos actualizados'); vibrar(10);
+  } catch (e) { toast('Sin conexión: no se ha podido recargar'); }
+}
+(() => {
+  const ind = document.createElement('div'); ind.id = 'recarga'; ind.innerHTML = '<img src="icons/escudo.webp" alt="">';
+  document.body.appendChild(ind);
+  let y0 = null, d = 0, ocupado = false;
+  addEventListener('touchstart', e => {
+    y0 = (scrollY <= 0 && !ocupado && !document.getElementById('modal').open && !e.target.closest('.asis-fila')) ? e.touches[0].clientY : null; d = 0;
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (y0 === null) return;
+    d = Math.max(0, e.touches[0].clientY - y0);
+    if (scrollY > 0) { y0 = null; d = 0; ind.style.cssText = ''; return; }
+    const k = Math.min(1, d / 90);
+    ind.style.cssText = `opacity:${k};transform:translate(-50%, ${Math.min(d, 110) * .6}px) rotate(${d * 3}deg) scale(${.6 + .4 * k})`;
+    ind.classList.toggle('listo', d > 90);
+  }, { passive: true });
+  addEventListener('touchend', async () => {
+    if (y0 === null) return; y0 = null;
+    if (d > 90 && !ocupado) {
+      ocupado = true; ind.classList.add('girando'); vibrar(8);
+      await Promise.all([recargarDatos(), new Promise(r => setTimeout(r, 800))]);
+      ind.classList.remove('girando'); ocupado = false;
+    }
+    ind.classList.remove('listo'); ind.style.cssText = '';
+  }, { passive: true });
+})();
+
 /* ---------- Movimiento ---------- */
 const ORDEN = ['inicio', 'partidos', 'tabla', 'plantilla', 'stats'];
 const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1051,7 +1245,10 @@ let calAnim = 0;
 // dir: 1 entra por la derecha, -1 por la izquierda, 0 sin animación (refrescos de datos)
 function render(dir = 0) {
   const main = document.getElementById('view');
+  const ff = document.querySelector('.fab-foto'); if (ff) ff.hidden = !assets;
+  if (!cargado && !web.actualizado) { main.innerHTML = esqueleto(); return; }
   main.innerHTML = V[tab]();
+  observar(main, !!dir);
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   document.querySelector('.tabs').style.setProperty('--i', ORDEN.indexOf(tab));
   objetivoCuenta(); if (!cuentaT) tickCuenta(); else pintarCuenta();
@@ -1096,7 +1293,7 @@ function contar(raiz) {
   addEventListener('touchstart', e => {
     const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now();
     enCal = !!e.target.closest('.cal');
-    bloqueado = !!e.target.closest('dialog, input, textarea, select, .galeria, table') || document.getElementById('modal').open;
+    bloqueado = !!e.target.closest('dialog, input, textarea, select, .galeria, table, .asis-fila') || document.getElementById('modal').open;
   }, { passive: true });
   addEventListener('touchend', e => {
     if (bloqueado) return;
@@ -1162,6 +1359,7 @@ addEventListener('scroll', () => {
 }, { passive: true });
 
 document.addEventListener('click', e => {
+  if (!e.target.closest('#fab')) document.getElementById('fab')?.classList.remove('abierto');
   const t = e.target.closest('[data-tab]');
   if (t) { irA(t.dataset.tab); return; }
   const a = e.target.closest('[data-act]');
@@ -1173,6 +1371,7 @@ document.addEventListener('click', e => {
   else if (act === 'ver-equipo') { const d = document.getElementById('modal'); if (d.open) d.close(); else zoomDesde = a.getBoundingClientRect(); fichaEquipo(a.dataset.eq); }
   else if (act === 'votar') {
     const yo = yoId(); if (!yo) return;
+    vibrar(15);
     store.setVoto({ id: `${a.dataset.p}__${yo}`, partido: a.dataset.p, votante: yo, voto: a.dataset.v }).then(() => reabrir(a.dataset.p));
   }
   else if (act === 'nueva-lesion') editarLesion();
@@ -1191,11 +1390,17 @@ document.addEventListener('click', e => {
   else if (act === 'editar-lesion') editarLesion(a.dataset.id);
   else if (act === 'nuevo-jugador') editarJugador();
   else if (act === 'editar-jugador') editarJugador(a.dataset.id);
-  else if (act === 'asist') {
-    const p = getPartido(a.dataset.p);
-    p.asistencia = { ...(p.asistencia || {}), [a.dataset.j]: a.dataset.v };
-    guardarPartido(p);
+  else if (act === 'fab') { const f = document.getElementById('fab'), on = !f.classList.contains('abierto'); f.classList.toggle('abierto', on); a.setAttribute('aria-expanded', on); vibrar(8); }
+  else if (act === 'fab-ir') {
+    document.getElementById('fab').classList.remove('abierto');
+    const v = a.dataset.v;
+    if (v === 'evento') editarEvento(null, hoy()); else if (v === 'partido') editarPartido(); else if (v === 'lesion') editarLesion();
   }
+  else if (act === 'buscar-ir') {
+    const d = document.getElementById('modal'), t = a.dataset.tipo, v = a.dataset.v; d.close();
+    if (t === 'tab') irA(v); else if (t === 'equipo') fichaEquipo(v); else if (t === 'partido') resumenPartido(v);
+  }
+  else if (act === 'asist') marcarAsistencia(a.dataset.p, a.dataset.j, a.dataset.v);
 });
 document.addEventListener('change', e => {
   const a = e.target.closest('[data-act]');
@@ -1203,11 +1408,13 @@ document.addEventListener('change', e => {
   if (a.dataset.act === 'soy') {
     try { localStorage.setItem('lafarga.yo', a.value); } catch (er) { /* sin almacenamiento */ }
     const d = document.getElementById('modal'); const id = d.dataset.partido; if (id) reabrir(id);
-  } else if (a.dataset.act === 'subir' && a.files.length) subirFotos(a.dataset.p, [...a.files]);
+  } else if (a.dataset.act === 'subir' && a.files.length) { document.getElementById('fab')?.classList.remove('abierto'); subirFotos(a.dataset.p, [...a.files]); }
 });
 document.getElementById('btn-ajustes').onclick = ajustes;
 
 async function init() {
+  entrada();
+  avisoRed();
   render();
   try {
     const r = await fetch('data/liga.json', { cache: 'no-cache' });
@@ -1215,7 +1422,8 @@ async function init() {
     if (!web.actualizado || j.actualizado > web.actualizado) web = j;
     pintarCabecera();
   } catch (e) { toast('Sin conexión: usando datos guardados'); }
-  render();
+  cargado = true;
+  render(1);
   conectarNube();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 }

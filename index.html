@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="entrada" aria-hidden="true"><img src="icons/escudo.webp" alt=""></div>
   <header class="top">
     <div class="brand">
       <img src="icons/escudo.webp" alt="Escudo de La Farga FC">
@@ -24,7 +25,8 @@
         <p id="sub">Viernes · Grupo B</p>
       </div>
     </div>
-    <button class="icon-btn" id="btn-ajustes" aria-label="Ajustes">⚙︎</button>
+    <div class="acciones-top"><button class="icon-btn" id="btn-buscar" aria-label="Buscar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
+    <button class="icon-btn" id="btn-ajustes" aria-label="Ajustes">⚙︎</button></div>
     <div id="cuenta" class="cuenta" hidden aria-live="off"></div>
   </header>
 
@@ -38,6 +40,15 @@
     <button data-tab="stats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
   </nav>
 
+  <div id="fab" class="fab">
+    <div class="fab-menu" role="menu">
+      <button data-act="fab-ir" data-v="evento" role="menuitem"><span>Evento</span>📅</button>
+      <button data-act="fab-ir" data-v="partido" role="menuitem"><span>Partido</span>⚽</button>
+      <button data-act="fab-ir" data-v="lesion" role="menuitem"><span>Lesión</span>🩹</button>
+      <label class="fab-foto" role="menuitem"><span>Foto o vídeo</span>📸<input type="file" accept="image/*,video/*" multiple data-act="subir" data-p="general" hidden></label>
+    </div>
+    <button class="fab-btn" data-act="fab" aria-label="Añadir" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
   <dialog id="modal"><form method="dialog" id="modal-form"></form></dialog>
 
   <script src="config.js"></script>
