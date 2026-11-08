@@ -125,12 +125,13 @@ async function conectarNube() {
     db = await window.claude.use('db');
   }
   if (!db) return;
+  db = conCola(db);
   db.collection('jugadores').onSnapshot(s => { local.jugadores = s.docs.map(d => d.data()); save(); render(); }, () => {});
   db.collection('partidos').onSnapshot(s => {
     local.partidos = Object.fromEntries(s.docs.map(d => [d.id, d.data()])); save(); render();
   }, () => {});
   db.collection('porras').onSnapshot(s => { local.porras = s.docs.map(d => d.data()); save(); render(); }, () => {});
-  for (const c of ['notas', 'jugadas', 'zonas']) db.collection(c).onSnapshot(s => { local[c] = s.docs.map(d => d.data()); save(); if (!document.getElementById('modal').open) render(); }, () => {});
+  for (const c of ['notas', 'jugadas', 'zonas']) db.collection(c).onSnapshot(s => { local[c] = s.docs.map(d => d.data()); save(); if (!document.getElementById('modal').open) render(); if (c === 'jugadas' && enlacePendiente) abrirEnlace(); }, () => {});
   db.collection('animos').onSnapshot(s => { local.animos = s.docs.map(d => d.data()); save(); pintarMuro(); }, () => {});
   db.collection('votos').onSnapshot(s => { local.votos = s.docs.map(d => d.data()); save(); render(); }, () => {});
   db.collection('fotos').onSnapshot(s => { fotos = s.docs.map(d => d.data()); render(); }, () => {});
@@ -371,6 +372,7 @@ function fichaEquipo(n) {
     ${pend.length ? `<table><tbody>${pend.slice(0, 4).map(fila).join('')}</tbody></table>` : '<p class="muted">Nada pendiente.</p>'}
     <h3>Plantilla (${r.plantilla.length})</h3>
     <table><tbody>${r.plantilla.map(j => `<tr><td class="n">${esc(j.dorsal)}</td><td>${esc(j.nombre)}</td><td class="muted" style="font-size:13px">${esc([j.posicion, j.edad ? j.edad + ' a.' : ''].filter(Boolean).join(' · '))}</td><td class="n">${j.pj} PJ</td></tr>`).join('')}</tbody></table>
+    <div class="actions">${botonCompartir('e=' + n, `${n} · ficha en la app de La Farga`)}</div>
     <p class="muted" style="margin:0">Datos de Valldor · ${esc(web.actualizado || '')}</p>`, () => {});
   const dlgT = document.getElementById('modal'); dlgT.dataset.tinte = n; if (!propio) tenirFicha(n);
 }
@@ -720,6 +722,7 @@ function resumenPartido(id) {
     ${noj.length ? `<p class="muted" style="margin:4px 0 0">No jugaron: ${noj.map(esc).join(' · ')}</p>` : ''}
     ${p.acta ? `<p class="muted" style="margin:0"><a style="color:var(--accent)" target="_blank" rel="noopener" href="https://virtual.fundaciovalldor7.com/cornella-hospitalet-f7-es-26-27/partido/${esc(p.acta)}">Ver acta en Valldor ↗</a></p>` : ''}
     <div class="actions">
+      ${botonCompartir('p=' + id, `La Farga vs ${p.rival} · ${fFecha(p.fecha)}`)}
       <button class="btn ghost" value="editar" formnovalidate>Editar / añadir asistencias</button>
       <button class="btn" value="cancel" formnovalidate>Cerrar</button>
     </div>`, (fd, accion) => { if (accion === 'editar') setTimeout(() => editarPartido(id), 0); });
@@ -910,7 +913,7 @@ function textoConvocatoria(p) {
     nada.length ? `⏳ Sin responder: ${nada.join(', ')} 👀` : '',
     si.length < 7 ? `\n⚠️ Faltan ${7 - si.length} para ser 7.` : '',
     '',
-    'Confirmad en la app 👉 ' + location.href.split('#')[0],
+    'Confirmad en la app 👉 ' + baseApp(),
   ];
   return t.filter((x, i) => x !== '' || t[i - 1] !== '').join('\n').trim();
 }
@@ -1139,6 +1142,7 @@ function cromo(jid, desde) {
     <h3>🏅 Logros <span class="muted" style="font:500 12px var(--sans, Inter)">${lg.filter(l => l.ok).length} de ${lg.length}</span></h3>
     <div class="logros">${lg.map((l, k) => `<div class="logro ${l.ok ? 'ok' : ''} ${l.nuevo ? 'nuevo' : ''}" style="--k:${k}"><span class="lg-ico">${l.i}</span><b>${esc(l.t)}</b><small>${esc(l.d)}</small></div>`).join('')}</div>
     <div class="actions">
+      ${botonCompartir('j=' + jid, `Cromo de ${corto(j)} · La Farga FC`)}
       <button type="button" class="btn ghost" data-act="comparar-con" data-j="${esc(jid)}">Comparar</button>
       <button class="btn ghost" value="editar" formnovalidate>Editar</button>
       <button class="btn" value="cancel" formnovalidate>Cerrar</button>
@@ -1271,7 +1275,7 @@ function pizHTML() {
     <div class="piz-pasos"><span class="muted">Pasos</span><span class="piz-dots">${piz.pasos.map((_, k) => `<button type="button" data-act="piz-paso" data-v="${k}" class="${k === piz.i ? 'on' : ''}">${k + 1}</button>`).join('')}</span>
       <button type="button" class="btn ghost sm" data-act="piz-mas">+ Paso</button><button type="button" class="btn sm" data-act="piz-play">▶ Reproducir</button></div>
     <div class="piz-acc"><button type="button" class="btn ghost sm" data-act="piz-borrar-fl">Borrar flechas</button><button type="button" class="btn ghost sm" data-act="piz-quitar-paso" ${piz.pasos.length < 2 ? 'disabled' : ''}>Quitar paso</button><button type="button" class="btn ghost sm" data-act="piz-nueva">Empezar de cero</button></div>
-    <div class="piz-guardar"><input data-piz-nombre maxlength="40" placeholder="Nombre de la jugada (córner, salida…)" value="${esc(piz.nombre)}"><button type="button" class="btn sm" data-act="piz-guardar">Guardar</button></div>
+    <div class="piz-guardar"><input data-piz-nombre maxlength="40" placeholder="Nombre de la jugada (córner, salida…)" value="${esc(piz.nombre)}"><button type="button" class="btn sm" data-act="piz-guardar">Guardar</button>${piz.id ? botonCompartir('jugada=' + piz.id, 'Jugada: ' + (piz.nombre || 'pizarra'), 'btn ghost sm') : ''}</div>
     ${local.jugadas.length ? `<h3>Jugadas guardadas</h3><div class="piz-lista">${[...local.jugadas].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '')).map(j => `<div class="piz-item ${piz.id === j.id ? 'on' : ''}"><button type="button" data-act="piz-cargar" data-id="${esc(j.id)}">▶ ${esc(j.nombre || 'Sin nombre')} <small class="muted">${j.pasos.length} paso${j.pasos.length !== 1 ? 's' : ''}</small></button><button type="button" class="piz-x" data-act="piz-del" data-id="${esc(j.id)}" aria-label="Borrar">✕</button></div>`).join('')}</div>` : ''}`;
 }
 function pizSVG() {
@@ -1515,6 +1519,186 @@ function dibujarEscudo(capa, img, luego) {
   setTimeout(() => { linea.remove(); luego(); }, 1350);
 }
 
+/* ================= Tanda CG–CZ ================= */
+
+/* ---------- CK · Tabla con filtros ---------- */
+let filtroTabla = 'real';
+function tablaFiltrada(modo) {
+  const gp = (web.grupo_partidos || []).filter(p => p.estado === 'jugado');
+  const eqs = (web.clasificacion || []).map(e => e.equipo);
+  const js = jornadasLiga(), mitad = Math.ceil(js.length / 2), fechas2 = new Set(js.filter(j => j.n > mitad).map(j => j.f));
+  const filas = eqs.map(e => {
+    let l = gp.filter(p => [p.local, p.visitante].includes(e)).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    l = modo === 'ult5' ? l.slice(-5) : l.filter(p => fechas2.has(p.fecha));
+    const r = { equipo: e, pj: l.length, g: 0, e: 0, p: 0, gf: 0, gc: 0, pts: 0 };
+    for (const p of l) { const x = resDe(p, e); r.gf += p.local === e ? +p.gf : +p.gc; r.gc += p.local === e ? +p.gc : +p.gf; r[{ w: 'g', d: 'e', l: 'p' }[x]]++; r.pts += x === 'w' ? 3 : x === 'd' ? 1 : 0; }
+    r.dg = r.gf - r.gc; return r;
+  }).sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
+  filas.forEach((r, i) => { r.pos = i + 1; });
+  return { filas, mitad, vacia: filas.every(r => !r.pj) };
+}
+
+/* ---------- CM · Deslizar hacia abajo para cerrar ---------- */
+(() => {
+  const dlg = document.getElementById('modal'); if (!dlg) return;
+  let y0 = 0, dy = 0, activo = false, t0 = 0;
+  const hoja = () => matchMedia('(max-width: 599px)').matches;
+  dlg.addEventListener('touchstart', e => {
+    activo = false;
+    if (!hoja() || dlg.scrollTop > 2 || dlg.querySelector('input[name="clave"]')) return;
+    if (e.target.closest('input, textarea, select, .piz-campo, .campo-mitad, .nf-escala, .galeria, .cmp-chips, .radar, .vi-pista')) return;
+    y0 = e.touches[0].clientY; dy = 0; t0 = Date.now(); activo = true;
+  }, { passive: true });
+  dlg.addEventListener('touchmove', e => {
+    if (!activo) return;
+    dy = e.touches[0].clientY - y0;
+    if (dy < 0 || dlg.scrollTop > 2) { if (dy < -8) activo = false; dlg.style.transform = ''; return; }
+    dlg.getAnimations().forEach(a => a.finish());
+    dlg.style.transition = 'none'; dlg.style.transform = `translateY(${dy * (dy > 40 ? 1 : .6)}px)`;
+    dlg.style.setProperty('--arrastre', Math.min(1, dy / 260));
+  }, { passive: true });
+  dlg.addEventListener('touchend', () => {
+    if (!activo) return; activo = false;
+    const v = dy / Math.max(1, Date.now() - t0);
+    if (dy > 130 || (dy > 50 && v > .6)) {
+      dlg.style.transition = 'transform .24s cubic-bezier(.4, 0, 1, 1)'; dlg.style.transform = 'translateY(105%)';
+      vibrar(8);
+      setTimeout(() => {
+        dlg.dataset.escudo = ''; dlg.dataset.zoom = ''; dlg.dataset.giro = '';
+        if (dlg._escudo) { dlg._escudo.style.visibility = ''; dlg._escudo = null; }
+        dlg.close(); dlg.style.transition = ''; dlg.style.transform = ''; dlg.style.removeProperty('--arrastre');
+      }, 240);
+    } else if (dy > 0) {
+      dlg.style.transition = 'transform .32s cubic-bezier(.2, .8, .2, 1)'; dlg.style.transform = ''; dlg.style.removeProperty('--arrastre');
+      setTimeout(() => { dlg.style.transition = ''; }, 320);
+    }
+  });
+})();
+
+/* ---------- CS · La temporada de un vistazo ---------- */
+function temporadaVistazo() {
+  const ps = partidos().filter(p => p.fecha); if (!ps.length) return '';
+  const dia = f => Date.UTC(+f.slice(0, 4), +f.slice(5, 7) - 1, +f.slice(8, 10));
+  const iso = t => new Date(t).toISOString().slice(0, 10);
+  const ini = dia(ps[0].fecha), fin = Math.max(dia(ps[ps.length - 1].fecha), dia(hoy()));
+  const semanas = [];
+  for (let t = ini, k = 0; t <= fin + 3 * 864e5; t += 7 * 864e5, k++) {
+    const p = ps.find(x => Math.abs(dia(x.fecha) - t) <= 3 * 864e5);
+    semanas.push({ f: iso(t), p, k });
+  }
+  const meses = {}; semanas.forEach(s => (meses[s.f.slice(0, 7)] = meses[s.f.slice(0, 7)] || []).push(s));
+  const est = s => !s.p ? 'libre' : s.p.estado === 'aplazado' ? 'aplaz' : jugado(s.p) ? res(s.p) : s.p.fecha === hoy() ? 'hoy' : 'pend';
+  const c = { w: 0, d: 0, l: 0 }; ps.filter(jugado).forEach(p => c[res(p)]++);
+  return `<h2>🗓️ La temporada de un vistazo</h2><div class="card grafica vistazo">
+    ${Object.entries(meses).map(([m, l]) => `<div class="vz-mes"><span class="vz-nom">${MESES_L[+m.slice(5) - 1].slice(0, 3)}</span><div class="vz-sem">${l.map(s => {
+      const e = est(s), t = s.p ? `${s.p.jornada ? 'J' + s.p.jornada + ' · ' : ''}${s.p.rival}${jugado(s.p) ? ' ' + s.p.gf + '-' + s.p.gc : ''}` : 'Sin partido';
+      return `<span class="vz-c ${e}" style="--k:${s.k}" ${s.p ? `data-act="ver-ult" data-id="${esc(s.p.id)}" tabindex="0" role="button"` : ''} aria-label="${esc(fFecha(s.f) + ' · ' + t)}">${s.p && jugado(s.p) ? `<b>${s.p.gf}-${s.p.gc}</b>` : s.p && s.p.jornada ? `<i>J${esc(s.p.jornada)}</i>` : ''}</span>`; }).join('')}</div></div>`).join('')}
+    <div class="vz-ley"><span><i class="vz-c w"></i>${c.w} ganado${c.w !== 1 ? 's' : ''}</span><span><i class="vz-c d"></i>${c.d} empatado${c.d !== 1 ? 's' : ''}</span><span><i class="vz-c l"></i>${c.l} perdido${c.l !== 1 ? 's' : ''}</span><span><i class="vz-c pend"></i>por jugar</span></div></div>`;
+}
+
+/* ---------- CT · Alarma de convocatoria ---------- */
+function alarmaConvocatoria(p) {
+  if (!p) return '';
+  const dias = Math.round((Date.parse(p.fecha) - Date.parse(hoy())) / 864e5);
+  if (dias < 0 || dias > 2) return '';
+  const js = jugadores().filter(j => !j.invitado && !lesionDe(j.id)), a = p.asistencia || {};
+  const si = js.filter(j => a[j.id] === 'si'), sin = js.filter(j => !a[j.id]), duda = js.filter(j => a[j.id] === 'duda');
+  if (si.length >= 8) return '';
+  const cuando = dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : 'el ' + fFecha(p.fecha).split(' ')[0];
+  return `<div class="card alarma-conv"><div class="ac-cab"><span class="ac-ico">🚨</span><div><b>Faltan jugadores para ${cuando}</b><span>${si.length} de 8 confirmados${si.length < 7 ? ` · ¡no llegamos a 7!` : ''}</span></div></div>
+    <div class="ac-puntos">${Array.from({ length: 8 }, (_, k) => `<i class="${k < si.length ? 'on' : ''}" style="--k:${k}"></i>`).join('')}</div>
+    ${sin.length ? `<p class="ac-lista"><span class="muted">Sin contestar:</span> ${sin.map(j => esc(corto(j))).join(', ')}</p>` : ''}
+    ${duda.length ? `<p class="ac-lista"><span class="muted">En duda:</span> ${duda.map(j => esc(corto(j))).join(', ')}</p>` : ''}
+    <a class="btn wa sm" href="https://wa.me/?text=${encodeURIComponent(textoConvocatoria(p))}" target="_blank" rel="noopener">Avisar por WhatsApp</a></div>`;
+}
+
+/* ---------- CV · Enlaces directos ---------- */
+const baseApp = () => (window.LAFARGA || {}).urlPublica || location.href.split('#')[0];
+const enlace = h => baseApp() + '#' + h;
+const botonCompartir = (h, t, cls = 'btn ghost') => `<button type="button" class="${cls} compartir" data-act="compartir" data-h="${esc(h)}" data-t="${esc(t)}" aria-label="Compartir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg>Compartir</button>`;
+async function compartir(h, titulo) {
+  const url = enlace(encodeURIComponent(h).replace(/%3D/g, '='));
+  try { if (navigator.share) { await navigator.share({ title: titulo, text: titulo, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(`${titulo}\n${url}`); toast('Enlace copiado: pégalo en WhatsApp'); }
+  catch (e) { window.open('https://wa.me/?text=' + encodeURIComponent(`${titulo}\n${url}`), '_blank', 'noopener'); }
+}
+let enlacePendiente = '';
+function abrirEnlace() {
+  const h = enlacePendiente || decodeURIComponent(location.hash.slice(1)); if (!h) return;
+  const i = h.indexOf('='), k = i < 0 ? h : h.slice(0, i), v = i < 0 ? '' : h.slice(i + 1);
+  enlacePendiente = '';
+  const limpiar = () => { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* sin historial */ } };
+  if (k === 'p' && getPartido(v)) resumenPartido(v);
+  else if (k === 'j' && jugadores().some(j => j.id === v)) cromo(v);
+  else if (k === 'e' && (web.clasificacion || []).some(e => e.equipo === v)) fichaEquipo(v);
+  else if (k === 'g' && grupoPorClave(v)) resumenGrupo(v, '');
+  else if (k === 't' && V[v]) irA(v);
+  else if (k === 'jugada') { const j = local.jugadas.find(x => x.id === v); if (j) { pizarra(j); setTimeout(pizPlay, 400); } else { enlacePendiente = h; return; } }
+  else return;
+  limpiar();
+}
+addEventListener('hashchange', abrirEnlace);
+
+/* ---------- CX · Sin conexión: lo apuntado se guarda y se envía al volver ---------- */
+const COLA = 'lafarga.cola';
+function conCola(base) {
+  const cola = () => leerLS(COLA, []);
+  let avisado = 0;
+  const meter = op => {
+    const c = cola().filter(o => o.path !== op.path); c.push(op); guardarLS(COLA, c);
+    if (Date.now() - avisado > 4000) { toast('Sin conexión: se enviará al volver la cobertura'); avisado = Date.now(); }
+    pintarCola();
+  };
+  const sinRed = e => !navigator.onLine || /network|fetch|unavailable|timeout|failed/i.test(`${(e && e.code) || ''} ${(e && e.message) || ''}`);
+  async function vaciar() {
+    const c = cola(); if (!c.length || !navigator.onLine) return;
+    const resto = [];
+    for (const op of c) { try { if (op.del) await base.doc(op.path).delete(); else await base.doc(op.path).set(op.data); } catch (e) { resto.push(op); } }
+    guardarLS(COLA, resto); pintarCola();
+    if (c.length > resto.length) toast(`✓ Enviado lo apuntado sin conexión (${c.length - resto.length})`);
+  }
+  addEventListener('online', vaciar); setTimeout(vaciar, 2500);
+  return {
+    collection: c => base.collection(c),
+    doc(path) {
+      const d = base.doc(path);
+      return {
+        onSnapshot: (...a) => d.onSnapshot(...a),
+        async set(data) { if (!navigator.onLine) return meter({ path, data }); try { return await d.set(data); } catch (e) { if (sinRed(e)) return meter({ path, data }); throw e; } },
+        async delete() { if (!navigator.onLine) return meter({ path, del: true }); try { return await d.delete(); } catch (e) { if (sinRed(e)) return meter({ path, del: true }); throw e; } },
+      };
+    },
+  };
+}
+function pintarCola() {
+  const n = leerLS(COLA, []).length; let b = document.querySelector('.cola-pend');
+  if (!n) { if (b) b.remove(); return; }
+  if (!b) { b = document.createElement('div'); b.className = 'cola-pend'; document.body.appendChild(b); }
+  b.textContent = `⏳ ${n} cambio${n !== 1 ? 's' : ''} por enviar`;
+}
+
+/* ---------- CY · Buscador ampliado ---------- */
+function busquedaExtra(q) {
+  const out = [], js = jugadores().filter(j => !j.invitado), s = stats();
+  // atajos: "goles de marcelo", "notas de bili", "logros de jota"
+  const m = q.match(/^(goles|notas?|logros|cromo|stats|asistencias|mvp)\s+(de\s+)?(.+)$/);
+  if (m) for (const j of js.filter(j => normal(`${j.apodo} ${j.nombre}`).includes(m[3].trim()))) {
+    const x = s.find(y => y.j.id === j.id) || {}, n = mediaNota(j.id), lg = logrosDe(j.id, s).filter(l => l.ok).length;
+    const dato = { goles: `⚽ ${x.gol || 0} goles en ${x.pj || 0} partidos`, nota: `📝 Nota media ${n == null ? '–' : n.toFixed(1)}`, notas: `📝 Nota media ${n == null ? '–' : n.toFixed(1)}`, logros: `🏅 ${lg} logros`, asistencias: `🅰️ ${x.asist || 0} asistencias`, mvp: `⭐ ${x.mvp || 0} veces MVP` }[m[1]] || `${x.pj || 0} PJ · ${x.gol || 0} goles · ${x.mvp || 0} MVP`;
+    out.push(`<button class="res-busq atajo" data-act="buscar-ir" data-tipo="cromo" data-v="${esc(j.id)}">${avatar(j, 26)}<span><b>${esc(dato)}</b><small>${esc(corto(j))} · toca para ver su cromo</small></span></button>`);
+  }
+  for (const j of js) for (const l of logrosDe(j.id, s).filter(l => l.ok && normal(l.t + ' ' + l.d).includes(q)))
+    out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="cromo" data-v="${esc(j.id)}"><span class="num">${l.i}</span><span><b>${esc(l.t)} · ${esc(corto(j))}</b><small>Logro: ${esc(l.d)}</small></span></button>`);
+  for (const j of local.jugadas.filter(j => normal(j.nombre || '').includes(q)))
+    out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="jugada" data-v="${esc(j.id)}"><span class="num">🧠</span><span><b>${esc(j.nombre)}</b><small>Jugada de pizarra · ${j.pasos.length} pasos</small></span></button>`);
+  for (const a of local.animos.filter(a => normal(a.texto).includes(q)).slice(-5)) {
+    const j = js.find(x => x.id === a.autor);
+    out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="muro" data-v=""><span class="num">💬</span><span><b>“${esc(a.texto)}”</b><small>${esc(j ? corto(j) : 'Anónimo')} · muro de ánimos</small></span></button>`);
+  }
+  for (const g of (web.grupo_partidos || []).filter(g => ![g.local, g.visitante].includes(EQUIPO) && normal(`${g.local} ${g.visitante}`).includes(q)).slice(0, 8))
+    out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="grupo" data-v="${esc(claveG(g))}"><span class="c-vs">${logo(g.local, 22)}<em>vs</em>${logo(g.visitante, 22)}</span><span><b>${esc(abrev(g.local))} – ${esc(abrev(g.visitante))}</b><small>${fFecha(g.fecha)}${g.estado === 'jugado' ? ' · ' + g.gf + '-' + g.gc : ''}</small></span></button>`);
+  return out;
+}
 const V = {
   inicio() {
     const ps = partidos();
@@ -1526,6 +1710,7 @@ const V = {
     return `
       ${cinta()}
       ${novedades()}
+      ${prox ? alarmaConvocatoria(prox) : ''}
       ${prox ? avisoVienes(prox) : ''}
       ${avisoTarjetas()}
       ${ultimoResultado(ps)}
@@ -1582,22 +1767,26 @@ const V = {
   tabla() {
     const prox = partidos().find(p => !jugado(p) && p.estado !== 'aplazado' && p.fecha >= hoy());
     const real = web.clasificacion || [];
-    const c = simTabla && prox ? simular(real, prox, simTabla) : real;
+    const filt = filtroTabla !== 'real' ? tablaFiltrada(filtroTabla) : null;
+    const c = filt ? filt.filas : simTabla && prox ? simular(real, prox, simTabla) : real;
     const yoR = real.find(e => e.equipo === EQUIPO), yoS = c.find(e => e.equipo === EQUIPO);
     // cuánto ha subido o bajado cada equipo respecto a la jornada anterior
     const { ordenes } = evolucion(), previa = ordenes.length > 1 ? ordenes[ordenes.length - 2] : null;
     const mov = e => {
+      if (filt) return '<span class="mov igual">–</span>';
       if (!previa || previa.indexOf(e.equipo) < 0) return '<span class="mov igual">–</span>';
       const d = previa.indexOf(e.equipo) + 1 - e.pos;
       return d > 0 ? `<span class="mov sube" title="Sube ${d}">▲${d > 1 ? d : ''}</span>` : d < 0 ? `<span class="mov baja" title="Baja ${-d}">▼${d < -1 ? -d : ''}</span>` : '<span class="mov igual">–</span>';
     };
     return `
       <h2>${esc(web.grupo || 'Clasificación')}</h2>
-      ${prox && real.length ? `<div class="card simulador"><div class="muted" style="margin-bottom:8px">Si contra <b style="color:var(--text)">${esc(prox.rival)}</b>…</div>
+      ${!filt && prox && real.length ? `<div class="card simulador"><div class="muted" style="margin-bottom:8px">Si contra <b style="color:var(--text)">${esc(prox.rival)}</b>…</div>
         <div class="seg">${[['', 'Real'], ['w', 'Ganamos'], ['d', 'Empatamos'], ['l', 'Perdemos']].map(([v, t]) =>
           `<button data-act="simular" data-v="${v}" class="${simTabla === v ? 'on-cal' : ''} ${v ? 'sim-' + v : ''}">${t}</button>`).join('')}</div>
         ${simTabla && yoS ? `<div class="sim-res sim-${simTabla}">Quedaríamos <b>${yoS.pos}º</b> con ${yoS.pts} pts <span class="muted">· ahora ${yoR.pos}º${yoS.pos < yoR.pos ? ' · subimos ' + (yoR.pos - yoS.pos) : yoS.pos > yoR.pos ? ' · bajamos ' + (yoS.pos - yoR.pos) : ' · nos quedamos igual'}</span></div>
           <p class="muted" style="margin:6px 0 0;font-size:11px">Por 1 gol de diferencia y sin contar el resto de la jornada.</p>` : ''}</div>` : ''}
+      <div class="seg filtro-tabla">${[['real', 'Real'], ['ult5', 'Últimas 5'], ['vuelta2', '2ª vuelta']].map(([v, t]) => `<button data-act="filtro-tabla" data-v="${v}" class="${filtroTabla === v ? 'on-cal' : ''}">${t}</button>`).join('')}</div>
+      ${filt ? `<p class="muted filtro-nota">${filtroTabla === 'ult5' ? 'Puntos de los últimos 5 partidos de cada equipo.' : filt.vacia ? `La segunda vuelta empieza en la jornada ${filt.mitad + 1}: aún no hay partidos.` : `Solo partidos desde la jornada ${filt.mitad + 1}.`}</p>` : ''}
       <div class="card" style="padding:4px 8px">
         <table>
           <thead><tr><th class="n">#</th><th>Equipo</th><th class="forma-col">Forma</th><th class="n">PTS</th><th class="n">J</th><th class="n">G</th><th class="n">E</th><th class="n">P</th><th class="n">DG</th></tr></thead>
@@ -1647,6 +1836,7 @@ const V = {
         <div class="kpi"><b>${r.pj ? (r.gf / r.pj).toFixed(1) : '–'}</b><span>Goles/partido</span></div>
       </div>
       <button class="btn wrapped-btn" data-act="wrapped">▶ Resumen de la temporada</button>
+      ${temporadaVistazo()}
       ${podio(s)}
       ${comparador(s)}
       ${graficas()}
@@ -1881,7 +2071,8 @@ function resumenGrupo(k, eq) {
     </div>
     ${antes.length ? `<h3>Otros enfrentamientos</h3>${antes.map(filaG).join('')}` : ''}
     ${misma.length ? `<h3>Resto de la jornada${j ? ' ' + j : ''}</h3>${misma.map(filaG).join('')}` : ''}
-    <p class="muted" style="font-size:11px;margin-top:12px">Toca un escudo para ver la ficha del equipo.</p>`);
+    <p class="muted" style="font-size:11px;margin-top:12px">Toca un escudo para ver la ficha del equipo.</p>
+    <div class="actions">${botonCompartir('g=' + k, `${g.local} – ${g.visitante}${jug ? ' ' + g.gf + '-' + g.gc : ''}`)}</div>`);
 }
 function colocarPop(v, el) {
   document.body.appendChild(v);
@@ -2567,7 +2758,7 @@ function resultadosBusqueda(q) {
   const out = [];
   for (const j of jugadores().filter(j => !j.invitado))
     if (normal(`${j.apodo} ${j.nombre} ${j.camiseta || j.dorsal}`).includes(q))
-      out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="tab" data-v="plantilla"><span class="num">${esc(j.camiseta || j.dorsal || '')}</span><span><b>${esc(j.apodo || j.nombre)}</b><small>${esc(j.nombre || '')} · La Farga</small></span></button>`);
+      out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="cromo" data-v="${esc(j.id)}"><span class="num">${esc(j.camiseta || j.dorsal || '')}</span><span><b>${esc(j.apodo || j.nombre)}</b><small>${esc(j.nombre || '')} · La Farga</small></span></button>`);
   for (const e of (web.clasificacion || []))
     if (normal(e.equipo).includes(q))
       out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="equipo" data-v="${esc(e.equipo)}">${logo(e.equipo, 26)}<span><b>${esc(e.equipo)}</b><small>${e.pos}º · ${e.pts} pts</small></span></button>`);
@@ -2578,13 +2769,15 @@ function resultadosBusqueda(q) {
   for (const p of partidos())
     if (normal(`${p.rival} j${p.jornada} ${fFecha(p.fecha)}`).includes(q))
       out.push(`<button class="res-busq" data-act="buscar-ir" data-tipo="partido" data-v="${esc(p.id)}"><span class="c-vs">${VS(p.rival)}</span><span><b>${p.jornada ? 'J' + p.jornada + ' · ' : ''}${esc(p.rival)}</b><small>${fFecha(p.fecha)}${jugado(p) ? ' · ' + p.gf + '-' + p.gc : ''}</small></span></button>`);
-  return out.length ? out.slice(0, 30).join('') : '<p class="muted">Nada con ese nombre.</p>';
+  const extra = busquedaExtra(q);
+  out.unshift(...extra.filter(x => x.includes('atajo'))); out.push(...extra.filter(x => !x.includes('atajo')));
+  return out.length ? out.slice(0, 40).join('') : '<p class="muted">Nada con ese nombre. Prueba con "goles de" y un nombre.</p>';
 }
 function buscar() {
   modalFuera = true;
   modal(`<button class="cerrar" value="cancel" formnovalidate aria-label="Cerrar">✕</button>
     <h3 style="margin-left:34px">Buscar</h3>
-    <input id="q-busq" type="search" placeholder="Jugador, rival o partido..." autocomplete="off" enterkeyhint="search">
+    <input id="q-busq" type="search" placeholder="Jugador, rival, logro, jugada… o «goles de Marcelo»" autocomplete="off" enterkeyhint="search">
     <div id="res-busq" class="lista-busq"><p class="muted">Escribe al menos 2 letras.</p></div>`, () => {});
   const i = document.getElementById('q-busq');
   i.oninput = () => { document.getElementById('res-busq').innerHTML = resultadosBusqueda(i.value); };
@@ -2911,6 +3104,8 @@ document.addEventListener('click', e => {
   else if (act === 'wrapped') wrapped();
   else if (act === 'vienes') { marcarAsistencia(a.dataset.p, yoId(), a.dataset.v); toast(a.dataset.v === 'si' ? '¡Apuntado! 💪' : a.dataset.v === 'no' ? 'Apuntado que no vienes' : 'Apuntado como duda'); }
   else if (act === 'ver-ult') { ocultarPop(true); abrirDesde(a, a.dataset.id); }
+  else if (act === 'filtro-tabla') { const antes = {}; document.querySelectorAll('tr[data-eq]').forEach(tr => antes[tr.dataset.eq] = tr.getBoundingClientRect().top); filtroTabla = a.dataset.v; simTabla = ''; render(); animarTabla(antes); vibrar(8); }
+  else if (act === 'compartir') compartir(a.dataset.h, a.dataset.t);
   else if (act === 'cromo') { const ax = a.querySelector('.avatar, .dorsal'); cromo(a.dataset.id, ax); }
   else if (act === 'comparar') { const id = a.dataset.j, k = comparados.indexOf(id); if (k >= 0) comparados.splice(k, 1); else if (comparados.length < 6) comparados.push(id); else toast('Máximo 6 jugadores'); pintarComparador(); }
   else if (act === 'comparar-con') { const id = a.dataset.j; if (!comparados) comparador(); if (!comparados.includes(id)) comparados.push(id); comparados = comparados.slice(-6); const d = document.getElementById('modal'); d.dataset.escudo = ''; d.close(); if (tab !== 'stats') irA('stats'); else render(); setTimeout(() => { const c = document.querySelector('.comparador'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 700); }
@@ -2982,6 +3177,9 @@ document.addEventListener('click', e => {
   else if (act === 'buscar-ir') {
     const d = document.getElementById('modal'), t = a.dataset.tipo, v = a.dataset.v; d.close();
     if (t === 'tab') irA(v); else if (t === 'equipo') fichaEquipo(v); else if (t === 'partido') resumenPartido(v);
+    else if (t === 'cromo') cromo(v); else if (t === 'grupo') resumenGrupo(v, '');
+    else if (t === 'jugada') { const j = local.jugadas.find(x => x.id === v); if (j) { pizarra(j); setTimeout(pizPlay, 400); } }
+    else if (t === 'muro') { irA('inicio'); setTimeout(() => { const m = document.querySelector('.muro'); if (m) m.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 700); }
   }
   else if (act === 'asist') marcarAsistencia(a.dataset.p, a.dataset.j, a.dataset.v);
 });
@@ -3004,16 +3202,20 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.ma
 async function init() {
   entrada(); chispas();
   avisoRed();
-  render();
+  // abre al instante con los últimos datos guardados en el móvil
+  if (!web.actualizado) { const wc = leerLS('lafarga.web', null); if (wc && wc.actualizado) web = wc; }
+  render(); pintarCola();
   try {
     const r = await fetch('data/liga.json', { cache: 'no-cache' });
     const j = await r.json();
-    if (!web.actualizado || j.actualizado > web.actualizado) web = j;
+    if (!web.actualizado || j.actualizado >= web.actualizado) web = j;
+    guardarLS('lafarga.web', web);
     pintarCabecera();
   } catch (e) { toast('Sin conexión: usando datos guardados'); }
   cargado = true;
   render(1);
   conectarNube();
+  setTimeout(abrirEnlace, 1800);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 init();
