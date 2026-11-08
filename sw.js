@@ -1,5 +1,5 @@
 // Permite abrir la app sin conexión. Los datos de la liga se piden primero a la red.
-const CACHE = 'lafarga-v31';
+const CACHE = 'lafarga-v33';
 const ARCHIVOS = ['./', 'index.html', 'styles.css', 'app.js', 'config.js', 'supa.js', 'manifest.webmanifest', 'icons/escudo.webp', 'icons/fondo-equipo.webp', 'icons/camiseta.webp', 'icons/icon-192.png', 'icons/icon-512.png', 'data/liga.json'];
 
 self.addEventListener('install', e => {
