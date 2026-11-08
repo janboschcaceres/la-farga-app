@@ -2570,6 +2570,8 @@ function ajustes() {
       for (const l of d.lesiones || []) await store.setLesion(l);
       for (const v of d.votos || []) await store.setVoto(v);
       for (const v of d.porras || []) await store.setPorra(v);
+      for (const ev of d.eventos || []) await store.setEvento(ev);
+      for (const c of ['notas', 'animos', 'jugadas', 'zonas']) for (const v of d[c] || []) await store.setDoc(c, v);
       if (db) for (const f of d.fotos || []) await db.doc('fotos/' + f.id).set(f).catch(() => {});
       document.getElementById('modal').close(); toast('Copia importada');
     } catch { toast('Ese archivo no es una copia válida'); }

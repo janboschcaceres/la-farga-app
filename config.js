@@ -3,5 +3,5 @@ window.LAFARGA = {
   supabaseUrl: '',      // https://xxxx.supabase.co
   supabaseClave: '',    // clave "anon public" del proyecto
   emailEquipo: '',      // email de la cuenta compartida del equipo
-  urlPublica: '',       // dirección pública de la app, para los enlaces de compartir
+  urlPublica: 'https://janboschcaceres.github.io/la-farga-app/', // dirección pública, para los enlaces de compartir
 };
