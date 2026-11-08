@@ -626,3 +626,14 @@ body:has(dialog[open]) .fab { opacity: 0; pointer-events: none; }
 @media (hover: hover) { .fab.abierto .fab-btn:hover { transform: scale(1.06); } }
 .fab-menu label { flex-direction: row; font-size: 13px; text-transform: none; letter-spacing: 0; color: var(--text); }
 .fab-menu [hidden] { display: none; }
+
+/* Cabecera compacta: el texto pegado a la izquierda junto al escudo (nunca detrás del contador) y escudos más grandes */
+.top.mini:has(#cuenta:not([hidden])) .brand > div { margin-right: auto; }
+.top.mini .c-vs .logo { width: 32px; height: 32px; }
+@media (min-width: 560px) {
+  .top.mini .c-vs { gap: 8px; } .top.mini .c-vs .logo { width: 40px; height: 40px; } .top.mini .c-vs em { font-size: 14px; }
+  .top.mini .c-u b { font-size: 20px; min-width: 30px; } .top.mini .c-reloj em { font-size: 16px; }
+  .top.mini:has(#cuenta:not([hidden])) .brand h1 { font-size: 17px; letter-spacing: 2px; }
+  .top.mini:has(#cuenta:not([hidden])) .brand > img { height: 38px; }
+}
+@media (max-width: 370px) { .top.mini .c-vs .logo { width: 26px; height: 26px; } }
