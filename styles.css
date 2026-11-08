@@ -519,3 +519,6 @@ body { padding-top: var(--cab, 74px); overflow-anchor: none; }
   border: 1px solid var(--line-gold); box-shadow: 0 10px 28px rgba(0, 0, 0, .55); }
 .cuenta-fantasma.vivo { background: rgba(60, 12, 12, .95); border-color: rgba(255, 90, 90, .5); }
 .top.mini .c-rival { text-overflow: clip; overflow: visible; } .cuenta.sin-nombre .c-rival { text-overflow: clip; }
+/* contador encajado centrado en la cabecera (entre el texto y ajustes) */
+.top.mini .cuenta { margin-left: auto; margin-right: auto; }
+@media (min-width: 560px) { .top.mini .cuenta { position: absolute; left: 50%; translate: -50% 0; margin: 0; } }
