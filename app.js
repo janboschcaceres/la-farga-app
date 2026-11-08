@@ -564,7 +564,7 @@ function calendario(pr) {
         ${celdas.map(f => {
           const its = ev[f] || [], fuera = pr.vista === 'mes' && f.slice(0, 7) !== calMes;
           const partido = its.find(i => i.capa === 'farga');
-          return `<button class="cal-dia ${fuera ? 'fuera' : ''} ${f === h ? 'hoy' : ''} ${f === calDia ? 'sel' : ''} ${partido ? 'jugamos' : ''}" data-act="cal-dia" data-v="${f}">
+          return `<button class="cal-dia ${fuera ? 'fuera' : ''} ${f === h ? 'hoy' : ''} ${f === calDia ? 'sel' : ''} ${partido ? 'jugamos' : ''} ${partido && partido.res ? 'r-' + partido.res : ''}" data-act="cal-dia" data-v="${f}" ${partido ? `data-pid="${esc(partido.id)}"` : ''}>
             <span class="num-dia">${+f.slice(8)}</span>
             ${max ? its.slice(0, max).map(i => chip(i, pr)).join('') + (its.length > max ? `<span class="mas">+${its.length - max}</span>` : '')
               : `<span class="puntos">${its.slice(0, 4).map(i => `<i style="background:${esc(i.color || colorCapa(pr, i.capa))}"></i>`).join('')}</span>`}
@@ -574,7 +574,7 @@ function calendario(pr) {
       <div class="cal-leyenda">${Object.keys(CAPAS).filter(k => pr.capas[k]).map(k => `<span><i style="background:${esc(colorCapa(pr, k))}"></i>${CAPAS[k].nombre}</span>`).join('')}</div>
     </div>
     <h2>${fFecha(calDia)} <span class="row" style="gap:6px"><button class="btn ghost sm" data-act="cal-ajustes">🎨 Personalizar</button><button class="btn sm" data-act="nuevo-evento" data-v="${calDia}">+ Evento</button></span></h2>
-    ${delDia.length ? delDia.map(i => chip(i, pr, true)).join('') : '<div class="card empty" style="padding:16px">Nada este día.</div>'}`;
+    <div class="agenda-dia" data-dia="${calDia}">${delDia.length ? delDia.map((i, k) => chip(i, pr, true).replace('class="agenda-item"', `class="agenda-item" style="--k:${k}"`).replace('" style="--k:' + k + '" style="', '" style="--k:' + k + ';')).join('') : '<div class="card empty" style="padding:16px">Nada este día.</div>'}</div>`;
 }
 
 function editarEvento(id, fecha) {
@@ -1299,17 +1299,17 @@ function ocultarPop(ya) {
 }
 function mostrarPop(el) {
   clearTimeout(popT);
-  const p = getPartido(el.dataset.id); if (!p) return;
+  const p = getPartido(el.dataset.id || el.dataset.pid); if (!p) return;
   let v = document.querySelector('.pop-ult');
   if (v && v.dataset.id === p.id) return;
   if (v) v.remove();
   const r = res(p);
-  v = document.createElement('div'); v.className = `pop-ult ${r}`; v.dataset.id = p.id;
+  v = document.createElement('div'); v.className = `pop-ult ${r || ''}`; v.dataset.id = p.id;
   v.innerHTML = `<button type="button" data-act="pop-ult" data-id="${esc(p.id)}">
     <div class="pu-vs">${VS(p.rival)}</div>
     <b class="pu-rival">${esc(p.rival)}</b>
-    <div class="pu-res">${p.gf}-${p.gc} <span>${{ w: 'VICTORIA', d: 'EMPATE', l: 'DERROTA' }[r]}</span></div>
-    <div class="pu-meta">${p.jornada ? 'Jornada ' + esc(p.jornada) + ' · ' : ''}${fFecha(p.fecha)}</div>
+    <div class="pu-res">${jugado(p) ? `${p.gf}-${p.gc} <span>${{ w: 'VICTORIA', d: 'EMPATE', l: 'DERROTA' }[r]}</span>` : p.estado === 'aplazado' ? '<span>APLAZADO</span>' : `${esc(p.hora || 'vs')} <span>${p.fecha === hoy() ? 'HOY' : 'PRÓXIMO'}</span>`}</div>
+    <div class="pu-meta">${p.jornada ? 'Jornada ' + esc(p.jornada) + ' · ' : ''}${fFecha(p.fecha)}${p.campo ? '<br>' + esc(p.campo.split('·')[0].trim()) : ''}</div>
     <div class="pu-ver">Toca para ver el partido</div></button>`;
   document.body.appendChild(v);
   const o = el.getBoundingClientRect(), w = v.offsetWidth, h = v.offsetHeight;
@@ -1322,8 +1322,8 @@ function mostrarPop(el) {
   v.addEventListener('mouseleave', () => ocultarPop());
 }
 if (matchMedia('(hover: hover)').matches) {
-  document.addEventListener('mouseover', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el) mostrarPop(el); });
-  document.addEventListener('mouseout', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.pop-ult'))) ocultarPop(); });
+  document.addEventListener('mouseover', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], .cal-dia[data-pid]'); if (el) mostrarPop(el); });
+  document.addEventListener('mouseout', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"], .cal-dia[data-pid]'); if (el && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.pop-ult'))) ocultarPop(); });
   addEventListener('scroll', () => ocultarPop(true), { passive: true });
 }
 document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el) mostrarPop(el); });
@@ -2049,7 +2049,7 @@ document.addEventListener('click', e => {
   const act = a.dataset.act;
   if (act === 'nuevo-partido') editarPartido();
   else if (act === 'editar-partido') editarPartido(a.dataset.id);
-  else if (act === 'ver-partido') girarCarta(a, () => resumenPartido(a.dataset.id));
+  else if (act === 'ver-partido') { if (a.classList.contains('agenda-item')) { const l = a.querySelector('.logo'); abrirDesde(l || a, a.dataset.id); } else girarCarta(a, () => resumenPartido(a.dataset.id)); }
   else if (act === 'ver-equipo') { const d = document.getElementById('modal'); if (d.open) d.close(); else { const l = a.querySelector('.logo'); zoomDesde = l ? { escudo: l, r: l.getBoundingClientRect() } : a.getBoundingClientRect(); } fichaEquipo(a.dataset.eq); }
   else if (act === 'votar') {
     const yo = yoId(); if (!yo) return;
@@ -2077,10 +2077,20 @@ document.addEventListener('click', e => {
   else if (act === 'wrapped') wrapped();
   else if (act === 'vienes') { marcarAsistencia(a.dataset.p, yoId(), a.dataset.v); toast(a.dataset.v === 'si' ? '¡Apuntado! 💪' : a.dataset.v === 'no' ? 'Apuntado que no vienes' : 'Apuntado como duda'); }
   else if (act === 'ver-ult') { ocultarPop(true); abrirDesde(a, a.dataset.id); }
-  else if (act === 'pop-ult') { const o = document.querySelector(`.form [data-id="${CSS.escape(a.dataset.id)}"]`); ocultarPop(true); abrirDesde(o || a, a.dataset.id); }
+  else if (act === 'pop-ult') { const o = document.querySelector(`.form [data-id="${CSS.escape(a.dataset.id)}"]`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"] .logo`) || document.querySelector(`.cal-dia[data-pid="${CSS.escape(a.dataset.id)}"]`); ocultarPop(true); abrirDesde(o || a, a.dataset.id); }
   else if (act === 'podio') { podioCat = a.dataset.v; const c = document.getElementById('podio'); if (c) { c.outerHTML = podio(); contar(document.getElementById('podio')); } vibrar(6); }
   else if (act === 'cal-vista') { const p = calPrefs(); p.vista = a.dataset.v; guardarPrefs(p); render(); }
-  else if (act === 'cal-dia') { calDia = a.dataset.v; if (calPrefs().vista === 'mes' && calDia.slice(0, 7) !== calMes) calMes = calDia.slice(0, 7); render(); }
+  else if (act === 'cal-dia') {
+    const pid = a.dataset.pid, cambiaMes = calPrefs().vista === 'mes' && a.dataset.v.slice(0, 7) !== calMes;
+    calDia = a.dataset.v; if (cambiaMes) calMes = calDia.slice(0, 7);
+    if (pid && !cambiaMes) {
+      ocultarPop(true);
+      const origen = a.querySelector('.logo') || a;
+      abrirDesde(origen, pid);
+      // marca el día elegido sin redibujar todo (para que el escudo siga en su sitio al cerrar)
+      document.querySelectorAll('.cal-dia.sel').forEach(x => x.classList.remove('sel')); a.classList.add('sel');
+    } else { render(); const n = document.querySelector('.cal-dia.sel'); if (n && !sinMov) n.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.3,.7,.2,1)' }); }
+  }
   else if (act === 'cal-hoy') { calDia = hoy(); calMes = calDia.slice(0, 7); render(); }
   else if (act === 'cal-mover') {
     const n = +a.dataset.v;
