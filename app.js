@@ -1014,7 +1014,7 @@ const V = {
       ${temporada(ps)}
       <h2>Últimos resultados</h2>
       ${rachaHTML(ps)}
-      ${ult.length ? `<div class="card row spread"><div class="form">${ult.map((p, k) => `<i class="${res(p)}${k >= ult.length - rachaDe(ps) && rachaDe(ps) >= 2 ? ' fuego' : ''}">${{ w: 'G', d: 'E', l: 'P' }[res(p)]}</i>`).join('')}</div><span class="muted">${r.g}G ${r.e}E ${r.p}P</span></div>` : `<div class="card empty">Aún no hay resultados guardados.</div>`}
+      ${ult.length ? `<div class="card row spread"><div class="form">${ult.map((p, k) => `<i class="${res(p)}${k >= ult.length - rachaDe(ps) && rachaDe(ps) >= 2 ? ' fuego' : ''} clic" data-act="ver-ult" data-id="${esc(p.id)}" tabindex="0" role="button" aria-label="${esc(p.rival)} ${p.gf}-${p.gc}">${{ w: 'G', d: 'E', l: 'P' }[res(p)]}</i>`).join('')}</div><span class="muted">${r.g}G ${r.e}E ${r.p}P</span></div>` : `<div class="card empty">Aún no hay resultados guardados.</div>`}
 
       <div class="grid3">
         <div class="kpi"><b>${r.gf}</b><span>Goles a favor</span></div>
@@ -1284,6 +1284,50 @@ function hitos() {
   return `<h2>📜 Hitos de La Farga</h2><div class="card hitos">${h.map((x, k) => `<div class="hito ${x.id ? 'clic' : ''}" style="--k:${k}" ${x.id ? `data-act="ver-partido" data-id="${esc(x.id)}"` : ''}>
     <span class="hi-ico">${x.i}</span><div><span class="hi-f">${fFecha(x.f)}</span><b>${esc(x.t)}</b><span class="muted">${esc(x.d)}</span></div></div>`).join('')}</div>`;
 }
+// Abre el resumen de un partido naciendo del cuadrito, igual que los equipos desde la tabla
+function abrirDesde(el, id) {
+  const d = document.getElementById('modal'); if (d.open) d.close();
+  zoomDesde = { escudo: el, r: el.getBoundingClientRect() };
+  resumenPartido(id);
+}
+// Ventanita al pasar el ratón por los últimos resultados
+let popT = 0;
+function ocultarPop(ya) {
+  clearTimeout(popT);
+  const fuera = () => { const v = document.querySelector('.pop-ult'); if (!v) return; v.classList.add('sale'); setTimeout(() => v.remove(), 160); };
+  if (ya) fuera(); else popT = setTimeout(fuera, 140);
+}
+function mostrarPop(el) {
+  clearTimeout(popT);
+  const p = getPartido(el.dataset.id); if (!p) return;
+  let v = document.querySelector('.pop-ult');
+  if (v && v.dataset.id === p.id) return;
+  if (v) v.remove();
+  const r = res(p);
+  v = document.createElement('div'); v.className = `pop-ult ${r}`; v.dataset.id = p.id;
+  v.innerHTML = `<button type="button" data-act="pop-ult" data-id="${esc(p.id)}">
+    <div class="pu-vs">${VS(p.rival)}</div>
+    <b class="pu-rival">${esc(p.rival)}</b>
+    <div class="pu-res">${p.gf}-${p.gc} <span>${{ w: 'VICTORIA', d: 'EMPATE', l: 'DERROTA' }[r]}</span></div>
+    <div class="pu-meta">${p.jornada ? 'Jornada ' + esc(p.jornada) + ' · ' : ''}${fFecha(p.fecha)}</div>
+    <div class="pu-ver">Toca para ver el partido</div></button>`;
+  document.body.appendChild(v);
+  const o = el.getBoundingClientRect(), w = v.offsetWidth, h = v.offsetHeight;
+  const x = Math.max(8, Math.min(innerWidth - w - 8, o.left + o.width / 2 - w / 2));
+  const arriba = o.top - h - 10 > 70;
+  v.style.left = x + 'px'; v.style.top = (arriba ? o.top - h - 10 : o.bottom + 10) + 'px';
+  v.style.setProperty('--fx', (o.left + o.width / 2 - x) + 'px');
+  v.classList.add(arriba ? 'arriba' : 'abajo');
+  v.addEventListener('mouseenter', () => clearTimeout(popT));
+  v.addEventListener('mouseleave', () => ocultarPop());
+}
+if (matchMedia('(hover: hover)').matches) {
+  document.addEventListener('mouseover', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el) mostrarPop(el); });
+  document.addEventListener('mouseout', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.pop-ult'))) ocultarPop(); });
+  addEventListener('scroll', () => ocultarPop(true), { passive: true });
+}
+document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el) mostrarPop(el); });
+document.addEventListener('keydown', e => { const el = e.target.closest && e.target.closest('[data-act="ver-ult"]'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ocultarPop(true); abrirDesde(el, el.dataset.id); } }, true);
 function matchCard(p) {
   const r = res(p);
   return `
@@ -1952,7 +1996,7 @@ function encajar(top, quiere) {
     if (!b.width) return;
     e.getAnimations().forEach(x => x.cancel());
     // al irse a la cabecera, cada pieza da una vuelta completa hacia la derecha mientras viaja
-    const giro = quiere ? 360 : 0;
+    const giro = quiere ? 360 : -360; // al volver gira al revés
     e.animate([{ transformOrigin: '50% 50%', transform: `translate(${(a.left + a.width / 2) - (b.left + b.width / 2)}px, ${(a.top + a.height / 2) - (b.top + b.height / 2)}px) scale(${a.width / b.width}) rotate(0deg)` },
       { transformOrigin: '50% 50%', transform: `translate(0px, 0px) scale(1) rotate(${giro}deg)` }], opts);
   });
@@ -2032,6 +2076,8 @@ document.addEventListener('click', e => {
   }
   else if (act === 'wrapped') wrapped();
   else if (act === 'vienes') { marcarAsistencia(a.dataset.p, yoId(), a.dataset.v); toast(a.dataset.v === 'si' ? '¡Apuntado! 💪' : a.dataset.v === 'no' ? 'Apuntado que no vienes' : 'Apuntado como duda'); }
+  else if (act === 'ver-ult') { ocultarPop(true); abrirDesde(a, a.dataset.id); }
+  else if (act === 'pop-ult') { const o = document.querySelector(`.form [data-id="${CSS.escape(a.dataset.id)}"]`); ocultarPop(true); abrirDesde(o || a, a.dataset.id); }
   else if (act === 'podio') { podioCat = a.dataset.v; const c = document.getElementById('podio'); if (c) { c.outerHTML = podio(); contar(document.getElementById('podio')); } vibrar(6); }
   else if (act === 'cal-vista') { const p = calPrefs(); p.vista = a.dataset.v; guardarPrefs(p); render(); }
   else if (act === 'cal-dia') { calDia = a.dataset.v; if (calPrefs().vista === 'mes' && calDia.slice(0, 7) !== calMes) calMes = calDia.slice(0, 7); render(); }
