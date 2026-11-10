@@ -4,7 +4,8 @@
   "grupo": "Viernes - B",
   "fase": "Primer Split",
   "fuente": "https://virtual.fundaciovalldor7.com/cornella-hospitalet-f7-es-26-27/equipo/4497",
-  "actualizado": "2026-11-07",
+  "actualizado": "2026-11-10",
+  "actualizado_ts": "2026-11-10T09:14:29+00:00",
   "clasificacion": [
     {
       "pos": 1,
@@ -1765,7 +1766,7 @@
           "dorsal": "10",
           "posicion": "Defensa",
           "nombre": "Alejandro Herrero Terrero",
-          "edad": 21,
+          "edad": 22,
           "pj": 4,
           "goles": 0,
           "amarillas": 0,
