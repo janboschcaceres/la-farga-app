@@ -1,7 +1,7 @@
 // Permite abrir la app al instante y sin conexión.
 // Archivos de la app: primero la caché. Escudos, fotos y fuentes: se guardan al verlos.
 // Datos de la liga: red con tiempo límite y, si no llega, lo último guardado.
-const CACHE = 'lafarga-v43';
+const CACHE = 'lafarga-v44';
 const MEDIA = 'lafarga-media-v1';
 const ARCHIVOS = ['./', 'index.html', 'styles.css', 'app.js', 'config.js', 'supa.js', 'manifest.webmanifest',
   'icons/escudo.webp', 'icons/fondo-equipo.webp', 'icons/camiseta.webp', 'icons/icon-192.png', 'icons/icon-512.png', 'data/liga.json',

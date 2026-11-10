@@ -23,7 +23,10 @@ drop policy if exists "equipo borra" on public.docs;
 create policy "equipo borra" on public.docs for delete to authenticated using (true);
 
 -- Cambios en directo para que todos vean lo mismo al momento.
-alter publication supabase_realtime add table public.docs;
+do $$ begin
+  alter publication supabase_realtime add table public.docs;
+exception when duplicate_object then null;
+end $$;
 
 -- Fotos y vídeos de los partidos.
 insert into storage.buckets (id, name, public, file_size_limit)
