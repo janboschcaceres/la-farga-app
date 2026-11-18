@@ -162,8 +162,17 @@ function partidos() {
     const id = p.id || `w-${p.fecha}-${p.rival}`;
     out[id] = { eventos: [], asistencia: {}, ...p, id, fuente: 'web' };
   }
+  const vacio = v => v == null || v === '';
   for (const [id, p] of Object.entries(local.partidos)) {
-    out[id] = { ...(out[id] || {}), ...p, id, fuente: out[id] ? 'web+manual' : 'manual' };
+    const w = out[id];
+    if (!w) { out[id] = { ...p, id, fuente: 'manual' }; continue; }
+    // Lo manual manda, pero un campo vacío no borra lo que trae Valldor (p.ej. un resultado ya publicado).
+    const m = {};
+    for (const [k, v] of Object.entries(p)) if (!vacio(v) || vacio(w[k])) m[k] = v;
+    const manualConRes = !vacio(p.gf) && !vacio(p.gc);
+    if (!manualConRes && !vacio(w.gf) && !vacio(w.gc)) { m.estado = w.estado; m.gf = w.gf; m.gc = w.gc; m.hora = w.hora; }
+    if (manualConRes && m.estado === 'pendiente') m.estado = 'jugado';
+    out[id] = { ...w, ...m, id, fuente: 'web+manual' };
   }
   for (const id of local.borrados) delete out[id];
   return Object.values(out).sort((a, b) => (a.fecha + (a.hora || '')).localeCompare(b.fecha + (b.hora || '')));
@@ -1182,9 +1191,9 @@ function comparador(s = stats()) {
     <p class="muted" style="margin:0 0 8px;font-size:12px">Elige hasta 6 jugadores.</p>
     <div class="cmp-chips">${js.map(x => { const k = comparados.indexOf(x.j.id);
       return `<button type="button" class="cmp-chip ${k >= 0 ? 'on' : ''}" style="${k >= 0 ? '--c:' + COLORES_CMP[k % 6] : ''}" data-act="comparar" data-j="${esc(x.j.id)}">${x.j.foto ? avatar(x.j, 20) : ''}${esc(corto(x.j))}</button>`; }).join('')}</div>
-    <svg class="radar" viewBox="0 0 300 300" role="img" aria-label="Comparativa de jugadores">
+    <svg class="radar" viewBox="-60 0 420 300" role="img" aria-label="Comparativa de jugadores">
       ${[.25, .5, .75, 1].map(f => `<polygon class="rd-aro" points="${ejes.map((_, i) => pt(i, f).join(',')).join(' ')}"/>`).join('')}
-      ${ejes.map((e, i) => { const [x, y] = pt(i, 1), [lx, ly] = pt(i, 1.2); return `<line class="rd-eje" x1="${C}" y1="${C}" x2="${x}" y2="${y}"/><text class="rd-t" x="${lx}" y="${ly + 4}" text-anchor="middle">${e[0]}</text>`; }).join('')}
+      ${ejes.map((e, i) => { const [x, y] = pt(i, 1), [lx, ly] = pt(i, 1.2); return `<line class="rd-eje" x1="${C}" y1="${C}" x2="${x}" y2="${y}"/><text class="rd-t" x="${lx}" y="${ly + 4}" text-anchor="${lx < C - 8 ? 'end' : lx > C + 8 ? 'start' : 'middle'}">${e[0]}</text>`; }).join('')}
       ${sel.map((o, k) => `<g class="rd-pol" style="--c:${o.c};--k:${k}"><polygon points="${ejes.map(([, f], i) => pt(i, Math.min(1, f(o.x) / max[i])).join(',')).join(' ')}"/>
         ${ejes.map(([, f], i) => { const [x, y] = pt(i, Math.min(1, f(o.x) / max[i])); return `<circle cx="${x}" cy="${y}" r="3"/>`; }).join('')}</g>`).join('')}
     </svg>
@@ -1597,6 +1606,7 @@ function temporadaVistazo() {
 }
 
 /* ---------- CT · Alarma de convocatoria ---------- */
+const diaSemana = f => ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(f + 'T12:00:00').getDay()];
 function alarmaConvocatoria(p) {
   if (!p) return '';
   const dias = Math.round((Date.parse(p.fecha) - Date.parse(hoy())) / 864e5);
@@ -1604,7 +1614,7 @@ function alarmaConvocatoria(p) {
   const js = jugadores().filter(j => !j.invitado && !lesionDe(j.id)), a = p.asistencia || {};
   const si = js.filter(j => a[j.id] === 'si'), sin = js.filter(j => !a[j.id]), duda = js.filter(j => a[j.id] === 'duda');
   if (si.length >= 8) return '';
-  const cuando = dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : 'el ' + fFecha(p.fecha).split(' ')[0];
+  const cuando = dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : 'el ' + diaSemana(p.fecha);
   return `<div class="card alarma-conv"><div class="ac-cab"><span class="ac-ico">🚨</span><div><b>Faltan jugadores para ${cuando}</b><span>${si.length} de 8 confirmados${si.length < 7 ? ` · ¡no llegamos a 7!` : ''}</span></div></div>
     <div class="ac-puntos">${Array.from({ length: 8 }, (_, k) => `<i class="${k < si.length ? 'on' : ''}" style="--k:${k}"></i>`).join('')}</div>
     ${sin.length ? `<p class="ac-lista"><span class="muted">Sin contestar:</span> ${sin.map(j => esc(corto(j))).join(', ')}</p>` : ''}
@@ -1948,7 +1958,7 @@ function avisoTarjetas() {
 function avisoVienes(p) {
   const yo = yoId(); if (!yo || lesionDe(yo) || (p.asistencia || {})[yo]) return '';
   const j = jugadores().find(x => x.id === yo); if (!j) return '';
-  return `<div class="card aviso-vienes"><div><b>${esc(corto(j))}, ¿vienes el ${fFecha(p.fecha).split(' ')[0]}?</b><span class="muted">${esc(p.rival)} · ${esc(p.hora || '')}</span></div>
+  return `<div class="card aviso-vienes"><div><b>${esc(corto(j))}, ¿vienes el ${diaSemana(p.fecha)}?</b><span class="muted">${esc(p.rival)} · ${esc(p.hora || '')}</span></div>
     <div class="av-bot"><button class="btn sm" data-act="vienes" data-p="${esc(p.id)}" data-v="si">Voy</button><button class="btn ghost sm" data-act="vienes" data-p="${esc(p.id)}" data-v="duda">?</button><button class="btn ghost sm" data-act="vienes" data-p="${esc(p.id)}" data-v="no">No voy</button></div></div>`;
 }
 
@@ -2388,6 +2398,10 @@ function modal(html, onSubmit) {
     onSubmit(new FormData(f), accion, f);
   };
   dlg.showModal();
+  // el navegador enfoca el primer campo: en móvil eso abre el teclado o baja la ficha hasta él
+  const foco = document.activeElement;
+  if (foco && foco !== dlg && !foco.hasAttribute('autofocus')) { foco.blur(); dlg.tabIndex = -1; dlg.focus({ preventScroll: true }); }
+  dlg.scrollTop = 0; f.scrollTop = 0;
   contar(f);
   if (zoomDesde) { zoomDesde.escudo ? nacerDeEscudo(dlg, zoomDesde) : crecerDesde(dlg, zoomDesde); zoomDesde = null; }
 }
@@ -2949,18 +2963,26 @@ const contados = new WeakSet();
 const contarObs = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return; contarObs.unobserve(e.target); subir(e.target);
 }), { threshold: .4 }) : null;
+// Un solo bucle de animación para todos los contadores (antes era uno por número)
+const subiendo = new Map();
+let subirRaf = 0;
 function subir(el) {
   const fin = el.textContent, nums = [...fin.matchAll(/\d+(?:[.,]\d+)?/g)];
   if (!nums.length || nums.every(m => +m[0].replace(',', '.') === 0)) return;
-  const t0 = performance.now(), dur = 900;
-  const paso = t => {
-    const k = Math.min(1, (t - t0) / dur), f = 1 - Math.pow(1 - k, 3);
+  if (/\d:\d\d/.test(fin)) return; // una hora no se cuenta
+  subiendo.set(el, { fin, t0: performance.now() });
+  if (!subirRaf) subirRaf = requestAnimationFrame(pasoSubir);
+}
+function pasoSubir(t) {
+  subirRaf = 0;
+  for (const [el, { fin, t0 }] of subiendo) {
+    const k = Math.min(1, Math.max(0, (t - t0) / 900)), f = 1 - Math.pow(1 - k, 3);
+    if (k >= 1 || !el.isConnected) { el.textContent = fin; subiendo.delete(el); continue; }
     el.textContent = fin.replace(/\d+(?:([.,])(\d+))?/g, (m, sep, dec) => {
       const v = +m.replace(',', '.') * f; return dec ? v.toFixed(dec.length).replace('.', sep) : String(Math.round(v));
     });
-    if (k < 1) requestAnimationFrame(paso); else el.textContent = fin;
-  };
-  requestAnimationFrame(paso);
+  }
+  if (subiendo.size) subirRaf = requestAnimationFrame(pasoSubir);
 }
 function contar(raiz) {
   if (sinMov || !raiz) return;
@@ -3051,8 +3073,9 @@ addEventListener('keydown', e => {
 })();
 // Profundidad: la foto de fondo baja más lenta que el contenido
 let parRaf = 0;
+const tactil = matchMedia('(hover: none), (max-width: 700px)').matches;
 addEventListener('scroll', () => {
-  if (sinMov || parRaf) return;
+  if (sinMov || tactil || parRaf) return;
   parRaf = requestAnimationFrame(() => { parRaf = 0; document.body.style.setProperty('--par', Math.min(scrollY, 1600).toFixed(0)); });
 }, { passive: true });
 addEventListener('scroll', () => {

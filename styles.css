@@ -1225,22 +1225,22 @@ tr.sep-pich td { text-align: center; color: var(--muted); padding: 2px; letter-s
 #entrada.rellena .ent-linea { opacity: 0; transition: opacity .4s ease; }
 
 /* BU · Transiciones entre pestañas */
-#view { view-transition-name: vista; }
+/* la vista viaja como parte de la raíz: solo se fotografía lo que se ve en pantalla (más ligero en móvil) */
 header.top { view-transition-name: cabecera; }
 nav.tabs { view-transition-name: barra; }
 #fab { view-transition-name: fab; }
 #view h2.vt-titulo { view-transition-name: titulo; }
-::view-transition-old(vista) { animation: vtSale .26s cubic-bezier(.4,0,1,1) both; }
-::view-transition-new(vista) { animation: vtEntra .5s cubic-bezier(.2,.8,.2,1) both; }
-html[data-vt-dir="i"]::view-transition-old(vista) { animation-name: vtSaleI; }
-html[data-vt-dir="i"]::view-transition-new(vista) { animation-name: vtEntraI; }
-::view-transition-group(titulo) { animation-duration: .5s; animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+::view-transition-old(root) { animation: vtSale .18s cubic-bezier(.4,0,1,1) both; }
+::view-transition-new(root) { animation: vtEntra .34s cubic-bezier(.2,.8,.2,1) both; }
+html[data-vt-dir="i"]::view-transition-old(root) { animation-name: vtSaleI; }
+html[data-vt-dir="i"]::view-transition-new(root) { animation-name: vtEntraI; }
+::view-transition-group(titulo) { animation-duration: .34s; animation-timing-function: cubic-bezier(.2,.8,.2,1); }
 ::view-transition-old(titulo), ::view-transition-new(titulo) { height: 100%; object-fit: none; object-position: left center; }
 ::view-transition-group(cabecera), ::view-transition-group(barra), ::view-transition-group(fab) { animation: none; }
-@keyframes vtSale { to { opacity: 0; transform: translateX(-40px); filter: blur(4px); } }
-@keyframes vtEntra { from { opacity: 0; transform: translateX(60px); filter: blur(6px); } }
-@keyframes vtSaleI { to { opacity: 0; transform: translateX(40px); filter: blur(4px); } }
-@keyframes vtEntraI { from { opacity: 0; transform: translateX(-60px); filter: blur(6px); } }
+@keyframes vtSale { to { opacity: 0; transform: translateX(-32px); } }
+@keyframes vtEntra { from { opacity: 0; transform: translateX(48px); } }
+@keyframes vtSaleI { to { opacity: 0; transform: translateX(32px); } }
+@keyframes vtEntraI { from { opacity: 0; transform: translateX(-48px); } }
 
 /* BN · Notas */
 .notas-card h3 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
@@ -1311,7 +1311,7 @@ html[data-vt-dir="i"]::view-transition-new(vista) { animation-name: vtEntraI; }
 .cmp-chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; font: 600 12px/1 var(--sans, Inter, sans-serif); color: var(--muted); background: #0d0b09; border: 1px solid var(--line); cursor: pointer; transition: all .2s; }
 .cmp-chip .avatar { width: 18px; height: 18px; }
 .cmp-chip.on { color: #0b0a09; background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); }
-.radar { display: block; width: 100%; max-width: 360px; margin: 0 auto; overflow: visible; }
+.radar { display: block; width: 100%; max-width: 440px; margin: 0 auto; overflow: visible; }
 .rd-aro { fill: none; stroke: rgba(242,168,35,.16); stroke-width: 1; }
 .rd-eje { stroke: rgba(242,168,35,.16); }
 .rd-t { fill: var(--muted); font: 700 10px var(--sans, Inter, sans-serif); letter-spacing: .04em; text-transform: uppercase; }
@@ -1519,3 +1519,22 @@ html[data-vt-dir="i"]::view-transition-new(vista) { animation-name: vtEntraI; }
 @media (prefers-reduced-motion: reduce) { .alarma-conv, .ac-ico, .ac-puntos i { animation: none !important; } .vistazo .vz-sem .vz-c { opacity: 1; transform: none; } .vistazo .vz-sem .vz-c.libre { opacity: .35; } }
 .gal-acc { display: flex; gap: 6px; align-items: center; }
 .gal-mas { min-width: 36px; justify-content: center; font: 800 20px/1 var(--sans, Inter, sans-serif); padding: 5px 10px; cursor: pointer; }
+
+/* Tabla en móvil: que quepa entera y la forma se pueda tocar */
+@media (max-width: 480px) {
+  table:has(.forma-col) td, table:has(.forma-col) th { padding-left: 3px; padding-right: 3px; }
+  .forma-mini i { width: 6px; height: 6px; }
+}
+/* ---------- Rendimiento en móvil ---------- */
+/* El desenfoque detrás de cada tarjeta y el fondo con paralaje obligan al móvil a repintar toda la pantalla al hacer scroll */
+@media (hover: none), (max-width: 700px) {
+  .card { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(20, 17, 14, .88); }
+  body::before { inset: 0; transform: none; will-change: auto; filter: none; }
+  .chispas-fondo i:nth-child(n+11) { display: none; }
+  .mes-pegado { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(11, 10, 9, .97); }
+  /* lo que queda fuera de pantalla no se maqueta hasta que llegas con el scroll */
+  #view > .card:nth-child(n+4), .mes-grupo > .card.match, #view > .resultados-liga { content-visibility: auto; contain-intrinsic-size: auto 240px; }
+}
+/* toques instantáneos: sin la espera del doble toque para hacer zoom */
+button, a, label, select, input, textarea, summary { touch-action: manipulation; }
+html { -webkit-tap-highlight-color: transparent; }
