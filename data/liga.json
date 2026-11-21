@@ -4,8 +4,8 @@
   "grupo": "Viernes - B",
   "fase": "Primer Split",
   "fuente": "https://virtual.fundaciovalldor7.com/cornella-hospitalet-f7-es-26-27/equipo/4497",
-  "actualizado": "2026-11-17",
-  "actualizado_ts": "2026-11-17T09:14:28+00:00",
+  "actualizado": "2026-11-21",
+  "actualizado_ts": "2026-11-21T06:54:22+00:00",
   "clasificacion": [
     {
       "pos": 1,
@@ -21,6 +21,18 @@
     },
     {
       "pos": 2,
+      "equipo": "Gossos FC",
+      "pts": 11,
+      "pj": 7,
+      "g": 3,
+      "e": 2,
+      "p": 2,
+      "gf": 27,
+      "gc": 22,
+      "dg": 5
+    },
+    {
+      "pos": 3,
       "equipo": "Los Calaveras",
       "pts": 10,
       "pj": 6,
@@ -32,24 +44,12 @@
       "dg": 4
     },
     {
-      "pos": 3,
-      "equipo": "Gossos FC",
-      "pts": 10,
-      "pj": 6,
-      "g": 3,
-      "e": 1,
-      "p": 2,
-      "gf": 27,
-      "gc": 22,
-      "dg": 5
-    },
-    {
       "pos": 4,
       "equipo": "Sin Fronteras FC",
-      "pts": 8,
-      "pj": 6,
+      "pts": 9,
+      "pj": 7,
       "g": 2,
-      "e": 2,
+      "e": 3,
       "p": 2,
       "gf": 26,
       "gc": 21,
@@ -58,10 +58,10 @@
     {
       "pos": 5,
       "equipo": "La Farga FC",
-      "pts": 6,
-      "pj": 5,
+      "pts": 7,
+      "pj": 6,
       "g": 1,
-      "e": 3,
+      "e": 4,
       "p": 1,
       "gf": 11,
       "gc": 8,
@@ -82,10 +82,10 @@
     {
       "pos": 7,
       "equipo": "Bolivia Dortmund",
-      "pts": 3,
-      "pj": 6,
+      "pts": 4,
+      "pj": 7,
       "g": 1,
-      "e": 0,
+      "e": 1,
       "p": 5,
       "gf": 9,
       "gc": 29,
@@ -99,7 +99,7 @@
       "posicion": "Carrilero",
       "nombre": "Igor Chantler Chornet",
       "edad": 21,
-      "pj": 3,
+      "pj": 4,
       "goles": 1,
       "amarillas": 0,
       "rojas": 0,
@@ -112,7 +112,7 @@
       "posicion": "Medio",
       "nombre": "Victor Benito Díaz",
       "edad": 21,
-      "pj": 5,
+      "pj": 6,
       "goles": 0,
       "amarillas": 0,
       "rojas": 0,
@@ -138,7 +138,7 @@
       "posicion": "Delantero",
       "nombre": "Marcel Rebollar Osuna",
       "edad": 21,
-      "pj": 5,
+      "pj": 6,
       "goles": 2,
       "amarillas": 0,
       "rojas": 0,
@@ -151,7 +151,7 @@
       "posicion": "Medio",
       "nombre": "Jan Bosch Caceres",
       "edad": 21,
-      "pj": 5,
+      "pj": 6,
       "goles": 1,
       "amarillas": 0,
       "rojas": 0,
@@ -164,7 +164,7 @@
       "posicion": "Portero",
       "nombre": "Biel Gilavert Garcia",
       "edad": 21,
-      "pj": 4,
+      "pj": 5,
       "goles": 0,
       "amarillas": 0,
       "rojas": 0,
@@ -177,7 +177,7 @@
       "posicion": "Carrilero",
       "nombre": "Unai Aixeres Brugat Brugat",
       "edad": 21,
-      "pj": 5,
+      "pj": 6,
       "goles": 1,
       "amarillas": 0,
       "rojas": 0,
@@ -190,7 +190,7 @@
       "posicion": "Carrilero",
       "nombre": "Adria Pastor Urgeles",
       "edad": 21,
-      "pj": 4,
+      "pj": 5,
       "goles": 0,
       "amarillas": 0,
       "rojas": 0,
@@ -229,7 +229,7 @@
       "posicion": "Delantero",
       "nombre": "Joel López Gómez",
       "edad": 21,
-      "pj": 5,
+      "pj": 6,
       "goles": 3,
       "amarillas": 0,
       "rojas": 0,
@@ -596,12 +596,39 @@
       "rival": "Gossos FC",
       "local": false,
       "fecha": "2026-11-20",
-      "hora": "22:30",
+      "hora": "",
       "campo": "UE Sant Ildefons (Cornellà) · F7 C2",
-      "estado": "pendiente",
-      "gf": null,
-      "gc": null,
-      "acta": "113622"
+      "estado": "jugado",
+      "gf": "0",
+      "gc": "0",
+      "acta": "113622",
+      "eventos_web": [],
+      "convocados": [
+        "Igor Chantler",
+        "Victor Benito",
+        "Marcel Rebollar",
+        "Jan Bosch",
+        "Biel Gilavert",
+        "Unai Aixeres Brugat",
+        "Adria Pastor",
+        "Joel López"
+      ],
+      "no_juegan": [
+        "Joan López",
+        "Ferran Baltà",
+        "Jefersson David Mendoza"
+      ],
+      "rival_alineacion": [
+        "Alejandro Godoy",
+        "Isaac Huguet",
+        "Alejandro Comas",
+        "Miguel Angel Hernández",
+        "Marc Torres",
+        "Aleix Arnalte",
+        "Asier Llobet",
+        "Gonzalo Dopeso",
+        "Biel Huguet"
+      ]
     },
     {
       "id": "j9",
@@ -648,8 +675,8 @@
       "rival": "Almeda Veteranos",
       "local": false,
       "fecha": "2027-01-08",
-      "hora": "",
-      "campo": "",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2",
       "estado": "pendiente",
       "gf": null,
       "gc": null,
@@ -661,8 +688,8 @@
       "rival": "Menuda Banda FC",
       "local": true,
       "fecha": "2027-01-15",
-      "hora": "",
-      "campo": "",
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2",
       "estado": "pendiente",
       "gf": null,
       "gc": null,
@@ -897,21 +924,21 @@
     {
       "local": "Sin Fronteras FC",
       "visitante": "Bolivia Dortmund",
-      "gf": null,
-      "gc": null,
-      "estado": "pendiente",
+      "gf": "0",
+      "gc": "0",
+      "estado": "jugado",
       "fecha": "2026-11-20",
-      "hora": "22:30",
+      "hora": "",
       "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
     },
     {
       "local": "Gossos FC",
       "visitante": "La Farga FC",
-      "gf": null,
-      "gc": null,
-      "estado": "pendiente",
+      "gf": "0",
+      "gc": "0",
+      "estado": "jugado",
       "fecha": "2026-11-20",
-      "hora": "22:30",
+      "hora": "",
       "campo": "UE Sant Ildefons (Cornellà) · F7 C2"
     },
     {
@@ -1041,8 +1068,8 @@
       "gc": null,
       "estado": "pendiente",
       "fecha": "2027-01-08",
-      "hora": "",
-      "campo": ""
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
     },
     {
       "local": "Gossos FC",
@@ -1051,8 +1078,8 @@
       "gc": null,
       "estado": "pendiente",
       "fecha": "2027-01-08",
-      "hora": "",
-      "campo": ""
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
     },
     {
       "local": "Menuda Banda FC",
@@ -1061,18 +1088,8 @@
       "gc": null,
       "estado": "pendiente",
       "fecha": "2027-01-08",
-      "hora": "",
-      "campo": ""
-    },
-    {
-      "local": "Los Calaveras",
-      "visitante": "Sin Fronteras FC",
-      "gf": null,
-      "gc": null,
-      "estado": "pendiente",
-      "fecha": "2027-01-15",
-      "hora": "",
-      "campo": ""
+      "hora": "23:00",
+      "campo": "Promosportive (L'Hospitalet) · F7 C1"
     },
     {
       "local": "La Farga FC",
@@ -1081,8 +1098,8 @@
       "gc": null,
       "estado": "pendiente",
       "fecha": "2027-01-15",
-      "hora": "",
-      "campo": ""
+      "hora": "22:25",
+      "campo": "CD Almeda (Cornellà) · F7 C2"
     },
     {
       "local": "Bolivia Dortmund",
@@ -1091,8 +1108,18 @@
       "gc": null,
       "estado": "pendiente",
       "fecha": "2027-01-15",
-      "hora": "",
-      "campo": ""
+      "hora": "22:30",
+      "campo": "UE Sant Ildefons (Cornellà) · F7 C1"
+    },
+    {
+      "local": "Los Calaveras",
+      "visitante": "Sin Fronteras FC",
+      "gf": null,
+      "gc": null,
+      "estado": "pendiente",
+      "fecha": "2027-01-15",
+      "hora": "23:00",
+      "campo": "Promosportive (L'Hospitalet) · F7 C1"
     }
   ],
   "rivales": {
@@ -1233,6 +1260,132 @@
         }
       ]
     },
+    "Gossos FC": {
+      "id": "4494",
+      "plantilla": [
+        {
+          "id": "v3",
+          "dorsal": "3",
+          "posicion": "Portero",
+          "nombre": "Alejandro Godoy Martínez",
+          "edad": 21,
+          "pj": 7,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v5",
+          "dorsal": "5",
+          "posicion": "Medio",
+          "nombre": "Isaac Huguet Cámara",
+          "edad": 22,
+          "pj": 7,
+          "goles": 3,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v7",
+          "dorsal": "7",
+          "posicion": "Carrilero",
+          "nombre": "Alejandro Comas Martínez",
+          "edad": 19,
+          "pj": 7,
+          "goles": 4,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v8",
+          "dorsal": "8",
+          "posicion": "Medio",
+          "nombre": "Miguel Angel Hernández Gutiérrez",
+          "edad": 18,
+          "pj": 7,
+          "goles": 3,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v9",
+          "dorsal": "9",
+          "posicion": "Medio",
+          "nombre": "Marc Torres Ruiz",
+          "edad": 20,
+          "pj": 6,
+          "goles": 6,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v10",
+          "dorsal": "10",
+          "posicion": "Carrilero",
+          "nombre": "Aleix Arnalte Aguilar",
+          "edad": 18,
+          "pj": 7,
+          "goles": 3,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "Delantero",
+          "nombre": "Asier Llobet Benavente",
+          "edad": 19,
+          "pj": 7,
+          "goles": 2,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v21",
+          "dorsal": "21",
+          "posicion": "Delantero",
+          "nombre": "Gonzalo Dopeso Cantalejo",
+          "edad": 19,
+          "pj": 7,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v97",
+          "dorsal": "97",
+          "posicion": "Defensa",
+          "nombre": "Biel Huguet Camara",
+          "edad": 19,
+          "pj": 7,
+          "goles": 1,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Entrenador/a",
+          "nombre": "Adria Sánchez Borja",
+          "edad": 18,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
+          "id": "v-",
+          "dorsal": "-",
+          "posicion": "Delegado/a",
+          "nombre": "Antonio Huguet Craywinckel",
+          "edad": 50,
+          "pj": 0,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        }
+      ]
+    },
     "Los Calaveras": {
       "id": "298",
       "plantilla": [
@@ -1359,132 +1512,6 @@
         }
       ]
     },
-    "Gossos FC": {
-      "id": "4494",
-      "plantilla": [
-        {
-          "id": "v3",
-          "dorsal": "3",
-          "posicion": "Portero",
-          "nombre": "Alejandro Godoy Martínez",
-          "edad": 21,
-          "pj": 6,
-          "goles": 1,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v5",
-          "dorsal": "5",
-          "posicion": "Medio",
-          "nombre": "Isaac Huguet Cámara",
-          "edad": 22,
-          "pj": 6,
-          "goles": 3,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v7",
-          "dorsal": "7",
-          "posicion": "Carrilero",
-          "nombre": "Alejandro Comas Martínez",
-          "edad": 19,
-          "pj": 6,
-          "goles": 4,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v8",
-          "dorsal": "8",
-          "posicion": "Medio",
-          "nombre": "Miguel Angel Hernández Gutiérrez",
-          "edad": 18,
-          "pj": 6,
-          "goles": 3,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v9",
-          "dorsal": "9",
-          "posicion": "Medio",
-          "nombre": "Marc Torres Ruiz",
-          "edad": 20,
-          "pj": 5,
-          "goles": 6,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v10",
-          "dorsal": "10",
-          "posicion": "Carrilero",
-          "nombre": "Aleix Arnalte Aguilar",
-          "edad": 18,
-          "pj": 6,
-          "goles": 3,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v11",
-          "dorsal": "11",
-          "posicion": "Delantero",
-          "nombre": "Asier Llobet Benavente",
-          "edad": 19,
-          "pj": 6,
-          "goles": 2,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v21",
-          "dorsal": "21",
-          "posicion": "Delantero",
-          "nombre": "Gonzalo Dopeso Cantalejo",
-          "edad": 19,
-          "pj": 6,
-          "goles": 1,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v97",
-          "dorsal": "97",
-          "posicion": "Defensa",
-          "nombre": "Biel Huguet Camara",
-          "edad": 19,
-          "pj": 6,
-          "goles": 1,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v-",
-          "dorsal": "-",
-          "posicion": "Entrenador/a",
-          "nombre": "Adria Sánchez Borja",
-          "edad": 18,
-          "pj": 0,
-          "goles": 0,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v-",
-          "dorsal": "-",
-          "posicion": "Delegado/a",
-          "nombre": "Antonio Huguet Craywinckel",
-          "edad": 50,
-          "pj": 0,
-          "goles": 0,
-          "amarillas": 0,
-          "rojas": 0
-        }
-      ]
-    },
     "Sin Fronteras FC": {
       "id": "4535",
       "plantilla": [
@@ -1494,7 +1521,7 @@
           "posicion": "Portero",
           "nombre": "Alex Palma Luque",
           "edad": 21,
-          "pj": 6,
+          "pj": 7,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1505,7 +1532,7 @@
           "posicion": "Defensa",
           "nombre": "Yeray García Fontanals",
           "edad": 20,
-          "pj": 6,
+          "pj": 7,
           "goles": 3,
           "amarillas": 0,
           "rojas": 0
@@ -1516,7 +1543,7 @@
           "posicion": "Defensa",
           "nombre": "Luis Ortiz Erazo",
           "edad": 21,
-          "pj": 5,
+          "pj": 6,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1527,7 +1554,7 @@
           "posicion": "Medio",
           "nombre": "Alex Fortuny Cabezas",
           "edad": 22,
-          "pj": 6,
+          "pj": 7,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1538,7 +1565,7 @@
           "posicion": "Defensa",
           "nombre": "Enrique Parrilla Serrano",
           "edad": 20,
-          "pj": 6,
+          "pj": 7,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1560,7 +1587,7 @@
           "posicion": "Delantero",
           "nombre": "Alan Smith risco",
           "edad": 21,
-          "pj": 6,
+          "pj": 7,
           "goles": 4,
           "amarillas": 0,
           "rojas": 0
@@ -1582,7 +1609,7 @@
           "posicion": "Medio",
           "nombre": "Alex Garrido Valero",
           "edad": 22,
-          "pj": 5,
+          "pj": 6,
           "goles": 4,
           "amarillas": 0,
           "rojas": 0
@@ -1593,7 +1620,7 @@
           "posicion": "Defensa",
           "nombre": "Jose Maria Molina Denia",
           "edad": 21,
-          "pj": 5,
+          "pj": 6,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1604,7 +1631,7 @@
           "posicion": "Defensa",
           "nombre": "Pere Galofré Claret",
           "edad": 22,
-          "pj": 5,
+          "pj": 6,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1736,6 +1763,17 @@
           "rojas": 0
         },
         {
+          "id": "v11",
+          "dorsal": "11",
+          "posicion": "Medio",
+          "nombre": "Juan Pablo Cortés Mossello",
+          "edad": 31,
+          "pj": 1,
+          "goles": 0,
+          "amarillas": 0,
+          "rojas": 0
+        },
+        {
           "id": "v13",
           "dorsal": "13",
           "posicion": "",
@@ -1764,17 +1802,6 @@
           "nombre": "Joaquin Carbonell Guijaro",
           "edad": 53,
           "pj": 2,
-          "goles": 0,
-          "amarillas": 0,
-          "rojas": 0
-        },
-        {
-          "id": "v",
-          "dorsal": "",
-          "posicion": "",
-          "nombre": "Juan Pablo Cortés Mossello",
-          "edad": 31,
-          "pj": 1,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1823,7 +1850,7 @@
           "posicion": "Defensa",
           "nombre": "Aarón Padilla Grajeda",
           "edad": 21,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1834,7 +1861,7 @@
           "posicion": "Medio",
           "nombre": "Alex Rodríguez Bejarano",
           "edad": 22,
-          "pj": 5,
+          "pj": 6,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1856,7 +1883,7 @@
           "posicion": "Medio",
           "nombre": "Pau Calpe Tomé",
           "edad": 21,
-          "pj": 5,
+          "pj": 6,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1867,7 +1894,7 @@
           "posicion": "Defensa",
           "nombre": "Alejandro Herrero Terrero",
           "edad": 22,
-          "pj": 5,
+          "pj": 6,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1878,7 +1905,7 @@
           "posicion": "Medio",
           "nombre": "Carlos Barriga Arqué",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1889,7 +1916,7 @@
           "posicion": "Medio",
           "nombre": "Erik González Andreu",
           "edad": 22,
-          "pj": 5,
+          "pj": 6,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1911,7 +1938,7 @@
           "posicion": "Medio",
           "nombre": "Adrián Sánchez Rivas",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1922,7 +1949,7 @@
           "posicion": "Medio",
           "nombre": "Adrià León Aris",
           "edad": 23,
-          "pj": 4,
+          "pj": 5,
           "goles": 1,
           "amarillas": 0,
           "rojas": 0
@@ -1933,7 +1960,7 @@
           "posicion": "Portero",
           "nombre": "Pablo Jiménez Prieto",
           "edad": 23,
-          "pj": 5,
+          "pj": 6,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1944,7 +1971,7 @@
           "posicion": "Delantero",
           "nombre": "Alex Villalba Zarcero",
           "edad": 21,
-          "pj": 4,
+          "pj": 5,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
@@ -1955,7 +1982,7 @@
           "posicion": "Delantero",
           "nombre": "Luis Fernando Vasquez Honor",
           "edad": 22,
-          "pj": 6,
+          "pj": 7,
           "goles": 0,
           "amarillas": 0,
           "rojas": 0
@@ -1966,7 +1993,7 @@
           "posicion": "Defensa",
           "nombre": "Iago Rodríguez Domínguez",
           "edad": 22,
-          "pj": 4,
+          "pj": 5,
           "goles": 2,
           "amarillas": 0,
           "rojas": 0
